@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 PROTO_PATHS := agynio/api/chat/v1 agynio/api/threads/v1
 
-.PHONY: all proto build test lint fmt clean
+.PHONY: all proto build test lint fmt clean e2e
 
 all: build
 
@@ -23,3 +23,6 @@ fmt:
 
 clean:
 	rm -rf gen
+
+e2e: proto
+	GOFLAGS=-mod=mod go test -v -count=1 ./test/e2e/...

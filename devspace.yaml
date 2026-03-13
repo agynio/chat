@@ -1,0 +1,151 @@
+version: v2beta1
+
+vars:
+  CHAT_NAMESPACE: platform
+
+functions:
+  disable_argocd_sync: |-
+    if kubectl get application chat -n argocd >/dev/null 2>&1; then
+      echo "Disabling ArgoCD auto-sync for chat..."
+      kubectl patch application chat -n argocd \
+        --type merge \
+        -p '{"spec":{"syncPolicy":{"automated":null}}}'
+      echo "ArgoCD auto-sync disabled."
+    else
+      echo "WARNING: ArgoCD Application 'chat' not found in argocd namespace."
+    fi
+  restore_argocd_sync: &restore_argocd_sync |-
+    if kubectl get application chat -n argocd >/dev/null 2>&1; then
+      echo "Re-enabling ArgoCD auto-sync for chat..."
+      kubectl patch application chat -n argocd \
+        --type merge \
+        -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+      echo "ArgoCD auto-sync restored."
+    fi
+  patch_deployment: |-
+    echo "Patching chat deployment for DevSpace..."
+    kubectl patch deployment chat -n ${CHAT_NAMESPACE} --type strategic --patch "$(cat <<'EOF'
+      spec:
+        template:
+          spec:
+            securityContext:
+              runAsUser: 1000
+              fsGroup: 1000
+            initContainers: []
+            volumes:
+              - name: data
+                emptyDir: {}
+            containers:
+              - name: chat
+                image: ghcr.io/agynio/devcontainer-go:1
+                workingDir: /opt/app/data
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -eu
+                    elapsed=0
+                    while [ ! -f /opt/app/data/go.mod ]; do
+                      sleep 1; elapsed=$((elapsed + 1))
+                      [ "$elapsed" -ge 120 ] && { echo "ERROR: sync timeout" >&2; exit 1; }
+                    done
+                    exec /opt/app/data/scripts/devspace-startup.sh
+                volumeMounts:
+                  - name: data
+                    mountPath: /opt/app/data
+                resources:
+                  requests:
+                    cpu: 500m
+                    memory: 1Gi
+                  limits:
+                    cpu: "2"
+                    memory: 4Gi
+                securityContext:
+                  runAsNonRoot: true
+                  runAsUser: 1000
+                  runAsGroup: 1000
+                  readOnlyRootFilesystem: false
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop: ["ALL"]
+                  seccompProfile:
+                    type: RuntimeDefault
+      EOF
+      )"
+  wait_healthy: |-
+    echo "Waiting for chat to be healthy on :50051..."
+    healthy=false
+    attempts=0
+    while [ "$attempts" -lt 60 ]; do
+      if exec_container --label-selector=app.kubernetes.io/name=chat -n ${CHAT_NAMESPACE} -- bash -c 'nc -z localhost 50051 >/dev/null 2>&1 || (echo > /dev/tcp/localhost/50051) >/dev/null 2>&1'; then
+        healthy=true
+        break
+      fi
+      attempts=$((attempts + 1))
+      sleep 2
+    done
+    if [ "$healthy" = true ]; then
+      echo "Chat is healthy on :50051."
+    else
+      echo "WARNING: Chat did not become healthy on :50051 within 120s."
+    fi
+
+pipelines:
+  dev:
+    flags:
+      - name: no-logs
+        short: n
+        description: "Disable container log streaming"
+    run: |-
+      disable_argocd_sync
+      patch_deployment
+      if [ "$(get_flag "no-logs")" == "true" ]; then
+        start_dev --disable-pod-replace chat --set containers.chat.logs.enabled=false
+      else
+        start_dev --disable-pod-replace chat
+      fi
+
+  setup:
+    run: |-
+      disable_argocd_sync
+      trap 'restore_argocd_sync' EXIT
+      patch_deployment
+      wait_healthy
+      restore_argocd_sync
+      trap - EXIT
+
+hooks:
+  - name: restore-argocd-auto-sync
+    events:
+      - after:dev:chat
+    command: sh
+    args:
+      - -c
+      - *restore_argocd_sync
+
+dev:
+  chat:
+    namespace: ${CHAT_NAMESPACE}
+    labelSelector:
+      app.kubernetes.io/name: chat
+      app.kubernetes.io/instance: chat
+    containers:
+      chat:
+        container: chat
+        sync:
+          - path: ./:/opt/app/data
+            excludePaths:
+              - .git/
+              - /gen/
+              - .devspace/
+            uploadExcludePaths:
+              - .git/
+              - /gen/
+            downloadExcludePaths:
+              - .git/
+              - /gen/
+        logs:
+          enabled: true
+          lastLines: 200
+    ports:
+      - port: "50051"

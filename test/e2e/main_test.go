@@ -4,7 +4,6 @@ import (
 	"context"
 	"net"
 	"testing"
-	"time"
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
@@ -55,13 +54,9 @@ func setupEnv(t *testing.T) *testEnv {
 	chatv1.RegisterChatServiceServer(chatGRPC, server.New(threadsClient))
 	go func() { _ = chatGRPC.Serve(chatLis) }()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	chatConn, err := grpc.DialContext(
-		ctx,
+	chatConn, err := grpc.NewClient(
 		chatLis.Addr().String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 	)
 	if err != nil {
 		chatGRPC.Stop()

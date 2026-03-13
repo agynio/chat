@@ -75,32 +75,13 @@ func (f *fakeThreadsServer) GetThreads(_ context.Context, req *threadsv1.GetThre
 		return matching[i].GetCreatedAt().AsTime().After(matching[j].GetCreatedAt().AsTime())
 	})
 
-	start := 0
-	if req.GetPageToken() != "" {
-		idx, err := strconv.Atoi(req.GetPageToken())
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid page_token: %v", err)
-		}
-		start = idx
-	}
-
-	pageSize := int(req.GetPageSize())
-	if pageSize <= 0 {
-		pageSize = 50
-	}
-
-	end := start + pageSize
-	if end > len(matching) {
-		end = len(matching)
-	}
-
-	var nextPageToken string
-	if end < len(matching) {
-		nextPageToken = strconv.Itoa(end)
+	page, nextPageToken, err := paginate(matching, req.GetPageToken(), req.GetPageSize())
+	if err != nil {
+		return nil, err
 	}
 
 	return &threadsv1.GetThreadsResponse{
-		Threads:       matching[start:end],
+		Threads:       page,
 		NextPageToken: nextPageToken,
 	}, nil
 }
@@ -116,32 +97,13 @@ func (f *fakeThreadsServer) GetMessages(_ context.Context, req *threadsv1.GetMes
 		}
 	}
 
-	start := 0
-	if req.GetPageToken() != "" {
-		idx, err := strconv.Atoi(req.GetPageToken())
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid page_token: %v", err)
-		}
-		start = idx
-	}
-
-	pageSize := int(req.GetPageSize())
-	if pageSize <= 0 {
-		pageSize = 50
-	}
-
-	end := start + pageSize
-	if end > len(matching) {
-		end = len(matching)
-	}
-
-	var nextPageToken string
-	if end < len(matching) {
-		nextPageToken = strconv.Itoa(end)
+	page, nextPageToken, err := paginate(matching, req.GetPageToken(), req.GetPageSize())
+	if err != nil {
+		return nil, err
 	}
 
 	return &threadsv1.GetMessagesResponse{
-		Messages:      matching[start:end],
+		Messages:      page,
 		NextPageToken: nextPageToken,
 	}, nil
 }
@@ -197,32 +159,13 @@ func (f *fakeThreadsServer) GetUnackedMessages(_ context.Context, req *threadsv1
 		}
 	}
 
-	start := 0
-	if req.GetPageToken() != "" {
-		idx, err := strconv.Atoi(req.GetPageToken())
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid page_token: %v", err)
-		}
-		start = idx
-	}
-
-	pageSize := int(req.GetPageSize())
-	if pageSize <= 0 {
-		pageSize = 100
-	}
-
-	end := start + pageSize
-	if end > len(unacked) {
-		end = len(unacked)
-	}
-
-	var nextPageToken string
-	if end < len(unacked) {
-		nextPageToken = strconv.Itoa(end)
+	page, nextPageToken, err := paginate(unacked, req.GetPageToken(), req.GetPageSize())
+	if err != nil {
+		return nil, err
 	}
 
 	return &threadsv1.GetUnackedMessagesResponse{
-		Messages:      unacked[start:end],
+		Messages:      page,
 		NextPageToken: nextPageToken,
 	}, nil
 }
@@ -243,4 +186,27 @@ func (f *fakeThreadsServer) AckMessages(_ context.Context, req *threadsv1.AckMes
 	}
 
 	return &threadsv1.AckMessagesResponse{AckedCount: ackedCount}, nil
+}
+
+func paginate[T any](items []T, pageToken string, requestedSize int32) (page []T, nextToken string, err error) {
+	start := 0
+	if pageToken != "" {
+		idx, err := strconv.Atoi(pageToken)
+		if err != nil {
+			return nil, "", status.Errorf(codes.InvalidArgument, "invalid page_token: %v", err)
+		}
+		start = idx
+	}
+	pageSize := int(requestedSize)
+	if pageSize <= 0 {
+		pageSize = 50
+	}
+	end := start + pageSize
+	if end > len(items) {
+		end = len(items)
+	}
+	if end < len(items) {
+		nextToken = strconv.Itoa(end)
+	}
+	return items[start:end], nextToken, nil
 }

@@ -114,6 +114,16 @@ pipelines:
       restore_argocd_sync
       trap - EXIT
 
+  e2e:
+    run: |-
+      disable_argocd_sync
+      patch_deployment
+      wait_healthy
+      echo "Running e2e tests inside the chat pod..."
+      exec_container --label-selector=app.kubernetes.io/name=chat -n ${CHAT_NAMESPACE} -- \
+        bash -c 'cd /opt/app/data && go test -v -count=1 ./test/e2e/...'
+      restore_argocd_sync
+
 hooks:
   - name: restore-argocd-auto-sync
     events:

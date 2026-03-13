@@ -28,7 +28,7 @@ jobs:
           buf generate buf.build/agynio/api --path agynio/api/chat/v1 --path agynio/api/threads/v1
 
       - name: Run tests
-        run: go test ./...
+        run: go test $(go list ./... | grep -v /test/e2e)
 
       - name: Build
         run: go build ./...

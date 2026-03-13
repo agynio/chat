@@ -16,6 +16,8 @@ type Server struct {
 	threads threadsv1.ThreadsServiceClient
 }
 
+const unackedPageSize = 100
+
 func New(threads threadsv1.ThreadsServiceClient) *Server {
 	return &Server{threads: threads}
 }
@@ -171,10 +173,13 @@ func (s *Server) countUnread(ctx context.Context, participantID, chatID string) 
 	var count int32
 	var pageToken string
 
+	// TODO: Threads.GetUnackedMessages lacks a thread-scoped filter, so we scan
+	// all unacked messages across chats; a thread filter upstream would avoid
+	// this full scan.
 	for {
 		resp, err := s.threads.GetUnackedMessages(ctx, &threadsv1.GetUnackedMessagesRequest{
 			ParticipantId: participantID,
-			PageSize:      100,
+			PageSize:      unackedPageSize,
 			PageToken:     pageToken,
 		})
 		if err != nil {

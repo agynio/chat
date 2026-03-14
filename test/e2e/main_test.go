@@ -26,7 +26,7 @@ func setupEnv(t *testing.T) *testEnv {
 
 	addr := os.Getenv("CHAT_ADDRESS")
 	if addr == "" {
-		addr = "localhost:50051"
+		addr = "chat.platform:50051"
 	}
 
 	conn, err := grpc.NewClient(

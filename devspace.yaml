@@ -3,9 +3,6 @@ version: v2beta1
 vars:
   CHAT_NAMESPACE: platform
 
-commands:
-  test:e2e: |-
-    devspace run-pipeline test:e2e $@
 functions:
   disable_argocd_sync: |-
     if kubectl get application chat -n argocd >/dev/null 2>&1; then
@@ -152,10 +149,10 @@ pipelines:
       restore_argocd_sync
       trap - EXIT
 
-  test:e2e:
+  e2e:
     run: |-
       create_deployments chat-e2e
-      trap 'purge_deployments chat-e2e' EXIT
+      trap 'stop_dev chat-e2e; purge_deployments chat-e2e' EXIT
       start_dev chat-e2e --disable-pod-replace
       echo "Waiting for source files to sync..."
       sleep 5
@@ -166,6 +163,7 @@ pipelines:
       exec_container --label-selector=app.kubernetes.io/name=devspace-app,app.kubernetes.io/component=chat-e2e -n ${CHAT_NAMESPACE} -- \
         bash -c 'cd /opt/app/data && go test -v -count=1 ./test/e2e/...'
       echo "Cleaning up test runner pod..."
+      stop_dev chat-e2e
       purge_deployments chat-e2e
       trap - EXIT
 
@@ -212,6 +210,7 @@ dev:
       app.kubernetes.io/component: chat-e2e
     sync:
       - path: ./:/opt/app/data
+        noWatch: true
         excludePaths:
           - .git/
           - /gen/

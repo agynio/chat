@@ -157,10 +157,10 @@ pipelines:
       echo "Waiting for source files to sync..."
       sleep 5
       echo "Generating protobuf types..."
-      exec_container --image-selector=ghcr.io/agynio/devcontainer-go:1 --label-selector=app.kubernetes.io/component=chat-e2e -n ${CHAT_NAMESPACE} -- \
+      exec_container --label-selector=app.kubernetes.io/name=devspace-app,app.kubernetes.io/component=chat-e2e -n ${CHAT_NAMESPACE} -- \
         bash -c 'cd /opt/app/data && buf generate buf.build/agynio/api --path agynio/api/chat/v1 --path agynio/api/threads/v1'
       echo "Running e2e tests..."
-      exec_container --image-selector=ghcr.io/agynio/devcontainer-go:1 --label-selector=app.kubernetes.io/component=chat-e2e -n ${CHAT_NAMESPACE} -- \
+      exec_container --label-selector=app.kubernetes.io/name=devspace-app,app.kubernetes.io/component=chat-e2e -n ${CHAT_NAMESPACE} -- \
         bash -c 'cd /opt/app/data && go test -v -count=1 ./test/e2e/...'
       echo "Cleaning up test runner pod..."
       purge_deployments chat-e2e
@@ -204,8 +204,8 @@ dev:
 
   chat-e2e:
     namespace: ${CHAT_NAMESPACE}
-    imageSelector: ghcr.io/agynio/devcontainer-go:1
     labelSelector:
+      app.kubernetes.io/name: devspace-app
       app.kubernetes.io/component: chat-e2e
     sync:
       - path: ./:/opt/app/data

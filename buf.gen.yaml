@@ -1,16 +1,18 @@
-version: v1
+version: v2
+
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/agynio/chat/gen/go
 
 plugins:
-  - plugin: buf.build/protocolbuffers/go
+  - remote: buf.build/protocolbuffers/go
     out: gen/go
     opt:
       - paths=source_relative
-      - Magynio/api/chat/v1/chat.proto=github.com/agynio/chat/gen/go/agynio/api/chat/v1
-      - Magynio/api/threads/v1/threads.proto=github.com/agynio/chat/gen/go/agynio/api/threads/v1
-  - plugin: buf.build/grpc/go
+  - remote: buf.build/grpc/go
     out: gen/go
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
-      - Magynio/api/chat/v1/chat.proto=github.com/agynio/chat/gen/go/agynio/api/chat/v1
-      - Magynio/api/threads/v1/threads.proto=github.com/agynio/chat/gen/go/agynio/api/threads/v1

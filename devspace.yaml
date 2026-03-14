@@ -3,6 +3,9 @@ version: v2beta1
 vars:
   CHAT_NAMESPACE: platform
 
+commands:
+  test:e2e: |-
+    devspace run-pipeline test:e2e $@
 functions:
   disable_argocd_sync: |-
     if kubectl get application chat -n argocd >/dev/null 2>&1; then
@@ -149,7 +152,7 @@ pipelines:
       restore_argocd_sync
       trap - EXIT
 
-  e2e:
+  test:e2e:
     run: |-
       create_deployments chat-e2e
       trap 'purge_deployments chat-e2e' EXIT

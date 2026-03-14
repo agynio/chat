@@ -152,6 +152,7 @@ pipelines:
   e2e:
     run: |-
       create_deployments chat-e2e
+      trap 'purge_deployments chat-e2e' EXIT
       start_dev chat-e2e --disable-pod-replace
       echo "Waiting for source files to sync..."
       sleep 5
@@ -163,6 +164,7 @@ pipelines:
         bash -c 'cd /opt/app/data && go test -v -count=1 ./test/e2e/...'
       echo "Cleaning up test runner pod..."
       purge_deployments chat-e2e
+      trap - EXIT
 
 hooks:
   - name: restore-argocd-auto-sync

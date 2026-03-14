@@ -2,8 +2,6 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
@@ -12,37 +10,6 @@ permissions:
   packages: write
 
 jobs:
-  publish-edge:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Install buf
-        run: |
-          curl -sSL https://github.com/bufbuild/buf/releases/download/v1.64.0/buf-Linux-x86_64.tar.gz \
-            | sudo tar -xzf - -C /usr/local --strip-components=1 buf/bin/buf
-
-      - name: Generate protobufs
-        run: make proto
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push edge image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/agynio/chat:edge
-
   publish-release:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest

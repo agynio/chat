@@ -3,7 +3,6 @@ version: v2beta1
 vars:
   CHAT_NAMESPACE: platform
 
-
 commands:
   test:e2e: |-
     devspace run-pipeline test:e2e $@

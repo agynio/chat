@@ -91,7 +91,6 @@ func contextWithIdentity(identityID string) context.Context {
 	md := metadata.New(map[string]string{
 		identity.MetadataKeyIdentityID:   identityID,
 		identity.MetadataKeyIdentityType: "user",
-		identity.MetadataKeyTenantID:     "tenant-1",
 	})
 	return metadata.NewIncomingContext(context.Background(), md)
 }
@@ -289,7 +288,7 @@ func TestSendMessageDelegates(t *testing.T) {
 func TestMarkAsReadValidation(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
 	for name, req := range map[string]*chatv1.MarkAsReadRequest{
-		"missing chat id":   {MessageIds: []string{"msg-1"}},
+		"missing chat id":     {MessageIds: []string{"msg-1"}},
 		"missing message ids": {ChatId: "chat-1"},
 	} {
 		t.Run(name, func(t *testing.T) {

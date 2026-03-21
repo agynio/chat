@@ -53,14 +53,13 @@ func uniqueID() string {
 // testIdentity returns a unique identity ID and a context with identity metadata.
 func testIdentity() (string, context.Context) {
 	id := uniqueID()
-	return id, ctxWithIdentity(id, "user", uniqueID())
+	return id, ctxWithIdentity(id, "user")
 }
 
-func ctxWithIdentity(identityID, identityType, tenantID string) context.Context {
+func ctxWithIdentity(identityID, identityType string) context.Context {
 	md := metadata.Pairs(
 		"x-identity-id", identityID,
 		"x-identity-type", identityType,
-		"x-tenant-id", tenantID,
 	)
 	return metadata.NewOutgoingContext(context.Background(), md)
 }

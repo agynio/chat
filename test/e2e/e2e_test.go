@@ -143,8 +143,7 @@ func TestGetMessages_UnreadCount(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
-	tenantID := uniqueID()
-	senderCtx := ctxWithIdentity(otherID, "user", tenantID)
+	senderCtx := ctxWithIdentity(otherID, "user")
 
 	chat := createChat(t, env, readerCtx, otherID)
 
@@ -244,8 +243,7 @@ func TestMarkAsRead(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
-	tenantID := uniqueID()
-	senderCtx := ctxWithIdentity(otherID, "user", tenantID)
+	senderCtx := ctxWithIdentity(otherID, "user")
 
 	chat := createChat(t, env, readerCtx, otherID)
 
@@ -268,8 +266,7 @@ func TestMarkAsRead_Idempotent(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
-	tenantID := uniqueID()
-	senderCtx := ctxWithIdentity(otherID, "user", tenantID)
+	senderCtx := ctxWithIdentity(otherID, "user")
 
 	chat := createChat(t, env, readerCtx, otherID)
 	msg := sendMessage(t, env, senderCtx, chat.GetId(), "msg")

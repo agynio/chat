@@ -42,6 +42,6 @@ LABEL org.opencontainers.image.source="https://github.com/agynio/chat"
 
 COPY --from=build /out/chat /usr/local/bin/chat
 
-USER nonroot:nonroot
+USER 65534:65534
 
 ENTRYPOINT ["/usr/local/bin/chat"]

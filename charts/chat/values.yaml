@@ -155,4 +155,4 @@ metrics:
 
 # -- Chat-specific configuration
 chat:
-  threadsAddress: ""
+  threadsAddress: "threads:50051"

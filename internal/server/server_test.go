@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -9,6 +10,8 @@ import (
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
 	"github.com/agynio/chat/internal/identity"
+	"github.com/agynio/chat/internal/store"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -83,8 +86,31 @@ func (m *mockThreadsClient) AckMessages(ctx context.Context, req *threadsv1.AckM
 	return m.ackMessagesFunc(ctx, req, opts...)
 }
 
+type mockStore struct {
+	createChatFunc func(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
+	listChatsFunc  func(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+}
+
+func (m *mockStore) CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error) {
+	if m.createChatFunc == nil {
+		return store.Chat{}, unexpectedStoreCall("CreateChat")
+	}
+	return m.createChatFunc(ctx, threadID, organizationID)
+}
+
+func (m *mockStore) ListChats(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
+	if m.listChatsFunc == nil {
+		return store.ChatListResult{}, unexpectedStoreCall("ListChats")
+	}
+	return m.listChatsFunc(ctx, organizationID, pageSize, cursor)
+}
+
 func unexpectedCall(method string) error {
 	return status.Errorf(codes.Internal, "unexpected %s call", method)
+}
+
+func unexpectedStoreCall(method string) error {
+	return fmt.Errorf("unexpected store %s call", method)
 }
 
 func contextWithIdentity(identityID string) context.Context {
@@ -116,30 +142,56 @@ func requireTimestamp(t *testing.T, got *timestamppb.Timestamp, want time.Time) 
 }
 
 func TestCreateChatRequiresIdentity(t *testing.T) {
-	srv := New(&mockThreadsClient{})
-	_, err := srv.CreateChat(context.Background(), &chatv1.CreateChatRequest{ParticipantIds: []string{"user-2"}})
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.CreateChat(context.Background(), &chatv1.CreateChatRequest{ParticipantIds: []string{"user-2"}, OrganizationId: uuid.NewString()})
 	requireStatusCode(t, err, codes.Unauthenticated)
 }
 
 func TestCreateChatRejectsEmptyParticipants(t *testing.T) {
-	srv := New(&mockThreadsClient{})
-	_, err := srv.CreateChat(contextWithIdentity("user-1"), &chatv1.CreateChatRequest{})
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.CreateChat(contextWithIdentity("user-1"), &chatv1.CreateChatRequest{OrganizationId: uuid.NewString()})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestCreateChatRequiresOrganizationID(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.CreateChat(contextWithIdentity("user-1"), &chatv1.CreateChatRequest{ParticipantIds: []string{"user-2"}})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestCreateChatRejectsInvalidOrganizationID(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.CreateChat(contextWithIdentity("user-1"), &chatv1.CreateChatRequest{
+		ParticipantIds: []string{"user-2"},
+		OrganizationId: "not-a-uuid",
+	})
 	requireStatusCode(t, err, codes.InvalidArgument)
 }
 
 func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
+	orgID := uuid.New()
 	var gotRequest *threadsv1.CreateThreadRequest
-	thread := &threadsv1.Thread{Id: "thread-1"}
+	threadID := uuid.New()
+	thread := &threadsv1.Thread{Id: threadID.String()}
+	var storedThreadID uuid.UUID
+	var storedOrgID uuid.UUID
 	threads := &mockThreadsClient{
 		createThreadFunc: func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
 			gotRequest = req
 			return &threadsv1.CreateThreadResponse{Thread: thread}, nil
 		},
 	}
+	chatStore := &mockStore{
+		createChatFunc: func(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error) {
+			storedThreadID = threadID
+			storedOrgID = organizationID
+			return store.Chat{ThreadID: threadID, OrganizationID: organizationID, CreatedAt: time.Now()}, nil
+		},
+	}
 
-	srv := New(threads)
-	resp, err := srv.CreateChat(ctx, &chatv1.CreateChatRequest{ParticipantIds: []string{"user-2", "user-1", "user-3"}})
+	srv := New(threads, chatStore)
+	resp, err := srv.CreateChat(ctx, &chatv1.CreateChatRequest{ParticipantIds: []string{"user-2", "user-1", "user-3"}, OrganizationId: orgID.String()})
 	if err != nil {
 		t.Fatalf("CreateChat returned error: %v", err)
 	}
@@ -152,6 +204,159 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	}
 	if resp.GetChat().GetId() != thread.GetId() {
 		t.Fatalf("expected chat id %q, got %q", thread.GetId(), resp.GetChat().GetId())
+	}
+	if resp.GetChat().GetOrganizationId() != orgID.String() {
+		t.Fatalf("expected organization id %q, got %q", orgID, resp.GetChat().GetOrganizationId())
+	}
+	if storedThreadID != threadID {
+		t.Fatalf("expected stored thread id %s, got %s", threadID, storedThreadID)
+	}
+	if storedOrgID != orgID {
+		t.Fatalf("expected stored org id %s, got %s", orgID, storedOrgID)
+	}
+}
+
+func TestGetChatsRequiresOrganizationID(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.GetChats(contextWithIdentity("user-1"), &chatv1.GetChatsRequest{})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestGetChatsRejectsInvalidPageToken(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockStore{})
+	_, err := srv.GetChats(contextWithIdentity("user-1"), &chatv1.GetChatsRequest{
+		OrganizationId: uuid.NewString(),
+		PageToken:      "not-a-token",
+	})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestGetChatsUsesStoreAndThreads(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	orgID := uuid.New()
+	cursorID := uuid.New()
+	threadID1 := uuid.New()
+	threadID2 := uuid.New()
+	createdAt := time.Date(2024, 5, 6, 7, 8, 9, 0, time.UTC)
+
+	var gotOrgID uuid.UUID
+	var gotPageSize int32
+	var gotCursor *store.PageCursor
+	chatStore := &mockStore{
+		listChatsFunc: func(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
+			gotOrgID = organizationID
+			gotPageSize = pageSize
+			gotCursor = cursor
+			return store.ChatListResult{
+				Chats: []store.Chat{
+					{ThreadID: threadID2, OrganizationID: orgID, CreatedAt: createdAt},
+					{ThreadID: threadID1, OrganizationID: orgID, CreatedAt: createdAt},
+				},
+				NextCursor: &store.PageCursor{AfterID: threadID1},
+			}, nil
+		},
+	}
+
+	threads := &mockThreadsClient{
+		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			if req.GetParticipantId() != "user-1" {
+				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant %q", req.GetParticipantId())
+			}
+			return &threadsv1.GetThreadsResponse{
+				Threads: []*threadsv1.Thread{
+					{
+						Id: threadID1.String(),
+						Participants: []*threadsv1.Participant{
+							{Id: "user-1", JoinedAt: timestamppb.New(createdAt)},
+							{Id: "user-2", JoinedAt: timestamppb.New(createdAt)},
+						},
+						CreatedAt: timestamppb.New(createdAt),
+						UpdatedAt: timestamppb.New(createdAt),
+					},
+					{
+						Id: threadID2.String(),
+						Participants: []*threadsv1.Participant{
+							{Id: "user-1", JoinedAt: timestamppb.New(createdAt)},
+						},
+						CreatedAt: timestamppb.New(createdAt),
+						UpdatedAt: timestamppb.New(createdAt),
+					},
+				},
+			}, nil
+		},
+	}
+
+	srv := New(threads, chatStore)
+	pageToken := store.EncodePageToken(cursorID)
+	resp, err := srv.GetChats(ctx, &chatv1.GetChatsRequest{
+		OrganizationId: orgID.String(),
+		PageSize:       2,
+		PageToken:      pageToken,
+	})
+	if err != nil {
+		t.Fatalf("GetChats returned error: %v", err)
+	}
+	if gotOrgID != orgID {
+		t.Fatalf("expected org id %s, got %s", orgID, gotOrgID)
+	}
+	if gotPageSize != 2 {
+		t.Fatalf("expected page size 2, got %d", gotPageSize)
+	}
+	if gotCursor == nil || gotCursor.AfterID != cursorID {
+		t.Fatalf("expected cursor %s, got %#v", cursorID, gotCursor)
+	}
+	if resp.GetNextPageToken() != store.EncodePageToken(threadID1) {
+		t.Fatalf("expected next page token %q, got %q", store.EncodePageToken(threadID1), resp.GetNextPageToken())
+	}
+	if len(resp.GetChats()) != 2 {
+		t.Fatalf("expected 2 chats, got %d", len(resp.GetChats()))
+	}
+	if resp.GetChats()[0].GetId() != threadID2.String() || resp.GetChats()[1].GetId() != threadID1.String() {
+		t.Fatalf("unexpected chat order: %v", []string{resp.GetChats()[0].GetId(), resp.GetChats()[1].GetId()})
+	}
+	if resp.GetChats()[0].GetOrganizationId() != orgID.String() {
+		t.Fatalf("expected org id %q, got %q", orgID, resp.GetChats()[0].GetOrganizationId())
+	}
+}
+
+func TestGetChatsFiltersNonParticipantThreads(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	orgID := uuid.New()
+	threadID := uuid.New()
+	createdAt := time.Date(2024, 6, 7, 8, 9, 10, 0, time.UTC)
+
+	chatStore := &mockStore{
+		listChatsFunc: func(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
+			return store.ChatListResult{
+				Chats: []store.Chat{{ThreadID: threadID, OrganizationID: orgID, CreatedAt: createdAt}},
+			}, nil
+		},
+	}
+
+	threads := &mockThreadsClient{
+		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			return &threadsv1.GetThreadsResponse{
+				Threads: []*threadsv1.Thread{
+					{
+						Id: threadID.String(),
+						Participants: []*threadsv1.Participant{
+							{Id: "user-2", JoinedAt: timestamppb.New(createdAt)},
+						},
+						CreatedAt: timestamppb.New(createdAt),
+						UpdatedAt: timestamppb.New(createdAt),
+					},
+				},
+			}, nil
+		},
+	}
+
+	srv := New(threads, chatStore)
+	resp, err := srv.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID.String()})
+	if err != nil {
+		t.Fatalf("GetChats returned error: %v", err)
+	}
+	if len(resp.GetChats()) != 0 {
+		t.Fatalf("expected no chats, got %d", len(resp.GetChats()))
 	}
 }
 
@@ -201,7 +406,7 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 		},
 	}
 
-	srv := New(threads)
+	srv := New(threads, &mockStore{})
 	resp, err := srv.GetMessages(ctx, &chatv1.GetMessagesRequest{ChatId: chatID, PageSize: 2, PageToken: "page-1"})
 	if err != nil {
 		t.Fatalf("GetMessages returned error: %v", err)
@@ -241,7 +446,7 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 }
 
 func TestSendMessageValidation(t *testing.T) {
-	srv := New(&mockThreadsClient{})
+	srv := New(&mockThreadsClient{}, &mockStore{})
 	_, err := srv.SendMessage(contextWithIdentity("user-1"), &chatv1.SendMessageRequest{ChatId: "chat-1"})
 	requireStatusCode(t, err, codes.InvalidArgument)
 }
@@ -274,7 +479,7 @@ func TestSendMessageDelegates(t *testing.T) {
 		},
 	}
 
-	srv := New(threads)
+	srv := New(threads, &mockStore{})
 	resp, err := srv.SendMessage(ctx, &chatv1.SendMessageRequest{ChatId: "chat-1", Body: "hello", FileIds: []string{"file-1"}})
 	if err != nil {
 		t.Fatalf("SendMessage returned error: %v", err)
@@ -292,7 +497,7 @@ func TestMarkAsReadValidation(t *testing.T) {
 		"missing message ids": {ChatId: "chat-1"},
 	} {
 		t.Run(name, func(t *testing.T) {
-			srv := New(&mockThreadsClient{})
+			srv := New(&mockThreadsClient{}, &mockStore{})
 			_, err := srv.MarkAsRead(ctx, req)
 			requireStatusCode(t, err, codes.InvalidArgument)
 		})
@@ -313,7 +518,7 @@ func TestMarkAsReadDelegates(t *testing.T) {
 		},
 	}
 
-	srv := New(threads)
+	srv := New(threads, &mockStore{})
 	resp, err := srv.MarkAsRead(ctx, &chatv1.MarkAsReadRequest{ChatId: "chat-1", MessageIds: []string{"msg-1", "msg-2"}})
 	if err != nil {
 		t.Fatalf("MarkAsRead returned error: %v", err)
@@ -337,7 +542,7 @@ func TestThreadToChat(t *testing.T) {
 		UpdatedAt: timestamppb.New(updatedAt),
 	}
 
-	chat := threadToChat(thread)
+	chat := threadToChat(thread, "org-1")
 	if chat.GetId() != "thread-1" {
 		t.Fatalf("expected chat id thread-1, got %q", chat.GetId())
 	}
@@ -346,6 +551,9 @@ func TestThreadToChat(t *testing.T) {
 	}
 	if chat.GetParticipants()[0].GetId() != "user-1" {
 		t.Fatalf("expected participant user-1, got %q", chat.GetParticipants()[0].GetId())
+	}
+	if chat.GetOrganizationId() != "org-1" {
+		t.Fatalf("expected organization id org-1, got %q", chat.GetOrganizationId())
 	}
 	requireTimestamp(t, chat.GetParticipants()[0].GetJoinedAt(), joinedAt)
 	requireTimestamp(t, chat.GetCreatedAt(), createdAt)

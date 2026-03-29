@@ -12,11 +12,14 @@ import (
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/agynio/chat/internal/config"
+	"github.com/agynio/chat/internal/db"
 	"github.com/agynio/chat/internal/server"
+	"github.com/agynio/chat/internal/store"
 )
 
 func main() {
@@ -40,10 +43,25 @@ func run() error {
 	}
 	defer threadsConn.Close()
 
+	poolCfg, err := pgxpool.ParseConfig(cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("parse database url: %w", err)
+	}
+	pool, err := pgxpool.NewWithConfig(ctx, poolCfg)
+	if err != nil {
+		return fmt.Errorf("create connection pool: %w", err)
+	}
+	defer pool.Close()
+
+	if err := db.ApplyMigrations(ctx, pool); err != nil {
+		return fmt.Errorf("apply migrations: %w", err)
+	}
+
 	threadsClient := threadsv1.NewThreadsServiceClient(threadsConn)
+	chatStore := store.New(pool)
 
 	grpcServer := grpc.NewServer()
-	chatv1.RegisterChatServiceServer(grpcServer, server.New(threadsClient))
+	chatv1.RegisterChatServiceServer(grpcServer, server.New(threadsClient, chatStore))
 
 	lis, err := net.Listen("tcp", cfg.GRPCAddress)
 	if err != nil {

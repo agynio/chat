@@ -2,30 +2,48 @@ package server
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"log"
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/agynio/chat/internal/identity"
+	"github.com/agynio/chat/internal/store"
 )
 
 type Server struct {
 	chatv1.UnimplementedChatServiceServer
 	threads threadsv1.ThreadsServiceClient
+	store   chatStore
 }
 
 const unackedPageSize = 100
 
-func New(threads threadsv1.ThreadsServiceClient) *Server {
-	return &Server{threads: threads}
+const threadsPageSize = 100
+
+type chatStore interface {
+	CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
+	ListChats(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+}
+
+func New(threads threadsv1.ThreadsServiceClient, store chatStore) *Server {
+	return &Server{threads: threads, store: store}
 }
 
 func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) (*chatv1.CreateChatResponse, error) {
 	id, err := identity.FromContext(ctx)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
+	}
+
+	organizationID, err := parseUUID(req.GetOrganizationId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "organization_id: %v", err)
 	}
 
 	if len(req.GetParticipantIds()) == 0 {
@@ -48,8 +66,17 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 		return nil, mapThreadsError(err)
 	}
 
+	threadID, err := uuid.Parse(resp.GetThread().GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "threads returned invalid thread id: %v", err)
+	}
+	if _, err := s.store.CreateChat(ctx, threadID, organizationID); err != nil {
+		log.Printf("chat: store thread %s for org %s: %v", threadID, organizationID, err)
+		return nil, toStatusError(err)
+	}
+
 	return &chatv1.CreateChatResponse{
-		Chat: threadToChat(resp.GetThread()),
+		Chat: threadToChat(resp.GetThread(), organizationID.String()),
 	}, nil
 }
 
@@ -59,23 +86,51 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
 	}
 
-	resp, err := s.threads.GetThreads(ctx, &threadsv1.GetThreadsRequest{
-		ParticipantId: id.IdentityID,
-		PageSize:      req.GetPageSize(),
-		PageToken:     req.GetPageToken(),
-	})
+	organizationID, err := parseUUID(req.GetOrganizationId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "organization_id: %v", err)
+	}
+
+	cursor, err := decodePageCursor(req.GetPageToken())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "page_token: %v", err)
+	}
+
+	result, err := s.store.ListChats(ctx, organizationID, req.GetPageSize(), cursor)
+	if err != nil {
+		return nil, toStatusError(err)
+	}
+
+	threadIDs := make([]uuid.UUID, len(result.Chats))
+	for i, chat := range result.Chats {
+		threadIDs[i] = chat.ThreadID
+	}
+
+	threadsByID, err := s.fetchThreads(ctx, id.IdentityID, threadIDs)
 	if err != nil {
 		return nil, mapThreadsError(err)
 	}
 
-	chats := make([]*chatv1.Chat, len(resp.GetThreads()))
-	for i, thread := range resp.GetThreads() {
-		chats[i] = threadToChat(thread)
+	chats := make([]*chatv1.Chat, 0, len(threadIDs))
+	for _, chat := range result.Chats {
+		thread, ok := threadsByID[chat.ThreadID]
+		if !ok {
+			continue
+		}
+		if !threadHasParticipant(thread, id.IdentityID) {
+			continue
+		}
+		chats = append(chats, threadToChat(thread, chat.OrganizationID.String()))
+	}
+
+	nextToken := ""
+	if result.NextCursor != nil {
+		nextToken = store.EncodePageToken(result.NextCursor.AfterID)
 	}
 
 	return &chatv1.GetChatsResponse{
 		Chats:         chats,
-		NextPageToken: resp.GetNextPageToken(),
+		NextPageToken: nextToken,
 	}, nil
 }
 
@@ -207,4 +262,92 @@ func mapThreadsError(err error) error {
 		return status.Errorf(codes.Internal, "threads: %v", err)
 	}
 	return st.Err()
+}
+
+func decodePageCursor(token string) (*store.PageCursor, error) {
+	if token == "" {
+		return nil, nil
+	}
+	id, err := store.DecodePageToken(token)
+	if err != nil {
+		return nil, err
+	}
+	return &store.PageCursor{AfterID: id}, nil
+}
+
+func parseUUID(value string) (uuid.UUID, error) {
+	if value == "" {
+		return uuid.UUID{}, fmt.Errorf("value is empty")
+	}
+	id, err := uuid.Parse(value)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+	return id, nil
+}
+
+func toStatusError(err error) error {
+	var notFound *store.NotFoundError
+	if errors.As(err, &notFound) {
+		return status.Error(codes.NotFound, notFound.Error())
+	}
+	var alreadyExists *store.AlreadyExistsError
+	if errors.As(err, &alreadyExists) {
+		return status.Error(codes.AlreadyExists, alreadyExists.Error())
+	}
+	var invalidToken *store.InvalidPageTokenError
+	if errors.As(err, &invalidToken) {
+		return status.Error(codes.InvalidArgument, invalidToken.Error())
+	}
+	return status.Errorf(codes.Internal, "store: %v", err)
+}
+
+func (s *Server) fetchThreads(ctx context.Context, participantID string, threadIDs []uuid.UUID) (map[uuid.UUID]*threadsv1.Thread, error) {
+	if len(threadIDs) == 0 {
+		return map[uuid.UUID]*threadsv1.Thread{}, nil
+	}
+
+	pending := make(map[string]struct{}, len(threadIDs))
+	for _, id := range threadIDs {
+		pending[id.String()] = struct{}{}
+	}
+
+	threads := make(map[uuid.UUID]*threadsv1.Thread, len(threadIDs))
+	pageToken := ""
+	for len(pending) > 0 {
+		resp, err := s.threads.GetThreads(ctx, &threadsv1.GetThreadsRequest{
+			ParticipantId: participantID,
+			PageSize:      threadsPageSize,
+			PageToken:     pageToken,
+		})
+		if err != nil {
+			return nil, err
+		}
+		for _, thread := range resp.GetThreads() {
+			if _, ok := pending[thread.GetId()]; !ok {
+				continue
+			}
+			threadID, err := uuid.Parse(thread.GetId())
+			if err != nil {
+				return nil, fmt.Errorf("threads returned invalid thread id %q: %w", thread.GetId(), err)
+			}
+			threads[threadID] = thread
+			delete(pending, thread.GetId())
+		}
+		if resp.GetNextPageToken() == "" {
+			break
+		}
+		pageToken = resp.GetNextPageToken()
+	}
+
+	return threads, nil
+}
+
+func threadHasParticipant(thread *threadsv1.Thread, participantID string) bool {
+	for _, participant := range thread.GetParticipants() {
+		if participant.GetId() == participantID {
+			return true
+		}
+	}
+	return false
 }

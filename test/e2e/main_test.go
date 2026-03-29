@@ -68,10 +68,11 @@ func ctxWithIdentity(identityID, identityType string) context.Context {
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-func createChat(t *testing.T, env *testEnv, ctx context.Context, participantIDs ...string) *chatv1.Chat {
+func createChat(t *testing.T, env *testEnv, ctx context.Context, organizationID string, participantIDs ...string) *chatv1.Chat {
 	t.Helper()
 	resp, err := env.client.CreateChat(ctx, &chatv1.CreateChatRequest{
 		ParticipantIds: participantIDs,
+		OrganizationId: organizationID,
 	})
 	require.NoError(t, err)
 	return resp.GetChat()

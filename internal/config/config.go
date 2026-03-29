@@ -8,6 +8,7 @@ import (
 type Config struct {
 	GRPCAddress    string
 	ThreadsAddress string
+	DatabaseURL    string
 }
 
 func FromEnv() (Config, error) {
@@ -21,6 +22,11 @@ func FromEnv() (Config, error) {
 	cfg.ThreadsAddress = os.Getenv("THREADS_ADDRESS")
 	if cfg.ThreadsAddress == "" {
 		return Config{}, fmt.Errorf("THREADS_ADDRESS must be set")
+	}
+
+	cfg.DatabaseURL = os.Getenv("DATABASE_URL")
+	if cfg.DatabaseURL == "" {
+		return Config{}, fmt.Errorf("DATABASE_URL must be set")
 	}
 
 	return cfg, nil

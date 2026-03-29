@@ -18,9 +18,11 @@ func TestCreateChat(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 
 	resp, err := env.client.CreateChat(ctx, &chatv1.CreateChatRequest{
 		ParticipantIds: []string{otherID},
+		OrganizationId: orgID,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, resp.GetChat())
@@ -28,14 +30,16 @@ func TestCreateChat(t *testing.T) {
 	assert.NotNil(t, resp.GetChat().GetCreatedAt())
 	assert.NotNil(t, resp.GetChat().GetUpdatedAt())
 	assert.Len(t, resp.GetChat().GetParticipants(), 2)
+	assert.Equal(t, orgID, resp.GetChat().GetOrganizationId())
 }
 
 func TestCreateChat_CallerAutoAdded(t *testing.T) {
 	env := setupEnv(t)
 	callerID, ctx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 
-	chat := createChat(t, env, ctx, otherID)
+	chat := createChat(t, env, ctx, orgID, otherID)
 	pids := participantIDsFromChat(chat)
 	assert.Contains(t, pids, callerID)
 	assert.Contains(t, pids, otherID)
@@ -45,9 +49,11 @@ func TestCreateChat_CallerDeduplication(t *testing.T) {
 	env := setupEnv(t)
 	callerID, ctx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 
 	resp, err := env.client.CreateChat(ctx, &chatv1.CreateChatRequest{
 		ParticipantIds: []string{callerID, otherID},
+		OrganizationId: orgID,
 	})
 	require.NoError(t, err)
 
@@ -60,20 +66,34 @@ func TestCreateChat_CallerDeduplication(t *testing.T) {
 func TestCreateChat_EmptyParticipants(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
 	_, err := env.client.CreateChat(ctx, &chatv1.CreateChatRequest{
 		ParticipantIds: []string{},
+		OrganizationId: orgID,
 	})
 	requireStatusCode(t, err, codes.InvalidArgument)
 }
 
 func TestCreateChat_MissingIdentity(t *testing.T) {
 	env := setupEnv(t)
+	orgID := uniqueID()
 
 	_, err := env.client.CreateChat(context.Background(), &chatv1.CreateChatRequest{
 		ParticipantIds: []string{uniqueID()},
+		OrganizationId: orgID,
 	})
 	requireStatusCode(t, err, codes.Unauthenticated)
+}
+
+func TestCreateChat_MissingOrganizationID(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+
+	_, err := env.client.CreateChat(ctx, &chatv1.CreateChatRequest{
+		ParticipantIds: []string{uniqueID()},
+	})
+	requireStatusCode(t, err, codes.InvalidArgument)
 }
 
 // ---------------------------------------------------------------------------
@@ -83,31 +103,37 @@ func TestCreateChat_MissingIdentity(t *testing.T) {
 func TestGetChats(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	createChat(t, env, ctx, uniqueID())
-	createChat(t, env, ctx, uniqueID())
+	createChat(t, env, ctx, orgID, uniqueID())
+	createChat(t, env, ctx, orgID, uniqueID())
 
-	resp, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{})
+	resp, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID})
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(resp.GetChats()), 2)
+	for _, chat := range resp.GetChats() {
+		assert.Equal(t, orgID, chat.GetOrganizationId())
+	}
 }
 
 func TestGetChats_Pagination(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	createChat(t, env, ctx, uniqueID())
-	createChat(t, env, ctx, uniqueID())
-	createChat(t, env, ctx, uniqueID())
+	createChat(t, env, ctx, orgID, uniqueID())
+	createChat(t, env, ctx, orgID, uniqueID())
+	createChat(t, env, ctx, orgID, uniqueID())
 
-	page1, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{PageSize: 2})
+	page1, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID, PageSize: 2})
 	require.NoError(t, err)
 	assert.Len(t, page1.GetChats(), 2)
 	assert.NotEmpty(t, page1.GetNextPageToken())
 
 	page2, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{
-		PageSize:  2,
-		PageToken: page1.GetNextPageToken(),
+		OrganizationId: orgID,
+		PageSize:       2,
+		PageToken:      page1.GetNextPageToken(),
 	})
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(page2.GetChats()), 1)
@@ -115,9 +141,39 @@ func TestGetChats_Pagination(t *testing.T) {
 
 func TestGetChats_MissingIdentity(t *testing.T) {
 	env := setupEnv(t)
+	orgID := uniqueID()
 
-	_, err := env.client.GetChats(context.Background(), &chatv1.GetChatsRequest{})
+	_, err := env.client.GetChats(context.Background(), &chatv1.GetChatsRequest{OrganizationId: orgID})
 	requireStatusCode(t, err, codes.Unauthenticated)
+}
+
+func TestGetChats_MissingOrganizationID(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+
+	_, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestGetChats_OrganizationScope(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+	orgID := uniqueID()
+	otherOrgID := uniqueID()
+
+	chat1 := createChat(t, env, ctx, orgID, uniqueID())
+	chat2 := createChat(t, env, ctx, orgID, uniqueID())
+	createChat(t, env, ctx, otherOrgID, uniqueID())
+
+	resp, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID})
+	require.NoError(t, err)
+	ids := make([]string, 0, len(resp.GetChats()))
+	for _, chat := range resp.GetChats() {
+		ids = append(ids, chat.GetId())
+		assert.Equal(t, orgID, chat.GetOrganizationId())
+	}
+	assert.Contains(t, ids, chat1.GetId())
+	assert.Contains(t, ids, chat2.GetId())
 }
 
 // ---------------------------------------------------------------------------
@@ -127,8 +183,9 @@ func TestGetChats_MissingIdentity(t *testing.T) {
 func TestGetMessages(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	chat := createChat(t, env, ctx, uniqueID())
+	chat := createChat(t, env, ctx, orgID, uniqueID())
 	sendMessage(t, env, ctx, chat.GetId(), "hello")
 	sendMessage(t, env, ctx, chat.GetId(), "world")
 
@@ -143,9 +200,10 @@ func TestGetMessages_UnreadCount(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 	senderCtx := ctxWithIdentity(otherID, "user")
 
-	chat := createChat(t, env, readerCtx, otherID)
+	chat := createChat(t, env, readerCtx, orgID, otherID)
 
 	sendMessage(t, env, senderCtx, chat.GetId(), "msg1")
 	sendMessage(t, env, senderCtx, chat.GetId(), "msg2")
@@ -177,8 +235,9 @@ func TestGetMessages_MissingIdentity(t *testing.T) {
 func TestSendMessage(t *testing.T) {
 	env := setupEnv(t)
 	callerID, ctx := testIdentity()
+	orgID := uniqueID()
 
-	chat := createChat(t, env, ctx, uniqueID())
+	chat := createChat(t, env, ctx, orgID, uniqueID())
 
 	resp, err := env.client.SendMessage(ctx, &chatv1.SendMessageRequest{
 		ChatId: chat.GetId(),
@@ -196,8 +255,9 @@ func TestSendMessage(t *testing.T) {
 func TestSendMessage_WithFileIDs(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	chat := createChat(t, env, ctx, uniqueID())
+	chat := createChat(t, env, ctx, orgID, uniqueID())
 
 	resp, err := env.client.SendMessage(ctx, &chatv1.SendMessageRequest{
 		ChatId:  chat.GetId(),
@@ -218,8 +278,9 @@ func TestSendMessage_MissingChatID(t *testing.T) {
 func TestSendMessage_MissingBodyAndFiles(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	chat := createChat(t, env, ctx, uniqueID())
+	chat := createChat(t, env, ctx, orgID, uniqueID())
 
 	_, err := env.client.SendMessage(ctx, &chatv1.SendMessageRequest{ChatId: chat.GetId()})
 	requireStatusCode(t, err, codes.InvalidArgument)
@@ -243,9 +304,10 @@ func TestMarkAsRead(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 	senderCtx := ctxWithIdentity(otherID, "user")
 
-	chat := createChat(t, env, readerCtx, otherID)
+	chat := createChat(t, env, readerCtx, orgID, otherID)
 
 	msg1 := sendMessage(t, env, senderCtx, chat.GetId(), "msg1")
 	msg2 := sendMessage(t, env, senderCtx, chat.GetId(), "msg2")
@@ -266,9 +328,10 @@ func TestMarkAsRead_Idempotent(t *testing.T) {
 	env := setupEnv(t)
 	_, readerCtx := testIdentity()
 	otherID := uniqueID()
+	orgID := uniqueID()
 	senderCtx := ctxWithIdentity(otherID, "user")
 
-	chat := createChat(t, env, readerCtx, otherID)
+	chat := createChat(t, env, readerCtx, orgID, otherID)
 	msg := sendMessage(t, env, senderCtx, chat.GetId(), "msg")
 
 	resp1, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{

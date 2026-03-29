@@ -12,7 +12,10 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const chatColumns = "thread_id, organization_id, created_at"
+const (
+	chatColumns       = "thread_id, organization_id, created_at"
+	pgUniqueViolation = "23505"
+)
 
 type Store struct {
 	pool *pgxpool.Pool
@@ -40,7 +43,7 @@ func (s *Store) CreateChat(ctx context.Context, threadID, organizationID uuid.UU
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
-			if pgErr.Code == "23505" {
+			if pgErr.Code == pgUniqueViolation {
 				return Chat{}, AlreadyExists("chat")
 			}
 		}

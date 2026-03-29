@@ -5,7 +5,7 @@ import (
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
 )
 
-func threadToChat(thread *threadsv1.Thread) *chatv1.Chat {
+func threadToChat(thread *threadsv1.Thread, organizationID string) *chatv1.Chat {
 	participants := make([]*chatv1.ChatParticipant, len(thread.GetParticipants()))
 	for i, p := range thread.GetParticipants() {
 		participants[i] = &chatv1.ChatParticipant{
@@ -15,10 +15,11 @@ func threadToChat(thread *threadsv1.Thread) *chatv1.Chat {
 	}
 
 	return &chatv1.Chat{
-		Id:           thread.GetId(),
-		Participants: participants,
-		CreatedAt:    thread.GetCreatedAt(),
-		UpdatedAt:    thread.GetUpdatedAt(),
+		Id:             thread.GetId(),
+		Participants:   participants,
+		CreatedAt:      thread.GetCreatedAt(),
+		UpdatedAt:      thread.GetUpdatedAt(),
+		OrganizationId: organizationID,
 	}
 }
 

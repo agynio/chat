@@ -30,7 +30,9 @@ const maxThreadsPages = 10
 
 type chatStore interface {
 	CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
-	ListChats(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+	GetChat(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
+	UpdateChat(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
+	ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
 }
 
 func New(threads threadsv1.ThreadsServiceClient, store chatStore) *Server {
@@ -72,12 +74,19 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "threads returned invalid thread id: %v", err)
 	}
-	if _, err := s.store.CreateChat(ctx, threadID, organizationID); err != nil {
+	storedChat, err := s.store.CreateChat(ctx, threadID, organizationID)
+	if err != nil {
 		log.Printf("chat: store thread %s for org %s failed (returning thread only): %v", threadID, organizationID, err)
+	}
+	status := chatv1.ChatStatus_CHAT_STATUS_OPEN
+	var summary *string
+	if err == nil {
+		status = stringToChatStatus(storedChat.Status)
+		summary = storedChat.Summary
 	}
 
 	return &chatv1.CreateChatResponse{
-		Chat: threadToChat(resp.GetThread(), organizationID.String()),
+		Chat: threadToChat(resp.GetThread(), organizationID.String(), status, summary),
 	}, nil
 }
 
@@ -98,11 +107,16 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 	}
 
 	pageSize := store.NormalizePageSize(req.GetPageSize())
+	filter := store.ChatListFilter{}
+	if req.GetStatus() != chatv1.ChatStatus_CHAT_STATUS_UNSPECIFIED {
+		statusValue := chatStatusToString(req.GetStatus())
+		filter.Status = &statusValue
+	}
 	chats := make([]*chatv1.Chat, 0, int(pageSize))
 	var nextCursor *store.PageCursor
 	for len(chats) < int(pageSize) {
 		remaining := pageSize - int32(len(chats))
-		result, err := s.store.ListChats(ctx, organizationID, remaining, cursor)
+		result, err := s.store.ListChats(ctx, organizationID, filter, remaining, cursor)
 		if err != nil {
 			return nil, toStatusError(err)
 		}
@@ -129,7 +143,7 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 			if !threadHasParticipant(thread, id.IdentityID) {
 				continue
 			}
-			chats = append(chats, threadToChat(thread, chat.OrganizationID.String()))
+			chats = append(chats, threadToChat(thread, chat.OrganizationID.String(), stringToChatStatus(chat.Status), chat.Summary))
 		}
 
 		nextCursor = result.NextCursor
@@ -147,6 +161,53 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 	return &chatv1.GetChatsResponse{
 		Chats:         chats,
 		NextPageToken: nextToken,
+	}, nil
+}
+
+func (s *Server) UpdateChat(ctx context.Context, req *chatv1.UpdateChatRequest) (*chatv1.UpdateChatResponse, error) {
+	id, err := identity.FromContext(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
+	}
+
+	if req.GetChatId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "chat_id is required")
+	}
+	threadID, err := parseUUID(req.GetChatId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "chat_id: %v", err)
+	}
+
+	params := store.UpdateChatParams{}
+	if req.GetStatus() != chatv1.ChatStatus_CHAT_STATUS_UNSPECIFIED {
+		statusValue := chatStatusToString(req.GetStatus())
+		params.Status = &statusValue
+	}
+	if req.Summary != nil {
+		summaryValue := req.GetSummary()
+		if summaryValue == "" {
+			params.ClearSummary = true
+		} else {
+			params.Summary = &summaryValue
+		}
+	}
+
+	updatedChat, err := s.store.UpdateChat(ctx, threadID, params)
+	if err != nil {
+		return nil, toStatusError(err)
+	}
+
+	threadsByID, err := s.fetchThreads(ctx, id.IdentityID, []uuid.UUID{threadID})
+	if err != nil {
+		return nil, mapThreadsError(err)
+	}
+	thread, ok := threadsByID[threadID]
+	if !ok || !threadHasParticipant(thread, id.IdentityID) {
+		return nil, status.Error(codes.NotFound, "chat not found")
+	}
+
+	return &chatv1.UpdateChatResponse{
+		Chat: threadToChat(thread, updatedChat.OrganizationID.String(), stringToChatStatus(updatedChat.Status), updatedChat.Summary),
 	}, nil
 }
 

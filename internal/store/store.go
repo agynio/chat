@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ import (
 )
 
 const (
-	chatColumns       = "thread_id, organization_id, created_at"
+	chatColumns       = "thread_id, organization_id, created_at, status, summary"
 	pgUniqueViolation = "23505"
 )
 
@@ -27,7 +28,7 @@ func New(pool *pgxpool.Pool) *Store {
 
 func scanChat(row pgx.Row) (Chat, error) {
 	var chat Chat
-	if err := row.Scan(&chat.ThreadID, &chat.OrganizationID, &chat.CreatedAt); err != nil {
+	if err := row.Scan(&chat.ThreadID, &chat.OrganizationID, &chat.CreatedAt, &chat.Status, &chat.Summary); err != nil {
 		return Chat{}, err
 	}
 	return chat, nil
@@ -52,14 +53,71 @@ func (s *Store) CreateChat(ctx context.Context, threadID, organizationID uuid.UU
 	return chat, nil
 }
 
-func (s *Store) ListChats(ctx context.Context, organizationID uuid.UUID, pageSize int32, cursor *PageCursor) (ChatListResult, error) {
+func (s *Store) GetChat(ctx context.Context, threadID uuid.UUID) (Chat, error) {
+	row := s.pool.QueryRow(ctx,
+		fmt.Sprintf("SELECT %s FROM chats WHERE thread_id = $1", chatColumns),
+		threadID,
+	)
+	chat, err := scanChat(row)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return Chat{}, NotFound("chat")
+		}
+		return Chat{}, err
+	}
+	return chat, nil
+}
+
+func (s *Store) UpdateChat(ctx context.Context, threadID uuid.UUID, params UpdateChatParams) (Chat, error) {
+	setClauses := make([]string, 0, 2)
+	args := make([]any, 0, 3)
+
+	if params.Status != nil {
+		args = append(args, *params.Status)
+		setClauses = append(setClauses, fmt.Sprintf("status = $%d", len(args)))
+	}
+	if params.ClearSummary {
+		setClauses = append(setClauses, "summary = NULL")
+	} else if params.Summary != nil {
+		args = append(args, *params.Summary)
+		setClauses = append(setClauses, fmt.Sprintf("summary = $%d", len(args)))
+	}
+
+	if len(setClauses) == 0 {
+		return s.GetChat(ctx, threadID)
+	}
+
+	args = append(args, threadID)
+	query := fmt.Sprintf("UPDATE chats SET %s WHERE thread_id = $%d RETURNING %s", strings.Join(setClauses, ", "), len(args), chatColumns)
+	row := s.pool.QueryRow(ctx, query, args...)
+	chat, err := scanChat(row)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return Chat{}, NotFound("chat")
+		}
+		return Chat{}, err
+	}
+	return chat, nil
+}
+
+func (s *Store) ListChats(ctx context.Context, organizationID uuid.UUID, filter ChatListFilter, pageSize int32, cursor *PageCursor) (ChatListResult, error) {
 	limit := NormalizePageSize(pageSize)
 	query := fmt.Sprintf("SELECT %s FROM chats WHERE organization_id = $1", chatColumns)
 	args := []any{organizationID}
+	if filter.Status != nil {
+		args = append(args, *filter.Status)
+		query += fmt.Sprintf(" AND status = $%d", len(args))
+	}
 
 	var cursorCreatedAt time.Time
 	if cursor != nil {
-		if err := s.pool.QueryRow(ctx, `SELECT created_at FROM chats WHERE thread_id = $1 AND organization_id = $2`, cursor.AfterID, organizationID).Scan(&cursorCreatedAt); err != nil {
+		cursorQuery := `SELECT created_at FROM chats WHERE thread_id = $1 AND organization_id = $2`
+		cursorArgs := []any{cursor.AfterID, organizationID}
+		if filter.Status != nil {
+			cursorArgs = append(cursorArgs, *filter.Status)
+			cursorQuery += fmt.Sprintf(" AND status = $%d", len(cursorArgs))
+		}
+		if err := s.pool.QueryRow(ctx, cursorQuery, cursorArgs...).Scan(&cursorCreatedAt); err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return ChatListResult{}, InvalidPageToken(fmt.Errorf("cursor not found"))
 			}

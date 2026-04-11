@@ -78,15 +78,15 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 	if err != nil {
 		log.Printf("chat: store thread %s for org %s failed (returning thread only): %v", threadID, organizationID, err)
 	}
-	status := chatv1.ChatStatus_CHAT_STATUS_OPEN
+	chatStatus := chatv1.ChatStatus_CHAT_STATUS_OPEN
 	var summary *string
 	if err == nil {
-		status = stringToChatStatus(storedChat.Status)
+		chatStatus = stringToChatStatus(storedChat.Status)
 		summary = storedChat.Summary
 	}
 
 	return &chatv1.CreateChatResponse{
-		Chat: threadToChat(resp.GetThread(), organizationID.String(), status, summary),
+		Chat: threadToChat(resp.GetThread(), organizationID.String(), chatStatus, summary),
 	}, nil
 }
 
@@ -192,11 +192,6 @@ func (s *Server) UpdateChat(ctx context.Context, req *chatv1.UpdateChatRequest) 
 		}
 	}
 
-	updatedChat, err := s.store.UpdateChat(ctx, threadID, params)
-	if err != nil {
-		return nil, toStatusError(err)
-	}
-
 	threadsByID, err := s.fetchThreads(ctx, id.IdentityID, []uuid.UUID{threadID})
 	if err != nil {
 		return nil, mapThreadsError(err)
@@ -204,6 +199,11 @@ func (s *Server) UpdateChat(ctx context.Context, req *chatv1.UpdateChatRequest) 
 	thread, ok := threadsByID[threadID]
 	if !ok || !threadHasParticipant(thread, id.IdentityID) {
 		return nil, status.Error(codes.NotFound, "chat not found")
+	}
+
+	updatedChat, err := s.store.UpdateChat(ctx, threadID, params)
+	if err != nil {
+		return nil, toStatusError(err)
 	}
 
 	return &chatv1.UpdateChatResponse{

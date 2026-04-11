@@ -710,13 +710,30 @@ func TestUpdateChatUpdatesSummary(t *testing.T) {
 func TestUpdateChatNotFound(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
 	threadID := uuid.New()
+	createdAt := time.Date(2024, 7, 3, 4, 5, 6, 0, time.UTC)
 	chatStore := &mockStore{
 		updateChatFunc: func(ctx context.Context, chatID uuid.UUID, params store.UpdateChatParams) (store.Chat, error) {
 			return store.Chat{}, store.NotFound("chat")
 		},
 	}
+	threads := &mockThreadsClient{
+		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			return &threadsv1.GetThreadsResponse{
+				Threads: []*threadsv1.Thread{
+					{
+						Id: threadID.String(),
+						Participants: []*threadsv1.Participant{
+							{Id: "user-1", JoinedAt: timestamppb.New(createdAt)},
+						},
+						CreatedAt: timestamppb.New(createdAt),
+						UpdatedAt: timestamppb.New(createdAt),
+					},
+				},
+			}, nil
+		},
+	}
 
-	srv := New(&mockThreadsClient{}, chatStore)
+	srv := New(threads, chatStore)
 	_, err := srv.UpdateChat(ctx, &chatv1.UpdateChatRequest{ChatId: threadID.String(), Status: chatv1.ChatStatus_CHAT_STATUS_OPEN})
 	requireStatusCode(t, err, codes.NotFound)
 }

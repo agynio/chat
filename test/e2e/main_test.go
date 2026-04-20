@@ -24,6 +24,10 @@ type testEnv struct {
 func setupEnv(t *testing.T) *testEnv {
 	t.Helper()
 
+	if os.Getenv("CHAT_E2E_INPROCESS") == "1" {
+		return setupInProcessEnv(t)
+	}
+
 	addr := os.Getenv("CHAT_ADDRESS")
 	if addr == "" {
 		addr = "chat.platform:50051"

@@ -44,6 +44,7 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
 	}
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
 
 	organizationID, err := parseUUID(req.GetOrganizationId())
 	if err != nil {
@@ -54,17 +55,24 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 		return nil, status.Error(codes.InvalidArgument, "participant_ids must not be empty")
 	}
 
-	participantIDs := make([]string, 0, len(req.GetParticipantIds())+1)
-	participantIDs = append(participantIDs, id.IdentityID)
+	participantIDs := make([]string, 0, len(req.GetParticipantIds()))
 	for _, pid := range req.GetParticipantIds() {
 		if pid == id.IdentityID {
 			continue
 		}
 		participantIDs = append(participantIDs, pid)
 	}
+	participants := make([]*threadsv1.ParticipantIdentifier, len(participantIDs))
+	for i, pid := range participantIDs {
+		participants[i] = &threadsv1.ParticipantIdentifier{
+			Identifier: &threadsv1.ParticipantIdentifier_ParticipantId{ParticipantId: pid},
+		}
+	}
+	orgIDValue := organizationID.String()
 
-	resp, err := s.threads.CreateThread(ctx, &threadsv1.CreateThreadRequest{
-		ParticipantIds: participantIDs,
+	resp, err := s.threads.CreateThread(threadsCtx, &threadsv1.CreateThreadRequest{
+		Participants:   participants,
+		OrganizationId: &orgIDValue,
 	})
 	if err != nil {
 		return nil, mapThreadsError(err)
@@ -95,6 +103,7 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
 	}
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
 
 	organizationID, err := parseUUID(req.GetOrganizationId())
 	if err != nil {
@@ -130,7 +139,7 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 			threadIDs[i] = chat.ThreadID
 		}
 
-		threadsByID, err := s.fetchThreads(ctx, id.IdentityID, threadIDs)
+		threadsByID, err := s.fetchThreads(threadsCtx, id.IdentityID, threadIDs)
 		if err != nil {
 			return nil, mapThreadsError(err)
 		}
@@ -192,7 +201,8 @@ func (s *Server) UpdateChat(ctx context.Context, req *chatv1.UpdateChatRequest) 
 		}
 	}
 
-	threadsByID, err := s.fetchThreads(ctx, id.IdentityID, []uuid.UUID{threadID})
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
+	threadsByID, err := s.fetchThreads(threadsCtx, id.IdentityID, []uuid.UUID{threadID})
 	if err != nil {
 		return nil, mapThreadsError(err)
 	}
@@ -221,7 +231,8 @@ func (s *Server) GetMessages(ctx context.Context, req *chatv1.GetMessagesRequest
 		return nil, status.Error(codes.InvalidArgument, "chat_id is required")
 	}
 
-	msgResp, err := s.threads.GetMessages(ctx, &threadsv1.GetMessagesRequest{
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
+	msgResp, err := s.threads.GetMessages(threadsCtx, &threadsv1.GetMessagesRequest{
 		ThreadId:  req.GetChatId(),
 		PageSize:  req.GetPageSize(),
 		PageToken: req.GetPageToken(),
@@ -230,7 +241,7 @@ func (s *Server) GetMessages(ctx context.Context, req *chatv1.GetMessagesRequest
 		return nil, mapThreadsError(err)
 	}
 
-	unreadCount, err := s.countUnread(ctx, id.IdentityID, req.GetChatId())
+	unreadCount, err := s.countUnread(threadsCtx, id.IdentityID, req.GetChatId())
 	if err != nil {
 		return nil, mapThreadsError(err)
 	}
@@ -260,7 +271,8 @@ func (s *Server) SendMessage(ctx context.Context, req *chatv1.SendMessageRequest
 		return nil, status.Error(codes.InvalidArgument, "body or file_ids must be provided")
 	}
 
-	resp, err := s.threads.SendMessage(ctx, &threadsv1.SendMessageRequest{
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
+	resp, err := s.threads.SendMessage(threadsCtx, &threadsv1.SendMessageRequest{
 		ThreadId: req.GetChatId(),
 		SenderId: id.IdentityID,
 		Body:     req.GetBody(),
@@ -288,7 +300,8 @@ func (s *Server) MarkAsRead(ctx context.Context, req *chatv1.MarkAsReadRequest) 
 		return nil, status.Error(codes.InvalidArgument, "message_ids must not be empty")
 	}
 
-	resp, err := s.threads.AckMessages(ctx, &threadsv1.AckMessagesRequest{
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
+	resp, err := s.threads.AckMessages(threadsCtx, &threadsv1.AckMessagesRequest{
 		ParticipantId: id.IdentityID,
 		MessageIds:    req.GetMessageIds(),
 	})
@@ -305,12 +318,11 @@ func (s *Server) countUnread(ctx context.Context, participantID, chatID string) 
 	var count int32
 	var pageToken string
 
-	// TODO: Threads.GetUnackedMessages lacks a thread-scoped filter, so we scan
-	// all unacked messages across chats; a thread filter upstream would avoid
-	// this full scan.
+	threadID := chatID
 	for {
 		resp, err := s.threads.GetUnackedMessages(ctx, &threadsv1.GetUnackedMessagesRequest{
 			ParticipantId: participantID,
+			ThreadId:      &threadID,
 			PageSize:      unackedPageSize,
 			PageToken:     pageToken,
 		})
@@ -318,10 +330,8 @@ func (s *Server) countUnread(ctx context.Context, participantID, chatID string) 
 			return 0, err
 		}
 
-		for _, msg := range resp.GetMessages() {
-			if msg.GetThreadId() == chatID {
-				count++
-			}
+		for range resp.GetMessages() {
+			count++
 		}
 
 		if resp.GetNextPageToken() == "" {

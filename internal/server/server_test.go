@@ -20,14 +20,16 @@ import (
 )
 
 type mockThreadsClient struct {
-	createThreadFunc       func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error)
-	archiveThreadFunc      func(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error)
-	addParticipantFunc     func(ctx context.Context, req *threadsv1.AddParticipantRequest, opts ...grpc.CallOption) (*threadsv1.AddParticipantResponse, error)
-	sendMessageFunc        func(ctx context.Context, req *threadsv1.SendMessageRequest, opts ...grpc.CallOption) (*threadsv1.SendMessageResponse, error)
-	getThreadsFunc         func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error)
-	getMessagesFunc        func(ctx context.Context, req *threadsv1.GetMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetMessagesResponse, error)
-	getUnackedMessagesFunc func(ctx context.Context, req *threadsv1.GetUnackedMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessagesResponse, error)
-	ackMessagesFunc        func(ctx context.Context, req *threadsv1.AckMessagesRequest, opts ...grpc.CallOption) (*threadsv1.AckMessagesResponse, error)
+	createThreadFunc           func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error)
+	archiveThreadFunc          func(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error)
+	addParticipantFunc         func(ctx context.Context, req *threadsv1.AddParticipantRequest, opts ...grpc.CallOption) (*threadsv1.AddParticipantResponse, error)
+	sendMessageFunc            func(ctx context.Context, req *threadsv1.SendMessageRequest, opts ...grpc.CallOption) (*threadsv1.SendMessageResponse, error)
+	getThreadsFunc             func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error)
+	getOrganizationThreadsFunc func(ctx context.Context, req *threadsv1.GetOrganizationThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetOrganizationThreadsResponse, error)
+	getThreadFunc              func(ctx context.Context, req *threadsv1.GetThreadRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadResponse, error)
+	getMessagesFunc            func(ctx context.Context, req *threadsv1.GetMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetMessagesResponse, error)
+	getUnackedMessagesFunc     func(ctx context.Context, req *threadsv1.GetUnackedMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessagesResponse, error)
+	ackMessagesFunc            func(ctx context.Context, req *threadsv1.AckMessagesRequest, opts ...grpc.CallOption) (*threadsv1.AckMessagesResponse, error)
 }
 
 func (m *mockThreadsClient) CreateThread(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
@@ -63,6 +65,20 @@ func (m *mockThreadsClient) GetThreads(ctx context.Context, req *threadsv1.GetTh
 		return nil, unexpectedCall("GetThreads")
 	}
 	return m.getThreadsFunc(ctx, req, opts...)
+}
+
+func (m *mockThreadsClient) GetOrganizationThreads(ctx context.Context, req *threadsv1.GetOrganizationThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetOrganizationThreadsResponse, error) {
+	if m.getOrganizationThreadsFunc == nil {
+		return nil, unexpectedCall("GetOrganizationThreads")
+	}
+	return m.getOrganizationThreadsFunc(ctx, req, opts...)
+}
+
+func (m *mockThreadsClient) GetThread(ctx context.Context, req *threadsv1.GetThreadRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadResponse, error) {
+	if m.getThreadFunc == nil {
+		return nil, unexpectedCall("GetThread")
+	}
+	return m.getThreadFunc(ctx, req, opts...)
 }
 
 func (m *mockThreadsClient) GetMessages(ctx context.Context, req *threadsv1.GetMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetMessagesResponse, error) {
@@ -137,6 +153,20 @@ func contextWithIdentity(identityID string) context.Context {
 	return metadata.NewIncomingContext(context.Background(), md)
 }
 
+func requireOutgoingIdentity(t *testing.T, ctx context.Context, identityID, identityType string) {
+	t.Helper()
+	md, ok := metadata.FromOutgoingContext(ctx)
+	if !ok {
+		t.Fatal("expected outgoing metadata")
+	}
+	if got := md.Get(identity.MetadataKeyIdentityID); len(got) != 1 || got[0] != identityID {
+		t.Fatalf("expected outgoing identity id %q, got %v", identityID, got)
+	}
+	if got := md.Get(identity.MetadataKeyIdentityType); len(got) != 1 || got[0] != identityType {
+		t.Fatalf("expected outgoing identity type %q, got %v", identityType, got)
+	}
+}
+
 func requireStatusCode(t *testing.T, err error, code codes.Code) {
 	t.Helper()
 	if err == nil {
@@ -194,6 +224,7 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	var storedOrgID uuid.UUID
 	threads := &mockThreadsClient{
 		createThreadFunc: func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			gotRequest = req
 			return &threadsv1.CreateThreadResponse{Thread: thread}, nil
 		},
@@ -214,9 +245,28 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	if gotRequest == nil {
 		t.Fatalf("CreateThread was not called")
 	}
-	expectedParticipants := []string{"user-1", "user-2", "user-3"}
-	if !reflect.DeepEqual(gotRequest.ParticipantIds, expectedParticipants) {
-		t.Fatalf("expected participants %v, got %v", expectedParticipants, gotRequest.ParticipantIds)
+	expectedParticipants := []string{"user-2", "user-3"}
+	if len(gotRequest.GetParticipantIds()) != 0 {
+		t.Fatalf("expected participant_ids to be empty, got %v", gotRequest.GetParticipantIds())
+	}
+	if gotRequest.OrganizationId == nil {
+		t.Fatalf("expected organization_id to be set")
+	}
+	if gotRequest.GetOrganizationId() != orgID.String() {
+		t.Fatalf("expected organization id %q, got %q", orgID, gotRequest.GetOrganizationId())
+	}
+	gotParticipants := make([]string, len(gotRequest.GetParticipants()))
+	for i, participant := range gotRequest.GetParticipants() {
+		if participant == nil {
+			t.Fatalf("expected participant %d to be set", i)
+		}
+		gotParticipants[i] = participant.GetParticipantId()
+		if gotParticipants[i] == "" {
+			t.Fatalf("expected participant %d to have id", i)
+		}
+	}
+	if !reflect.DeepEqual(gotParticipants, expectedParticipants) {
+		t.Fatalf("expected participants %v, got %v", expectedParticipants, gotParticipants)
 	}
 	if resp.GetChat().GetId() != thread.GetId() {
 		t.Fatalf("expected chat id %q, got %q", thread.GetId(), resp.GetChat().GetId())
@@ -243,6 +293,19 @@ func TestCreateChatReturnsThreadWhenStoreFails(t *testing.T) {
 	var storedThreadID uuid.UUID
 	threads := &mockThreadsClient{
 		createThreadFunc: func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
+			if req.OrganizationId == nil {
+				return nil, status.Error(codes.InvalidArgument, "organization_id missing")
+			}
+			if req.GetOrganizationId() != orgID.String() {
+				return nil, status.Errorf(codes.InvalidArgument, "unexpected organization id %q", req.GetOrganizationId())
+			}
+			if len(req.GetParticipantIds()) != 0 {
+				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant_ids %v", req.GetParticipantIds())
+			}
+			if len(req.GetParticipants()) != 1 {
+				return nil, status.Errorf(codes.InvalidArgument, "unexpected participants %v", req.GetParticipants())
+			}
 			return &threadsv1.CreateThreadResponse{Thread: thread}, nil
 		},
 	}
@@ -318,6 +381,7 @@ func TestGetChatsUsesStoreAndThreads(t *testing.T) {
 
 	threads := &mockThreadsClient{
 		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			if req.GetParticipantId() != "user-1" {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant %q", req.GetParticipantId())
 			}
@@ -750,12 +814,20 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 	var gotPageTokens []string
 	threads := &mockThreadsClient{
 		getMessagesFunc: func(ctx context.Context, req *threadsv1.GetMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetMessagesResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			gotMessagesReq = req
 			return &threadsv1.GetMessagesResponse{Messages: threadsMessages, NextPageToken: "next-token"}, nil
 		},
 		getUnackedMessagesFunc: func(ctx context.Context, req *threadsv1.GetUnackedMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessagesResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			if req.GetParticipantId() != "user-1" {
 				t.Fatalf("expected participant user-1, got %q", req.GetParticipantId())
+			}
+			if req.ThreadId == nil {
+				t.Fatal("expected thread_id to be set")
+			}
+			if req.GetThreadId() != chatID {
+				t.Fatalf("expected thread id %q, got %q", chatID, req.GetThreadId())
 			}
 			if req.GetPageSize() != unackedPageSize {
 				t.Fatalf("expected page size %d, got %d", unackedPageSize, req.GetPageSize())
@@ -766,7 +838,7 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 				return &threadsv1.GetUnackedMessagesResponse{
 					Messages: []*threadsv1.Message{
 						{Id: "u1", ThreadId: chatID},
-						{Id: "u2", ThreadId: "chat-2"},
+						{Id: "u2", ThreadId: chatID},
 					},
 					NextPageToken: "page-2",
 				}, nil
@@ -774,7 +846,6 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 				return &threadsv1.GetUnackedMessagesResponse{
 					Messages: []*threadsv1.Message{
 						{Id: "u3", ThreadId: chatID},
-						{Id: "u4", ThreadId: chatID},
 					},
 				}, nil
 			default:
@@ -834,6 +905,7 @@ func TestSendMessageDelegates(t *testing.T) {
 	msgTime := time.Date(2024, 2, 3, 4, 5, 6, 0, time.UTC)
 	threads := &mockThreadsClient{
 		sendMessageFunc: func(ctx context.Context, req *threadsv1.SendMessageRequest, opts ...grpc.CallOption) (*threadsv1.SendMessageResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			if req.GetThreadId() != "chat-1" {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected thread id %q", req.GetThreadId())
 			}
@@ -886,6 +958,7 @@ func TestMarkAsReadDelegates(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
 	threads := &mockThreadsClient{
 		ackMessagesFunc: func(ctx context.Context, req *threadsv1.AckMessagesRequest, opts ...grpc.CallOption) (*threadsv1.AckMessagesResponse, error) {
+			requireOutgoingIdentity(t, ctx, "user-1", "user")
 			if req.GetParticipantId() != "user-1" {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant %q", req.GetParticipantId())
 			}

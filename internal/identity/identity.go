@@ -10,11 +10,13 @@ import (
 const (
 	MetadataKeyIdentityID   = "x-identity-id"
 	MetadataKeyIdentityType = "x-identity-type"
+	MetadataKeyWorkloadID   = "x-workload-id"
 )
 
 type Identity struct {
 	IdentityID   string
 	IdentityType string
+	WorkloadID   *string
 }
 
 func FromContext(ctx context.Context) (Identity, error) {
@@ -33,20 +35,27 @@ func FromContext(ctx context.Context) (Identity, error) {
 		return Identity{}, err
 	}
 
+	workloadID := optionalValue(md, MetadataKeyWorkloadID)
+
 	return Identity{
 		IdentityID:   identityID,
 		IdentityType: identityType,
+		WorkloadID:   workloadID,
 	}, nil
 }
 
 func AppendToOutgoingContext(ctx context.Context, identity Identity) context.Context {
-	return metadata.AppendToOutgoingContext(
+	ctx = metadata.AppendToOutgoingContext(
 		ctx,
 		MetadataKeyIdentityID,
 		identity.IdentityID,
 		MetadataKeyIdentityType,
 		identity.IdentityType,
 	)
+	if identity.WorkloadID == nil {
+		return ctx
+	}
+	return metadata.AppendToOutgoingContext(ctx, MetadataKeyWorkloadID, *identity.WorkloadID)
 }
 
 func singleValue(md metadata.MD, key string) (string, error) {
@@ -55,4 +64,13 @@ func singleValue(md metadata.MD, key string) (string, error) {
 		return "", fmt.Errorf("missing required metadata key %q", key)
 	}
 	return values[0], nil
+}
+
+func optionalValue(md metadata.MD, key string) *string {
+	values := md.Get(key)
+	if len(values) == 0 {
+		return nil
+	}
+	value := values[0]
+	return &value
 }

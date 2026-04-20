@@ -145,15 +145,18 @@ func unexpectedStoreCall(method string) error {
 	return fmt.Errorf("unexpected store %s call", method)
 }
 
-func contextWithIdentity(identityID string) context.Context {
+func contextWithIdentity(identityID string, workloadID ...string) context.Context {
 	md := metadata.New(map[string]string{
 		identity.MetadataKeyIdentityID:   identityID,
 		identity.MetadataKeyIdentityType: "user",
 	})
+	if len(workloadID) > 0 {
+		md.Set(identity.MetadataKeyWorkloadID, workloadID[0])
+	}
 	return metadata.NewIncomingContext(context.Background(), md)
 }
 
-func requireOutgoingIdentity(t *testing.T, ctx context.Context, identityID, identityType string) {
+func requireOutgoingIdentity(t *testing.T, ctx context.Context, identityID, identityType string, workloadID ...string) {
 	t.Helper()
 	md, ok := metadata.FromOutgoingContext(ctx)
 	if !ok {
@@ -164,6 +167,15 @@ func requireOutgoingIdentity(t *testing.T, ctx context.Context, identityID, iden
 	}
 	if got := md.Get(identity.MetadataKeyIdentityType); len(got) != 1 || got[0] != identityType {
 		t.Fatalf("expected outgoing identity type %q, got %v", identityType, got)
+	}
+	if len(workloadID) > 0 {
+		if got := md.Get(identity.MetadataKeyWorkloadID); len(got) != 1 || got[0] != workloadID[0] {
+			t.Fatalf("expected outgoing workload id %q, got %v", workloadID[0], got)
+		}
+		return
+	}
+	if got := md.Get(identity.MetadataKeyWorkloadID); len(got) != 0 {
+		t.Fatalf("expected no outgoing workload id, got %v", got)
 	}
 }
 
@@ -215,7 +227,7 @@ func TestCreateChatRejectsInvalidOrganizationID(t *testing.T) {
 }
 
 func TestCreateChatDeduplicatesParticipants(t *testing.T) {
-	ctx := contextWithIdentity("user-1")
+	ctx := contextWithIdentity("user-1", "workload-1")
 	orgID := uuid.New()
 	var gotRequest *threadsv1.CreateThreadRequest
 	threadID := uuid.New()
@@ -224,7 +236,7 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	var storedOrgID uuid.UUID
 	threads := &mockThreadsClient{
 		createThreadFunc: func(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
-			requireOutgoingIdentity(t, ctx, "user-1", "user")
+			requireOutgoingIdentity(t, ctx, "user-1", "user", "workload-1")
 			gotRequest = req
 			return &threadsv1.CreateThreadResponse{Thread: thread}, nil
 		},

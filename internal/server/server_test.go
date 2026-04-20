@@ -245,7 +245,7 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 	if gotRequest == nil {
 		t.Fatalf("CreateThread was not called")
 	}
-	expectedParticipants := []string{"user-1", "user-2", "user-3"}
+	expectedParticipants := []string{"user-2", "user-3"}
 	if len(gotRequest.GetParticipantIds()) != 0 {
 		t.Fatalf("expected participant_ids to be empty, got %v", gotRequest.GetParticipantIds())
 	}
@@ -303,7 +303,7 @@ func TestCreateChatReturnsThreadWhenStoreFails(t *testing.T) {
 			if len(req.GetParticipantIds()) != 0 {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant_ids %v", req.GetParticipantIds())
 			}
-			if len(req.GetParticipants()) != 2 {
+			if len(req.GetParticipants()) != 1 {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participants %v", req.GetParticipants())
 			}
 			return &threadsv1.CreateThreadResponse{Thread: thread}, nil

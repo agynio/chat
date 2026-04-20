@@ -55,8 +55,7 @@ func (s *Server) CreateChat(ctx context.Context, req *chatv1.CreateChatRequest) 
 		return nil, status.Error(codes.InvalidArgument, "participant_ids must not be empty")
 	}
 
-	participantIDs := make([]string, 0, len(req.GetParticipantIds())+1)
-	participantIDs = append(participantIDs, id.IdentityID)
+	participantIDs := make([]string, 0, len(req.GetParticipantIds()))
 	for _, pid := range req.GetParticipantIds() {
 		if pid == id.IdentityID {
 			continue

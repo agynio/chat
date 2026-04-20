@@ -39,6 +39,16 @@ func FromContext(ctx context.Context) (Identity, error) {
 	}, nil
 }
 
+func AppendToOutgoingContext(ctx context.Context, identity Identity) context.Context {
+	return metadata.AppendToOutgoingContext(
+		ctx,
+		MetadataKeyIdentityID,
+		identity.IdentityID,
+		MetadataKeyIdentityType,
+		identity.IdentityType,
+	)
+}
+
 func singleValue(md metadata.MD, key string) (string, error) {
 	values := md.Get(key)
 	if len(values) == 0 {

@@ -698,6 +698,7 @@ func TestGetChatsFillsPageAfterFiltering(t *testing.T) {
 	}
 
 	threadCalls := 0
+	unackedCountsCalls := 0
 	threads := &mockThreadsClient{
 		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
 			threadCalls++
@@ -741,6 +742,7 @@ func TestGetChatsFillsPageAfterFiltering(t *testing.T) {
 			}
 		},
 		getUnackedMessageCountsFunc: func(ctx context.Context, req *threadsv1.GetUnackedMessageCountsRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessageCountsResponse, error) {
+			unackedCountsCalls++
 			return &threadsv1.GetUnackedMessageCountsResponse{CountsByThreadId: map[string]int32{}}, nil
 		},
 	}
@@ -762,6 +764,9 @@ func TestGetChatsFillsPageAfterFiltering(t *testing.T) {
 	}
 	if listCalls != 2 {
 		t.Fatalf("expected 2 ListChats calls, got %d", listCalls)
+	}
+	if unackedCountsCalls != 1 {
+		t.Fatalf("expected 1 GetUnackedMessageCounts call, got %d", unackedCountsCalls)
 	}
 	if len(resp.GetChats()) != 2 {
 		t.Fatalf("expected 2 chats, got %d", len(resp.GetChats()))

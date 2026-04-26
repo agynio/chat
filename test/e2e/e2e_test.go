@@ -352,7 +352,7 @@ func TestMarkAsRead_MissingChatID(t *testing.T) {
 	requireStatusCode(t, err, codes.InvalidArgument)
 }
 
-func TestMarkAsRead_EmptyMessageIDs(t *testing.T) {
+func TestMarkAsRead_NoUnackedMessages(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
 	orgID := uniqueID()

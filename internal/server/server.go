@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sync"
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
 	identityv1 "github.com/agynio/chat/gen/go/agynio/api/identity/v1"
@@ -35,11 +36,23 @@ const maxThreadsPages = 10
 
 const workloadsPageSize = 100
 
+const workloadsConcurrencyLimit = 8
+
 type chatStore interface {
 	CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
 	GetChat(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
 	UpdateChat(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
 	ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+}
+
+type chatEntry struct {
+	chat   store.Chat
+	thread *threadsv1.Thread
+}
+
+type chatActivity struct {
+	status            chatv1.ChatActivityStatus
+	activeWorkloadIDs []string
 }
 
 type runnersClient interface {
@@ -136,10 +149,18 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 		statusValue := chatStatusToString(req.GetStatus())
 		filter.Status = &statusValue
 	}
-	chats := make([]*chatv1.Chat, 0, int(pageSize))
+	countsResp, err := s.threads.GetUnackedMessageCounts(threadsCtx, &threadsv1.GetUnackedMessageCountsRequest{
+		ParticipantId: id.IdentityID,
+	})
+	if err != nil {
+		return nil, mapThreadsError(err)
+	}
+	unreadCounts := countsResp.GetCountsByThreadId()
+
+	chatEntries := make([]chatEntry, 0, int(pageSize))
 	var nextCursor *store.PageCursor
-	for len(chats) < int(pageSize) {
-		remaining := pageSize - int32(len(chats))
+	for len(chatEntries) < int(pageSize) {
+		remaining := pageSize - int32(len(chatEntries))
 		result, err := s.store.ListChats(ctx, organizationID, filter, remaining, cursor)
 		if err != nil {
 			return nil, toStatusError(err)
@@ -159,38 +180,6 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 			return nil, mapThreadsError(err)
 		}
 
-		countsResp, err := s.threads.GetUnackedMessageCounts(threadsCtx, &threadsv1.GetUnackedMessageCountsRequest{
-			ParticipantId: id.IdentityID,
-		})
-		if err != nil {
-			return nil, mapThreadsError(err)
-		}
-		unreadCounts := countsResp.GetCountsByThreadId()
-
-		participantIDs := make(map[string]struct{})
-		for _, thread := range threadsByID {
-			for _, participant := range thread.GetParticipants() {
-				if participant.GetId() == "" {
-					continue
-				}
-				participantIDs[participant.GetId()] = struct{}{}
-			}
-		}
-
-		identityTypes := map[string]identityv1.IdentityType{}
-		if len(participantIDs) > 0 {
-			ids := make([]string, 0, len(participantIDs))
-			for pid := range participantIDs {
-				ids = append(ids, pid)
-			}
-			resolved, err := s.fetchIdentityTypes(threadsCtx, ids)
-			if err != nil {
-				log.Printf("chat: identity types lookup failed: %v", err)
-			} else {
-				identityTypes = resolved
-			}
-		}
-
 		for _, chat := range result.Chats {
 			thread, ok := threadsByID[chat.ThreadID]
 			if !ok {
@@ -199,21 +188,57 @@ func (s *Server) GetChats(ctx context.Context, req *chatv1.GetChatsRequest) (*ch
 			if !threadHasParticipant(thread, id.IdentityID) {
 				continue
 			}
-			activityStatus, activeWorkloadIDs := s.chatWorkloadActivity(threadsCtx, thread, identityTypes)
-			threadChat := threadToChat(thread, chat.OrganizationID.String(), stringToChatStatus(chat.Status), chat.Summary)
-			threadChat.ActivityStatus = activityStatus
-			threadChat.ActiveWorkloadIds = activeWorkloadIDs
-			if unreadCounts != nil {
-				threadChat.UnreadCount = unreadCounts[thread.GetId()]
-			}
-			chats = append(chats, threadChat)
+			chatEntries = append(chatEntries, chatEntry{chat: chat, thread: thread})
 		}
 
 		nextCursor = result.NextCursor
-		if len(chats) >= int(pageSize) || result.NextCursor == nil {
+		if len(chatEntries) >= int(pageSize) || result.NextCursor == nil {
 			break
 		}
 		cursor = result.NextCursor
+	}
+
+	participantIDs := make(map[string]struct{})
+	threadsForActivity := make([]*threadsv1.Thread, 0, len(chatEntries))
+	for _, entry := range chatEntries {
+		thread := entry.thread
+		threadsForActivity = append(threadsForActivity, thread)
+		for _, participant := range thread.GetParticipants() {
+			participantID := participant.GetId()
+			if participantID == "" {
+				continue
+			}
+			participantIDs[participantID] = struct{}{}
+		}
+	}
+
+	identityTypes := map[string]identityv1.IdentityType{}
+	if len(participantIDs) > 0 {
+		ids := make([]string, 0, len(participantIDs))
+		for pid := range participantIDs {
+			ids = append(ids, pid)
+		}
+		resolved, err := s.fetchIdentityTypes(threadsCtx, ids)
+		if err != nil {
+			log.Printf("chat: identity types lookup failed: %v", err)
+		} else {
+			identityTypes = resolved
+		}
+	}
+
+	activityByThread := s.fetchChatActivities(threadsCtx, threadsForActivity, identityTypes)
+	chats := make([]*chatv1.Chat, 0, len(chatEntries))
+	for _, entry := range chatEntries {
+		threadChat := threadToChat(entry.thread, entry.chat.OrganizationID.String(), stringToChatStatus(entry.chat.Status), entry.chat.Summary)
+		threadID := entry.thread.GetId()
+		threadChat.UnreadCount = unreadCounts[threadID]
+		activity, ok := activityByThread[threadID]
+		if !ok {
+			activity = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED}
+		}
+		threadChat.ActivityStatus = activity.status
+		threadChat.ActiveWorkloadIds = activity.activeWorkloadIDs
+		chats = append(chats, threadChat)
 	}
 
 	nextToken := ""
@@ -533,47 +558,125 @@ type workloadSummary struct {
 	activeWorkloadIDs []string
 }
 
-func (s *Server) chatWorkloadActivity(ctx context.Context, thread *threadsv1.Thread, identityTypes map[string]identityv1.IdentityType) (chatv1.ChatActivityStatus, []string) {
-	if thread.GetStatus() == threadsv1.ThreadStatus_THREAD_STATUS_DEGRADED {
-		return chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED, nil
-	}
-	agentIDs := agentParticipantIDs(thread, identityTypes)
-	if len(agentIDs) == 0 {
-		return chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED, nil
+type threadAgentPair struct {
+	threadID string
+	agentID  string
+}
+
+type workloadResult struct {
+	threadID string
+	agentID  string
+	summary  workloadSummary
+	err      error
+}
+
+type workloadAggregate struct {
+	activeWorkloadIDs []string
+	running           bool
+	pending           bool
+	hasError          bool
+}
+
+func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.Thread, identityTypes map[string]identityv1.IdentityType) map[string]chatActivity {
+	activities := make(map[string]chatActivity, len(threads))
+	if len(threads) == 0 {
+		return activities
 	}
 
-	activeWorkloadIDs := make([]string, 0)
-	running := false
-	pending := false
-	for _, agentID := range agentIDs {
-		summary, err := s.workloadSummaryForAgent(ctx, thread.GetId(), agentID)
-		if err != nil {
-			log.Printf("chat: runners workloads failed: thread_id=%s agent_id=%s err=%v", thread.GetId(), agentID, err)
+	pairs := make([]threadAgentPair, 0)
+	for _, thread := range threads {
+		threadID := thread.GetId()
+		if threadID == "" {
+			log.Printf("chat: thread missing id")
 			continue
 		}
-		activeWorkloadIDs = append(activeWorkloadIDs, summary.activeWorkloadIDs...)
-		if !summary.hasLatest {
+		if thread.GetStatus() == threadsv1.ThreadStatus_THREAD_STATUS_DEGRADED {
+			activities[threadID] = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED}
 			continue
 		}
-		switch summary.latestStatus {
+		agentIDs := agentParticipantIDs(thread, identityTypes)
+		if len(agentIDs) == 0 {
+			activities[threadID] = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED}
+			continue
+		}
+		for _, agentID := range agentIDs {
+			pairs = append(pairs, threadAgentPair{threadID: threadID, agentID: agentID})
+		}
+	}
+
+	if len(pairs) == 0 {
+		return activities
+	}
+
+	results := make(chan workloadResult, len(pairs))
+	sem := make(chan struct{}, workloadsConcurrencyLimit)
+	var wg sync.WaitGroup
+	for _, pair := range pairs {
+		wg.Add(1)
+		go func(pair threadAgentPair) {
+			defer wg.Done()
+			sem <- struct{}{}
+			summary, err := s.workloadSummaryForAgent(ctx, pair.threadID, pair.agentID)
+			<-sem
+			results <- workloadResult{threadID: pair.threadID, agentID: pair.agentID, summary: summary, err: err}
+		}(pair)
+	}
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	aggregates := make(map[string]*workloadAggregate)
+	for result := range results {
+		agg, ok := aggregates[result.threadID]
+		if !ok {
+			agg = &workloadAggregate{}
+			aggregates[result.threadID] = agg
+		}
+		if result.err != nil {
+			agg.hasError = true
+			log.Printf("chat: runners workloads failed: thread_id=%s agent_id=%s err=%v", result.threadID, result.agentID, result.err)
+			continue
+		}
+		agg.activeWorkloadIDs = append(agg.activeWorkloadIDs, result.summary.activeWorkloadIDs...)
+		if !result.summary.hasLatest {
+			continue
+		}
+		switch result.summary.latestStatus {
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING:
-			running = true
+			agg.running = true
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_FAILED:
-			pending = true
+			agg.pending = true
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPED:
 			// finished
 		}
 	}
 
-	if running {
-		return chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_RUNNING, activeWorkloadIDs
+	for _, thread := range threads {
+		threadID := thread.GetId()
+		if threadID == "" {
+			continue
+		}
+		if _, ok := activities[threadID]; ok {
+			continue
+		}
+		agg := aggregates[threadID]
+		if agg == nil || agg.hasError {
+			activities[threadID] = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED}
+			continue
+		}
+		status := chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED
+		if agg.running {
+			status = chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_RUNNING
+		} else if agg.pending {
+			status = chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_PENDING
+		}
+		activities[threadID] = chatActivity{status: status, activeWorkloadIDs: agg.activeWorkloadIDs}
 	}
-	if pending {
-		return chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_PENDING, activeWorkloadIDs
-	}
-	return chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED, activeWorkloadIDs
+
+	return activities
 }
 
 func agentParticipantIDs(thread *threadsv1.Thread, identityTypes map[string]identityv1.IdentityType) []string {

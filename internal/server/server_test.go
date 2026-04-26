@@ -1215,6 +1215,7 @@ func TestMarkAsReadValidation(t *testing.T) {
 func TestMarkAsReadDelegates(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
 	pageTokens := []string{}
+	ackRequests := [][]string{}
 	threads := &mockThreadsClient{
 		getUnackedMessagesFunc: func(ctx context.Context, req *threadsv1.GetUnackedMessagesRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessagesResponse, error) {
 			requireOutgoingIdentity(t, ctx, "user-1", "user")
@@ -1246,10 +1247,9 @@ func TestMarkAsReadDelegates(t *testing.T) {
 			if req.GetParticipantId() != "user-1" {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant %q", req.GetParticipantId())
 			}
-			if !reflect.DeepEqual(req.GetMessageIds(), []string{"msg-1", "msg-2", "msg-3"}) {
-				return nil, status.Errorf(codes.InvalidArgument, "unexpected message ids %v", req.GetMessageIds())
-			}
-			return &threadsv1.AckMessagesResponse{AckedCount: 3}, nil
+			messageIDs := append([]string(nil), req.GetMessageIds()...)
+			ackRequests = append(ackRequests, messageIDs)
+			return &threadsv1.AckMessagesResponse{AckedCount: int32(len(req.GetMessageIds()))}, nil
 		},
 	}
 
@@ -1263,6 +1263,9 @@ func TestMarkAsReadDelegates(t *testing.T) {
 	}
 	if !reflect.DeepEqual(pageTokens, []string{"", "page-2"}) {
 		t.Fatalf("unexpected page tokens %v", pageTokens)
+	}
+	if !reflect.DeepEqual(ackRequests, [][]string{{"msg-1", "msg-2"}, {"msg-3"}}) {
+		t.Fatalf("unexpected ack requests %v", ackRequests)
 	}
 }
 

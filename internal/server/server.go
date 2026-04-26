@@ -377,23 +377,13 @@ func (s *Server) MarkAsRead(ctx context.Context, req *chatv1.MarkAsReadRequest) 
 	}
 
 	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
-	messageIDs, err := s.listUnackedMessageIDs(threadsCtx, id.IdentityID, req.GetChatId())
-	if err != nil {
-		return nil, mapThreadsError(err)
-	}
-	if len(messageIDs) == 0 {
-		return &chatv1.MarkAsReadResponse{ReadCount: 0}, nil
-	}
-	resp, err := s.threads.AckMessages(threadsCtx, &threadsv1.AckMessagesRequest{
-		ParticipantId: id.IdentityID,
-		MessageIds:    messageIDs,
-	})
+	readCount, err := s.ackUnackedMessages(threadsCtx, id.IdentityID, req.GetChatId())
 	if err != nil {
 		return nil, mapThreadsError(err)
 	}
 
 	return &chatv1.MarkAsReadResponse{
-		ReadCount: resp.GetAckedCount(),
+		ReadCount: readCount,
 	}, nil
 }
 
@@ -426,8 +416,8 @@ func (s *Server) countUnread(ctx context.Context, participantID, chatID string) 
 	return count, nil
 }
 
-func (s *Server) listUnackedMessageIDs(ctx context.Context, participantID, chatID string) ([]string, error) {
-	var messageIDs []string
+func (s *Server) ackUnackedMessages(ctx context.Context, participantID, chatID string) (int32, error) {
+	var readCount int32
 	var pageToken string
 
 	threadID := chatID
@@ -439,11 +429,26 @@ func (s *Server) listUnackedMessageIDs(ctx context.Context, participantID, chatI
 			PageToken:     pageToken,
 		})
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
 
+		messageIDs := make([]string, 0, len(resp.GetMessages()))
 		for _, message := range resp.GetMessages() {
-			messageIDs = append(messageIDs, message.GetId())
+			messageID := message.GetId()
+			if messageID == "" {
+				return 0, status.Error(codes.Internal, "threads returned message without id")
+			}
+			messageIDs = append(messageIDs, messageID)
+		}
+		if len(messageIDs) > 0 {
+			ackResp, err := s.threads.AckMessages(ctx, &threadsv1.AckMessagesRequest{
+				ParticipantId: participantID,
+				MessageIds:    messageIDs,
+			})
+			if err != nil {
+				return 0, err
+			}
+			readCount += ackResp.GetAckedCount()
 		}
 
 		if resp.GetNextPageToken() == "" {
@@ -452,7 +457,7 @@ func (s *Server) listUnackedMessageIDs(ctx context.Context, participantID, chatI
 		pageToken = resp.GetNextPageToken()
 	}
 
-	return messageIDs, nil
+	return readCount, nil
 }
 
 func mapThreadsError(err error) error {

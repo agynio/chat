@@ -34,7 +34,7 @@ const threadsPageSize = 100
 
 const maxThreadsPages = 10
 
-const workloadsPageSize = 100
+const latestWorkloadPageSize = 1
 
 const workloadsConcurrencyLimit = 8
 
@@ -574,7 +574,6 @@ type workloadAggregate struct {
 	activeWorkloadIDs []string
 	running           bool
 	pending           bool
-	hasError          bool
 }
 
 func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.Thread, identityTypes map[string]identityv1.IdentityType) map[string]chatActivity {
@@ -634,7 +633,6 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 			aggregates[result.threadID] = agg
 		}
 		if result.err != nil {
-			agg.hasError = true
 			log.Printf("chat: runners workloads failed: thread_id=%s agent_id=%s err=%v", result.threadID, result.agentID, result.err)
 			continue
 		}
@@ -663,8 +661,8 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 			continue
 		}
 		agg := aggregates[threadID]
-		if agg == nil || agg.hasError {
-			activities[threadID] = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_UNSPECIFIED}
+		if agg == nil {
+			activities[threadID] = chatActivity{status: chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED}
 			continue
 		}
 		status := chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED
@@ -699,41 +697,34 @@ func agentParticipantIDs(thread *threadsv1.Thread, identityTypes map[string]iden
 
 func (s *Server) workloadSummaryForAgent(ctx context.Context, threadID, agentID string) (workloadSummary, error) {
 	summary := workloadSummary{}
-	pageToken := ""
-	for {
-		resp, err := s.runners.ListWorkloadsByThread(ctx, &runnersv1.ListWorkloadsByThreadRequest{
-			ThreadId:  threadID,
-			AgentId:   &agentID,
-			PageSize:  workloadsPageSize,
-			PageToken: pageToken,
-		})
+	resp, err := s.runners.ListWorkloadsByThread(ctx, &runnersv1.ListWorkloadsByThreadRequest{
+		ThreadId: threadID,
+		AgentId:  &agentID,
+		PageSize: latestWorkloadPageSize,
+	})
+	if err != nil {
+		return summary, err
+	}
+	workloads := resp.GetWorkloads()
+	if len(workloads) == 0 {
+		return summary, nil
+	}
+	workload := workloads[0]
+	if workload == nil {
+		return summary, fmt.Errorf("workload missing")
+	}
+	status := workload.GetStatus()
+	if err := validateWorkloadStatus(status); err != nil {
+		return summary, err
+	}
+	summary.latestStatus = status
+	summary.hasLatest = true
+	if isActiveWorkloadStatus(status) {
+		workloadID, err := workloadID(workload)
 		if err != nil {
 			return summary, err
 		}
-		for _, workload := range resp.GetWorkloads() {
-			if workload == nil {
-				return summary, fmt.Errorf("workload missing")
-			}
-			status := workload.GetStatus()
-			if err := validateWorkloadStatus(status); err != nil {
-				return summary, err
-			}
-			if !summary.hasLatest {
-				summary.latestStatus = status
-				summary.hasLatest = true
-			}
-			if isActiveWorkloadStatus(status) {
-				workloadID, err := workloadID(workload)
-				if err != nil {
-					return summary, err
-				}
-				summary.activeWorkloadIDs = append(summary.activeWorkloadIDs, workloadID)
-			}
-		}
-		if resp.GetNextPageToken() == "" {
-			break
-		}
-		pageToken = resp.GetNextPageToken()
+		summary.activeWorkloadIDs = append(summary.activeWorkloadIDs, workloadID)
 	}
 	return summary, nil
 }

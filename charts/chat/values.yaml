@@ -156,3 +156,5 @@ metrics:
 # -- Chat-specific configuration
 chat:
   threadsAddress: "threads:50051"
+  runnersAddress: "runners:50051"
+  identityAddress: "identity:50051"

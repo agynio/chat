@@ -309,12 +309,11 @@ func TestMarkAsRead(t *testing.T) {
 
 	chat := createChat(t, env, readerCtx, orgID, otherID)
 
-	msg1 := sendMessage(t, env, senderCtx, chat.GetId(), "msg1")
-	msg2 := sendMessage(t, env, senderCtx, chat.GetId(), "msg2")
+	sendMessage(t, env, senderCtx, chat.GetId(), "msg1")
+	sendMessage(t, env, senderCtx, chat.GetId(), "msg2")
 
 	resp, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{
-		ChatId:     chat.GetId(),
-		MessageIds: []string{msg1.GetId(), msg2.GetId()},
+		ChatId: chat.GetId(),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, int32(2), resp.GetReadCount())
@@ -332,19 +331,13 @@ func TestMarkAsRead_Idempotent(t *testing.T) {
 	senderCtx := ctxWithIdentity(otherID, "user")
 
 	chat := createChat(t, env, readerCtx, orgID, otherID)
-	msg := sendMessage(t, env, senderCtx, chat.GetId(), "msg")
+	sendMessage(t, env, senderCtx, chat.GetId(), "msg")
 
-	resp1, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{
-		ChatId:     chat.GetId(),
-		MessageIds: []string{msg.GetId()},
-	})
+	resp1, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{ChatId: chat.GetId()})
 	require.NoError(t, err)
 	assert.Equal(t, int32(1), resp1.GetReadCount())
 
-	resp2, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{
-		ChatId:     chat.GetId(),
-		MessageIds: []string{msg.GetId()},
-	})
+	resp2, err := env.client.MarkAsRead(readerCtx, &chatv1.MarkAsReadRequest{ChatId: chat.GetId()})
 	require.NoError(t, err)
 	assert.Equal(t, int32(0), resp2.GetReadCount())
 }
@@ -359,23 +352,23 @@ func TestMarkAsRead_MissingChatID(t *testing.T) {
 	requireStatusCode(t, err, codes.InvalidArgument)
 }
 
-func TestMarkAsRead_EmptyMessageIDs(t *testing.T) {
+func TestMarkAsRead_NoUnackedMessages(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()
+	orgID := uniqueID()
 
-	_, err := env.client.MarkAsRead(ctx, &chatv1.MarkAsReadRequest{
-		ChatId:     uniqueID(),
-		MessageIds: []string{},
-	})
-	requireStatusCode(t, err, codes.InvalidArgument)
+	chat := createChat(t, env, ctx, orgID, uniqueID())
+
+	resp, err := env.client.MarkAsRead(ctx, &chatv1.MarkAsReadRequest{ChatId: chat.GetId()})
+	require.NoError(t, err)
+	assert.Equal(t, int32(0), resp.GetReadCount())
 }
 
 func TestMarkAsRead_MissingIdentity(t *testing.T) {
 	env := setupEnv(t)
 
 	_, err := env.client.MarkAsRead(context.Background(), &chatv1.MarkAsReadRequest{
-		ChatId:     uniqueID(),
-		MessageIds: []string{uniqueID()},
+		ChatId: uniqueID(),
 	})
 	requireStatusCode(t, err, codes.Unauthenticated)
 }

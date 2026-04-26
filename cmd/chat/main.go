@@ -11,6 +11,8 @@ import (
 	"syscall"
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
+	identityv1 "github.com/agynio/chat/gen/go/agynio/api/identity/v1"
+	runnersv1 "github.com/agynio/chat/gen/go/agynio/api/runners/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
@@ -43,6 +45,18 @@ func run() error {
 	}
 	defer threadsConn.Close()
 
+	runnersConn, err := grpc.NewClient(cfg.RunnersAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return fmt.Errorf("dial runners: %w", err)
+	}
+	defer runnersConn.Close()
+
+	identityConn, err := grpc.NewClient(cfg.IdentityAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return fmt.Errorf("dial identity: %w", err)
+	}
+	defer identityConn.Close()
+
 	poolCfg, err := pgxpool.ParseConfig(cfg.DatabaseURL)
 	if err != nil {
 		return fmt.Errorf("parse database url: %w", err)
@@ -58,10 +72,12 @@ func run() error {
 	}
 
 	threadsClient := threadsv1.NewThreadsServiceClient(threadsConn)
+	runnersClient := runnersv1.NewRunnersServiceClient(runnersConn)
+	identityClient := identityv1.NewIdentityServiceClient(identityConn)
 	chatStore := store.New(pool)
 
 	grpcServer := grpc.NewServer()
-	chatv1.RegisterChatServiceServer(grpcServer, server.New(threadsClient, chatStore))
+	chatv1.RegisterChatServiceServer(grpcServer, server.New(threadsClient, runnersClient, identityClient, chatStore))
 
 	lis, err := net.Listen("tcp", cfg.GRPCAddress)
 	if err != nil {

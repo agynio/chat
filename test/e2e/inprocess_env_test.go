@@ -11,6 +11,8 @@ import (
 	"time"
 
 	chatv1 "github.com/agynio/chat/gen/go/agynio/api/chat/v1"
+	identityv1 "github.com/agynio/chat/gen/go/agynio/api/identity/v1"
+	runnersv1 "github.com/agynio/chat/gen/go/agynio/api/runners/v1"
 	threadsv1 "github.com/agynio/chat/gen/go/agynio/api/threads/v1"
 	"github.com/agynio/chat/internal/server"
 	"github.com/agynio/chat/internal/store"
@@ -27,9 +29,11 @@ func setupInProcessEnv(t *testing.T) *testEnv {
 	t.Helper()
 
 	threads := newInMemoryThreads()
+	runners := newInMemoryRunners()
+	identity := newInMemoryIdentity()
 	chatStore := newInMemoryStore()
 	grpcServer := grpc.NewServer()
-	chatv1.RegisterChatServiceServer(grpcServer, server.New(threads, chatStore))
+	chatv1.RegisterChatServiceServer(grpcServer, server.New(threads, runners, identity, chatStore))
 
 	lis, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -172,6 +176,36 @@ func newInMemoryThreads() *inMemoryThreads {
 	return &inMemoryThreads{threads: make(map[string]*threadState)}
 }
 
+type inMemoryRunners struct{}
+
+func newInMemoryRunners() *inMemoryRunners {
+	return &inMemoryRunners{}
+}
+
+func (r *inMemoryRunners) ListWorkloadsByThread(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+	return &runnersv1.ListWorkloadsByThreadResponse{}, nil
+}
+
+type inMemoryIdentity struct{}
+
+func newInMemoryIdentity() *inMemoryIdentity {
+	return &inMemoryIdentity{}
+}
+
+func (i *inMemoryIdentity) BatchGetIdentityTypes(ctx context.Context, req *identityv1.BatchGetIdentityTypesRequest, opts ...grpc.CallOption) (*identityv1.BatchGetIdentityTypesResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+	entries := make([]*identityv1.IdentityTypeEntry, 0, len(req.GetIdentityIds()))
+	for _, identityID := range req.GetIdentityIds() {
+		entries = append(entries, &identityv1.IdentityTypeEntry{IdentityId: identityID, IdentityType: identityv1.IdentityType_IDENTITY_TYPE_USER})
+	}
+	return &identityv1.BatchGetIdentityTypesResponse{Entries: entries}, nil
+}
+
 func (t *inMemoryThreads) CreateThread(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
 	callerID, err := outgoingIdentityID(ctx)
 	if err != nil {
@@ -231,6 +265,29 @@ func (t *inMemoryThreads) ArchiveThread(ctx context.Context, req *threadsv1.Arch
 		return nil, err
 	}
 	return nil, status.Error(codes.Unimplemented, "ArchiveThread not implemented")
+}
+
+func (t *inMemoryThreads) DegradeThread(ctx context.Context, req *threadsv1.DegradeThreadRequest, opts ...grpc.CallOption) (*threadsv1.DegradeThreadResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+
+	threadID := req.GetThreadId()
+	if threadID == "" {
+		return nil, status.Error(codes.InvalidArgument, "thread_id is required")
+	}
+
+	t.mu.Lock()
+	state, ok := t.threads[threadID]
+	if ok {
+		state.thread.Status = threadsv1.ThreadStatus_THREAD_STATUS_DEGRADED
+	}
+	t.mu.Unlock()
+
+	if !ok {
+		return nil, status.Error(codes.NotFound, "thread not found")
+	}
+	return &threadsv1.DegradeThreadResponse{Thread: state.thread}, nil
 }
 
 func (t *inMemoryThreads) AddParticipant(ctx context.Context, req *threadsv1.AddParticipantRequest, opts ...grpc.CallOption) (*threadsv1.AddParticipantResponse, error) {
@@ -305,6 +362,13 @@ func (t *inMemoryThreads) GetThreads(ctx context.Context, req *threadsv1.GetThre
 	pageSize := int(req.GetPageSize())
 	items, nextToken := paginateSlice(items, start, pageSize)
 	return &threadsv1.GetThreadsResponse{Threads: items, NextPageToken: nextToken}, nil
+}
+
+func (t *inMemoryThreads) ListOrganizationThreads(ctx context.Context, req *threadsv1.ListOrganizationThreadsRequest, opts ...grpc.CallOption) (*threadsv1.ListOrganizationThreadsResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+	return nil, status.Error(codes.Unimplemented, "ListOrganizationThreads not implemented")
 }
 
 func (t *inMemoryThreads) GetOrganizationThreads(ctx context.Context, req *threadsv1.GetOrganizationThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetOrganizationThreadsResponse, error) {
@@ -399,6 +463,39 @@ func (t *inMemoryThreads) GetUnackedMessages(ctx context.Context, req *threadsv1
 	pageSize := int(req.GetPageSize())
 	items, nextToken := paginateSlice(items, start, pageSize)
 	return &threadsv1.GetUnackedMessagesResponse{Messages: items, NextPageToken: nextToken}, nil
+}
+
+func (t *inMemoryThreads) GetUnackedMessageCounts(ctx context.Context, req *threadsv1.GetUnackedMessageCountsRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessageCountsResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+
+	participantID := req.GetParticipantId()
+	if participantID == "" {
+		return nil, status.Error(codes.InvalidArgument, "participant_id is required")
+	}
+
+	counts := make(map[string]int32)
+	t.mu.Lock()
+	for _, state := range t.threads {
+		if !threadHasParticipant(state.thread, participantID) {
+			continue
+		}
+		var count int32
+		ackedByParticipant := state.acked[participantID]
+		for _, msg := range state.messages {
+			if ackedByParticipant != nil && ackedByParticipant[msg.GetId()] {
+				continue
+			}
+			count++
+		}
+		if count > 0 {
+			counts[state.thread.GetId()] = count
+		}
+	}
+	t.mu.Unlock()
+
+	return &threadsv1.GetUnackedMessageCountsResponse{CountsByThreadId: counts}, nil
 }
 
 func (t *inMemoryThreads) AckMessages(ctx context.Context, req *threadsv1.AckMessagesRequest, opts ...grpc.CallOption) (*threadsv1.AckMessagesResponse, error) {

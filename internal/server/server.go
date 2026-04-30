@@ -559,6 +559,7 @@ func threadHasParticipant(thread *threadsv1.Thread, participantID string) bool {
 
 type workloadSummary struct {
 	latestStatus      runnersv1.WorkloadStatus
+	latestAgentState  runnersv1.WorkloadAgentState
 	hasLatest         bool
 	activeWorkloadIDs []string
 }
@@ -647,7 +648,9 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 		}
 		switch result.summary.latestStatus {
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING:
-			agg.running = true
+			if result.summary.latestAgentState == runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING {
+				agg.running = true
+			}
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_FAILED:
@@ -722,7 +725,12 @@ func (s *Server) workloadSummaryForAgent(ctx context.Context, threadID, agentID 
 	if err := validateWorkloadStatus(status); err != nil {
 		return summary, err
 	}
+	agentState, err := normalizeWorkloadAgentState(workload.GetAgentState())
+	if err != nil {
+		return summary, err
+	}
 	summary.latestStatus = status
+	summary.latestAgentState = agentState
 	summary.hasLatest = true
 	if isActiveWorkloadStatus(status) {
 		workloadID, err := workloadID(workload)
@@ -744,6 +752,20 @@ func validateWorkloadStatus(status runnersv1.WorkloadStatus) error {
 		return nil
 	default:
 		return fmt.Errorf("unsupported workload status %s", status)
+	}
+}
+
+func normalizeWorkloadAgentState(state runnersv1.WorkloadAgentState) (runnersv1.WorkloadAgentState, error) {
+	switch state {
+	case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE:
+		return state, nil
+	case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED:
+		// Backward-compatible behavior: older Runners versions do not set agent_state.
+		// Treat it as PROCESSING so status=RUNNING continues to surface as Running.
+		return runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING, nil
+	default:
+		return runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED, fmt.Errorf("unsupported workload agent state %s", state)
 	}
 }
 

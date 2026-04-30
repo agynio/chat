@@ -559,6 +559,7 @@ func threadHasParticipant(thread *threadsv1.Thread, participantID string) bool {
 
 type workloadSummary struct {
 	latestStatus      runnersv1.WorkloadStatus
+	latestAgentState  runnersv1.WorkloadAgentState
 	hasLatest         bool
 	activeWorkloadIDs []string
 }
@@ -647,7 +648,12 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 		}
 		switch result.summary.latestStatus {
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING:
-			agg.running = true
+			switch result.summary.latestAgentState {
+			case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING:
+				agg.running = true
+			case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE:
+				// finished
+			}
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_FAILED:
@@ -722,7 +728,15 @@ func (s *Server) workloadSummaryForAgent(ctx context.Context, threadID, agentID 
 	if err := validateWorkloadStatus(status); err != nil {
 		return summary, err
 	}
+	agentState := workload.GetAgentState()
+	if err := validateWorkloadAgentState(agentState); err != nil {
+		return summary, err
+	}
+	if status == runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING && agentState == runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED {
+		return summary, fmt.Errorf("workload agent state required for running status")
+	}
 	summary.latestStatus = status
+	summary.latestAgentState = agentState
 	summary.hasLatest = true
 	if isActiveWorkloadStatus(status) {
 		workloadID, err := workloadID(workload)
@@ -744,6 +758,17 @@ func validateWorkloadStatus(status runnersv1.WorkloadStatus) error {
 		return nil
 	default:
 		return fmt.Errorf("unsupported workload status %s", status)
+	}
+}
+
+func validateWorkloadAgentState(state runnersv1.WorkloadAgentState) error {
+	switch state {
+	case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE:
+		return nil
+	default:
+		return fmt.Errorf("unsupported workload agent state %s", state)
 	}
 }
 

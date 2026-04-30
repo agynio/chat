@@ -129,10 +129,12 @@ type WorkloadStatus int32
 const (
 	WorkloadStatus_WORKLOAD_STATUS_UNSPECIFIED WorkloadStatus = 0
 	WorkloadStatus_WORKLOAD_STATUS_STARTING    WorkloadStatus = 1
-	WorkloadStatus_WORKLOAD_STATUS_RUNNING     WorkloadStatus = 2
-	WorkloadStatus_WORKLOAD_STATUS_STOPPING    WorkloadStatus = 3
-	WorkloadStatus_WORKLOAD_STATUS_STOPPED     WorkloadStatus = 4
-	WorkloadStatus_WORKLOAD_STATUS_FAILED      WorkloadStatus = 5
+	// Container is up and healthy. This does not imply the agent is actively
+	// processing; see Workload.agent_state.
+	WorkloadStatus_WORKLOAD_STATUS_RUNNING  WorkloadStatus = 2
+	WorkloadStatus_WORKLOAD_STATUS_STOPPING WorkloadStatus = 3
+	WorkloadStatus_WORKLOAD_STATUS_STOPPED  WorkloadStatus = 4
+	WorkloadStatus_WORKLOAD_STATUS_FAILED   WorkloadStatus = 5
 )
 
 // Enum value maps for WorkloadStatus.
@@ -182,6 +184,55 @@ func (WorkloadStatus) EnumDescriptor() ([]byte, []int) {
 	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{2}
 }
 
+type WorkloadAgentState int32
+
+const (
+	WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED WorkloadAgentState = 0
+	WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING  WorkloadAgentState = 1
+	WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE        WorkloadAgentState = 2
+)
+
+// Enum value maps for WorkloadAgentState.
+var (
+	WorkloadAgentState_name = map[int32]string{
+		0: "WORKLOAD_AGENT_STATE_UNSPECIFIED",
+		1: "WORKLOAD_AGENT_STATE_PROCESSING",
+		2: "WORKLOAD_AGENT_STATE_IDLE",
+	}
+	WorkloadAgentState_value = map[string]int32{
+		"WORKLOAD_AGENT_STATE_UNSPECIFIED": 0,
+		"WORKLOAD_AGENT_STATE_PROCESSING":  1,
+		"WORKLOAD_AGENT_STATE_IDLE":        2,
+	}
+)
+
+func (x WorkloadAgentState) Enum() *WorkloadAgentState {
+	p := new(WorkloadAgentState)
+	*p = x
+	return p
+}
+
+func (x WorkloadAgentState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (WorkloadAgentState) Descriptor() protoreflect.EnumDescriptor {
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[3].Descriptor()
+}
+
+func (WorkloadAgentState) Type() protoreflect.EnumType {
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[3]
+}
+
+func (x WorkloadAgentState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use WorkloadAgentState.Descriptor instead.
+func (WorkloadAgentState) EnumDescriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
+}
+
 type WorkloadFailureReason int32
 
 const (
@@ -224,11 +275,11 @@ func (x WorkloadFailureReason) String() string {
 }
 
 func (WorkloadFailureReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[3].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[4].Descriptor()
 }
 
 func (WorkloadFailureReason) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[3]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[4]
 }
 
 func (x WorkloadFailureReason) Number() protoreflect.EnumNumber {
@@ -237,7 +288,7 @@ func (x WorkloadFailureReason) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WorkloadFailureReason.Descriptor instead.
 func (WorkloadFailureReason) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
 }
 
 type ContainerRole int32
@@ -276,11 +327,11 @@ func (x ContainerRole) String() string {
 }
 
 func (ContainerRole) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[4].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[5].Descriptor()
 }
 
 func (ContainerRole) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[4]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[5]
 }
 
 func (x ContainerRole) Number() protoreflect.EnumNumber {
@@ -289,7 +340,7 @@ func (x ContainerRole) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ContainerRole.Descriptor instead.
 func (ContainerRole) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
 }
 
 type ContainerStatus int32
@@ -328,11 +379,11 @@ func (x ContainerStatus) String() string {
 }
 
 func (ContainerStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[5].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[6].Descriptor()
 }
 
 func (ContainerStatus) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[5]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[6]
 }
 
 func (x ContainerStatus) Number() protoreflect.EnumNumber {
@@ -341,7 +392,7 @@ func (x ContainerStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ContainerStatus.Descriptor instead.
 func (ContainerStatus) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
 }
 
 type ListWorkloadsSortField int32
@@ -386,11 +437,11 @@ func (x ListWorkloadsSortField) String() string {
 }
 
 func (ListWorkloadsSortField) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[6].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[7].Descriptor()
 }
 
 func (ListWorkloadsSortField) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[6]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[7]
 }
 
 func (x ListWorkloadsSortField) Number() protoreflect.EnumNumber {
@@ -399,7 +450,7 @@ func (x ListWorkloadsSortField) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ListWorkloadsSortField.Descriptor instead.
 func (ListWorkloadsSortField) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
 }
 
 type VolumeStatus int32
@@ -444,11 +495,11 @@ func (x VolumeStatus) String() string {
 }
 
 func (VolumeStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[7].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[8].Descriptor()
 }
 
 func (VolumeStatus) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[7]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[8]
 }
 
 func (x VolumeStatus) Number() protoreflect.EnumNumber {
@@ -457,7 +508,7 @@ func (x VolumeStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VolumeStatus.Descriptor instead.
 func (VolumeStatus) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
 }
 
 type AttachmentKind int32
@@ -496,11 +547,11 @@ func (x AttachmentKind) String() string {
 }
 
 func (AttachmentKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[8].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[9].Descriptor()
 }
 
 func (AttachmentKind) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[8]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[9]
 }
 
 func (x AttachmentKind) Number() protoreflect.EnumNumber {
@@ -509,7 +560,7 @@ func (x AttachmentKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AttachmentKind.Descriptor instead.
 func (AttachmentKind) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
 }
 
 type VolumeAttachmentFilterKind int32
@@ -551,11 +602,11 @@ func (x VolumeAttachmentFilterKind) String() string {
 }
 
 func (VolumeAttachmentFilterKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[9].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[10].Descriptor()
 }
 
 func (VolumeAttachmentFilterKind) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[9]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[10]
 }
 
 func (x VolumeAttachmentFilterKind) Number() protoreflect.EnumNumber {
@@ -564,7 +615,7 @@ func (x VolumeAttachmentFilterKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VolumeAttachmentFilterKind.Descriptor instead.
 func (VolumeAttachmentFilterKind) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
 }
 
 type ListVolumesSortField int32
@@ -606,11 +657,11 @@ func (x ListVolumesSortField) String() string {
 }
 
 func (ListVolumesSortField) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[10].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[11].Descriptor()
 }
 
 func (ListVolumesSortField) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[10]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[11]
 }
 
 func (x ListVolumesSortField) Number() protoreflect.EnumNumber {
@@ -619,7 +670,7 @@ func (x ListVolumesSortField) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ListVolumesSortField.Descriptor instead.
 func (ListVolumesSortField) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{11}
 }
 
 type EntityMeta struct {
@@ -1695,7 +1746,8 @@ type Workload struct {
 	// Denormalized display name for agent_id.
 	AgentName string `protobuf:"bytes,17,opt,name=agent_name,json=agentName,proto3" json:"agent_name,omitempty"`
 	// Denormalized display name for runner_id.
-	RunnerName    string `protobuf:"bytes,18,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
+	RunnerName    string             `protobuf:"bytes,18,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
+	AgentState    WorkloadAgentState `protobuf:"varint,19,opt,name=agent_state,json=agentState,proto3,enum=agynio.api.runners.v1.WorkloadAgentState" json:"agent_state,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1854,6 +1906,13 @@ func (x *Workload) GetRunnerName() string {
 		return x.RunnerName
 	}
 	return ""
+}
+
+func (x *Workload) GetAgentState() WorkloadAgentState {
+	if x != nil {
+		return x.AgentState
+	}
+	return WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED
 }
 
 type CreateWorkloadRequest struct {
@@ -4170,7 +4229,7 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\n" +
 	"_exit_codeB\r\n" +
 	"\v_started_atB\x0e\n" +
-	"\f_finished_at\"\x85\b\n" +
+	"\f_finished_at\"\xd1\b\n" +
 	"\bWorkload\x125\n" +
 	"\x04meta\x18\x01 \x01(\v2!.agynio.api.runners.v1.EntityMetaR\x04meta\x12\x1b\n" +
 	"\trunner_id\x18\x02 \x01(\tR\brunnerId\x12\x1b\n" +
@@ -4196,7 +4255,9 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\n" +
 	"agent_name\x18\x11 \x01(\tR\tagentName\x12\x1f\n" +
 	"\vrunner_name\x18\x12 \x01(\tR\n" +
-	"runnerNameB\x0e\n" +
+	"runnerName\x12J\n" +
+	"\vagent_state\x18\x13 \x01(\x0e2).agynio.api.runners.v1.WorkloadAgentStateR\n" +
+	"agentStateB\x0e\n" +
 	"\f_instance_idB\x1b\n" +
 	"\x19_last_metering_sampled_atB\r\n" +
 	"\v_removed_atB\x11\n" +
@@ -4412,7 +4473,11 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x17WORKLOAD_STATUS_RUNNING\x10\x02\x12\x1c\n" +
 	"\x18WORKLOAD_STATUS_STOPPING\x10\x03\x12\x1b\n" +
 	"\x17WORKLOAD_STATUS_STOPPED\x10\x04\x12\x1a\n" +
-	"\x16WORKLOAD_STATUS_FAILED\x10\x05*\x96\x02\n" +
+	"\x16WORKLOAD_STATUS_FAILED\x10\x05*~\n" +
+	"\x12WorkloadAgentState\x12$\n" +
+	" WORKLOAD_AGENT_STATE_UNSPECIFIED\x10\x00\x12#\n" +
+	"\x1fWORKLOAD_AGENT_STATE_PROCESSING\x10\x01\x12\x1d\n" +
+	"\x19WORKLOAD_AGENT_STATE_IDLE\x10\x02*\x96\x02\n" +
 	"\x15WorkloadFailureReason\x12'\n" +
 	"#WORKLOAD_FAILURE_REASON_UNSPECIFIED\x10\x00\x12(\n" +
 	"$WORKLOAD_FAILURE_REASON_START_FAILED\x10\x01\x12-\n" +
@@ -4499,206 +4564,208 @@ func file_agynio_api_runners_v1_runners_proto_rawDescGZIP() []byte {
 	return file_agynio_api_runners_v1_runners_proto_rawDescData
 }
 
-var file_agynio_api_runners_v1_runners_proto_enumTypes = make([]protoimpl.EnumInfo, 11)
+var file_agynio_api_runners_v1_runners_proto_enumTypes = make([]protoimpl.EnumInfo, 12)
 var file_agynio_api_runners_v1_runners_proto_msgTypes = make([]protoimpl.MessageInfo, 58)
 var file_agynio_api_runners_v1_runners_proto_goTypes = []any{
 	(SortDirection)(0),                           // 0: agynio.api.runners.v1.SortDirection
 	(RunnerStatus)(0),                            // 1: agynio.api.runners.v1.RunnerStatus
 	(WorkloadStatus)(0),                          // 2: agynio.api.runners.v1.WorkloadStatus
-	(WorkloadFailureReason)(0),                   // 3: agynio.api.runners.v1.WorkloadFailureReason
-	(ContainerRole)(0),                           // 4: agynio.api.runners.v1.ContainerRole
-	(ContainerStatus)(0),                         // 5: agynio.api.runners.v1.ContainerStatus
-	(ListWorkloadsSortField)(0),                  // 6: agynio.api.runners.v1.ListWorkloadsSortField
-	(VolumeStatus)(0),                            // 7: agynio.api.runners.v1.VolumeStatus
-	(AttachmentKind)(0),                          // 8: agynio.api.runners.v1.AttachmentKind
-	(VolumeAttachmentFilterKind)(0),              // 9: agynio.api.runners.v1.VolumeAttachmentFilterKind
-	(ListVolumesSortField)(0),                    // 10: agynio.api.runners.v1.ListVolumesSortField
-	(*EntityMeta)(nil),                           // 11: agynio.api.runners.v1.EntityMeta
-	(*SampledAtEntry)(nil),                       // 12: agynio.api.runners.v1.SampledAtEntry
-	(*Runner)(nil),                               // 13: agynio.api.runners.v1.Runner
-	(*RegisterRunnerRequest)(nil),                // 14: agynio.api.runners.v1.RegisterRunnerRequest
-	(*RegisterRunnerResponse)(nil),               // 15: agynio.api.runners.v1.RegisterRunnerResponse
-	(*GetRunnerRequest)(nil),                     // 16: agynio.api.runners.v1.GetRunnerRequest
-	(*GetRunnerResponse)(nil),                    // 17: agynio.api.runners.v1.GetRunnerResponse
-	(*ListRunnersRequest)(nil),                   // 18: agynio.api.runners.v1.ListRunnersRequest
-	(*ListRunnersResponse)(nil),                  // 19: agynio.api.runners.v1.ListRunnersResponse
-	(*UpdateRunnerRequest)(nil),                  // 20: agynio.api.runners.v1.UpdateRunnerRequest
-	(*UpdateRunnerResponse)(nil),                 // 21: agynio.api.runners.v1.UpdateRunnerResponse
-	(*DeleteRunnerRequest)(nil),                  // 22: agynio.api.runners.v1.DeleteRunnerRequest
-	(*DeleteRunnerResponse)(nil),                 // 23: agynio.api.runners.v1.DeleteRunnerResponse
-	(*ValidateServiceTokenRequest)(nil),          // 24: agynio.api.runners.v1.ValidateServiceTokenRequest
-	(*ValidateServiceTokenResponse)(nil),         // 25: agynio.api.runners.v1.ValidateServiceTokenResponse
-	(*EnrollRunnerRequest)(nil),                  // 26: agynio.api.runners.v1.EnrollRunnerRequest
-	(*EnrollRunnerResponse)(nil),                 // 27: agynio.api.runners.v1.EnrollRunnerResponse
-	(*Container)(nil),                            // 28: agynio.api.runners.v1.Container
-	(*Workload)(nil),                             // 29: agynio.api.runners.v1.Workload
-	(*CreateWorkloadRequest)(nil),                // 30: agynio.api.runners.v1.CreateWorkloadRequest
-	(*CreateWorkloadResponse)(nil),               // 31: agynio.api.runners.v1.CreateWorkloadResponse
-	(*UpdateWorkloadRequest)(nil),                // 32: agynio.api.runners.v1.UpdateWorkloadRequest
-	(*UpdateWorkloadResponse)(nil),               // 33: agynio.api.runners.v1.UpdateWorkloadResponse
-	(*UpdateWorkloadStatusRequest)(nil),          // 34: agynio.api.runners.v1.UpdateWorkloadStatusRequest
-	(*UpdateWorkloadStatusResponse)(nil),         // 35: agynio.api.runners.v1.UpdateWorkloadStatusResponse
-	(*TouchWorkloadRequest)(nil),                 // 36: agynio.api.runners.v1.TouchWorkloadRequest
-	(*TouchWorkloadResponse)(nil),                // 37: agynio.api.runners.v1.TouchWorkloadResponse
-	(*DeleteWorkloadRequest)(nil),                // 38: agynio.api.runners.v1.DeleteWorkloadRequest
-	(*DeleteWorkloadResponse)(nil),               // 39: agynio.api.runners.v1.DeleteWorkloadResponse
-	(*GetWorkloadRequest)(nil),                   // 40: agynio.api.runners.v1.GetWorkloadRequest
-	(*GetWorkloadResponse)(nil),                  // 41: agynio.api.runners.v1.GetWorkloadResponse
-	(*ListWorkloadsSort)(nil),                    // 42: agynio.api.runners.v1.ListWorkloadsSort
-	(*ListWorkloadsFilter)(nil),                  // 43: agynio.api.runners.v1.ListWorkloadsFilter
-	(*ListWorkloadsByThreadRequest)(nil),         // 44: agynio.api.runners.v1.ListWorkloadsByThreadRequest
-	(*ListWorkloadsByThreadResponse)(nil),        // 45: agynio.api.runners.v1.ListWorkloadsByThreadResponse
-	(*ListWorkloadsRequest)(nil),                 // 46: agynio.api.runners.v1.ListWorkloadsRequest
-	(*ListWorkloadsResponse)(nil),                // 47: agynio.api.runners.v1.ListWorkloadsResponse
-	(*BatchUpdateWorkloadSampledAtRequest)(nil),  // 48: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
-	(*BatchUpdateWorkloadSampledAtResponse)(nil), // 49: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
-	(*Volume)(nil),                               // 50: agynio.api.runners.v1.Volume
-	(*Attachment)(nil),                           // 51: agynio.api.runners.v1.Attachment
-	(*CreateVolumeRequest)(nil),                  // 52: agynio.api.runners.v1.CreateVolumeRequest
-	(*CreateVolumeResponse)(nil),                 // 53: agynio.api.runners.v1.CreateVolumeResponse
-	(*UpdateVolumeRequest)(nil),                  // 54: agynio.api.runners.v1.UpdateVolumeRequest
-	(*UpdateVolumeResponse)(nil),                 // 55: agynio.api.runners.v1.UpdateVolumeResponse
-	(*GetVolumeRequest)(nil),                     // 56: agynio.api.runners.v1.GetVolumeRequest
-	(*GetVolumeResponse)(nil),                    // 57: agynio.api.runners.v1.GetVolumeResponse
-	(*ListVolumesSort)(nil),                      // 58: agynio.api.runners.v1.ListVolumesSort
-	(*ListVolumesFilter)(nil),                    // 59: agynio.api.runners.v1.ListVolumesFilter
-	(*ListVolumesRequest)(nil),                   // 60: agynio.api.runners.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                  // 61: agynio.api.runners.v1.ListVolumesResponse
-	(*ListVolumesByThreadRequest)(nil),           // 62: agynio.api.runners.v1.ListVolumesByThreadRequest
-	(*ListVolumesByThreadResponse)(nil),          // 63: agynio.api.runners.v1.ListVolumesByThreadResponse
-	(*BatchUpdateVolumeSampledAtRequest)(nil),    // 64: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
-	(*BatchUpdateVolumeSampledAtResponse)(nil),   // 65: agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
-	nil,                                   // 66: agynio.api.runners.v1.Runner.LabelsEntry
-	nil,                                   // 67: agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
-	nil,                                   // 68: agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
-	(*timestamppb.Timestamp)(nil),         // 69: google.protobuf.Timestamp
-	(*v1.StreamWorkloadLogsRequest)(nil),  // 70: agynio.api.runner.v1.StreamWorkloadLogsRequest
-	(*v1.StreamWorkloadLogsResponse)(nil), // 71: agynio.api.runner.v1.StreamWorkloadLogsResponse
+	(WorkloadAgentState)(0),                      // 3: agynio.api.runners.v1.WorkloadAgentState
+	(WorkloadFailureReason)(0),                   // 4: agynio.api.runners.v1.WorkloadFailureReason
+	(ContainerRole)(0),                           // 5: agynio.api.runners.v1.ContainerRole
+	(ContainerStatus)(0),                         // 6: agynio.api.runners.v1.ContainerStatus
+	(ListWorkloadsSortField)(0),                  // 7: agynio.api.runners.v1.ListWorkloadsSortField
+	(VolumeStatus)(0),                            // 8: agynio.api.runners.v1.VolumeStatus
+	(AttachmentKind)(0),                          // 9: agynio.api.runners.v1.AttachmentKind
+	(VolumeAttachmentFilterKind)(0),              // 10: agynio.api.runners.v1.VolumeAttachmentFilterKind
+	(ListVolumesSortField)(0),                    // 11: agynio.api.runners.v1.ListVolumesSortField
+	(*EntityMeta)(nil),                           // 12: agynio.api.runners.v1.EntityMeta
+	(*SampledAtEntry)(nil),                       // 13: agynio.api.runners.v1.SampledAtEntry
+	(*Runner)(nil),                               // 14: agynio.api.runners.v1.Runner
+	(*RegisterRunnerRequest)(nil),                // 15: agynio.api.runners.v1.RegisterRunnerRequest
+	(*RegisterRunnerResponse)(nil),               // 16: agynio.api.runners.v1.RegisterRunnerResponse
+	(*GetRunnerRequest)(nil),                     // 17: agynio.api.runners.v1.GetRunnerRequest
+	(*GetRunnerResponse)(nil),                    // 18: agynio.api.runners.v1.GetRunnerResponse
+	(*ListRunnersRequest)(nil),                   // 19: agynio.api.runners.v1.ListRunnersRequest
+	(*ListRunnersResponse)(nil),                  // 20: agynio.api.runners.v1.ListRunnersResponse
+	(*UpdateRunnerRequest)(nil),                  // 21: agynio.api.runners.v1.UpdateRunnerRequest
+	(*UpdateRunnerResponse)(nil),                 // 22: agynio.api.runners.v1.UpdateRunnerResponse
+	(*DeleteRunnerRequest)(nil),                  // 23: agynio.api.runners.v1.DeleteRunnerRequest
+	(*DeleteRunnerResponse)(nil),                 // 24: agynio.api.runners.v1.DeleteRunnerResponse
+	(*ValidateServiceTokenRequest)(nil),          // 25: agynio.api.runners.v1.ValidateServiceTokenRequest
+	(*ValidateServiceTokenResponse)(nil),         // 26: agynio.api.runners.v1.ValidateServiceTokenResponse
+	(*EnrollRunnerRequest)(nil),                  // 27: agynio.api.runners.v1.EnrollRunnerRequest
+	(*EnrollRunnerResponse)(nil),                 // 28: agynio.api.runners.v1.EnrollRunnerResponse
+	(*Container)(nil),                            // 29: agynio.api.runners.v1.Container
+	(*Workload)(nil),                             // 30: agynio.api.runners.v1.Workload
+	(*CreateWorkloadRequest)(nil),                // 31: agynio.api.runners.v1.CreateWorkloadRequest
+	(*CreateWorkloadResponse)(nil),               // 32: agynio.api.runners.v1.CreateWorkloadResponse
+	(*UpdateWorkloadRequest)(nil),                // 33: agynio.api.runners.v1.UpdateWorkloadRequest
+	(*UpdateWorkloadResponse)(nil),               // 34: agynio.api.runners.v1.UpdateWorkloadResponse
+	(*UpdateWorkloadStatusRequest)(nil),          // 35: agynio.api.runners.v1.UpdateWorkloadStatusRequest
+	(*UpdateWorkloadStatusResponse)(nil),         // 36: agynio.api.runners.v1.UpdateWorkloadStatusResponse
+	(*TouchWorkloadRequest)(nil),                 // 37: agynio.api.runners.v1.TouchWorkloadRequest
+	(*TouchWorkloadResponse)(nil),                // 38: agynio.api.runners.v1.TouchWorkloadResponse
+	(*DeleteWorkloadRequest)(nil),                // 39: agynio.api.runners.v1.DeleteWorkloadRequest
+	(*DeleteWorkloadResponse)(nil),               // 40: agynio.api.runners.v1.DeleteWorkloadResponse
+	(*GetWorkloadRequest)(nil),                   // 41: agynio.api.runners.v1.GetWorkloadRequest
+	(*GetWorkloadResponse)(nil),                  // 42: agynio.api.runners.v1.GetWorkloadResponse
+	(*ListWorkloadsSort)(nil),                    // 43: agynio.api.runners.v1.ListWorkloadsSort
+	(*ListWorkloadsFilter)(nil),                  // 44: agynio.api.runners.v1.ListWorkloadsFilter
+	(*ListWorkloadsByThreadRequest)(nil),         // 45: agynio.api.runners.v1.ListWorkloadsByThreadRequest
+	(*ListWorkloadsByThreadResponse)(nil),        // 46: agynio.api.runners.v1.ListWorkloadsByThreadResponse
+	(*ListWorkloadsRequest)(nil),                 // 47: agynio.api.runners.v1.ListWorkloadsRequest
+	(*ListWorkloadsResponse)(nil),                // 48: agynio.api.runners.v1.ListWorkloadsResponse
+	(*BatchUpdateWorkloadSampledAtRequest)(nil),  // 49: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
+	(*BatchUpdateWorkloadSampledAtResponse)(nil), // 50: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
+	(*Volume)(nil),                               // 51: agynio.api.runners.v1.Volume
+	(*Attachment)(nil),                           // 52: agynio.api.runners.v1.Attachment
+	(*CreateVolumeRequest)(nil),                  // 53: agynio.api.runners.v1.CreateVolumeRequest
+	(*CreateVolumeResponse)(nil),                 // 54: agynio.api.runners.v1.CreateVolumeResponse
+	(*UpdateVolumeRequest)(nil),                  // 55: agynio.api.runners.v1.UpdateVolumeRequest
+	(*UpdateVolumeResponse)(nil),                 // 56: agynio.api.runners.v1.UpdateVolumeResponse
+	(*GetVolumeRequest)(nil),                     // 57: agynio.api.runners.v1.GetVolumeRequest
+	(*GetVolumeResponse)(nil),                    // 58: agynio.api.runners.v1.GetVolumeResponse
+	(*ListVolumesSort)(nil),                      // 59: agynio.api.runners.v1.ListVolumesSort
+	(*ListVolumesFilter)(nil),                    // 60: agynio.api.runners.v1.ListVolumesFilter
+	(*ListVolumesRequest)(nil),                   // 61: agynio.api.runners.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                  // 62: agynio.api.runners.v1.ListVolumesResponse
+	(*ListVolumesByThreadRequest)(nil),           // 63: agynio.api.runners.v1.ListVolumesByThreadRequest
+	(*ListVolumesByThreadResponse)(nil),          // 64: agynio.api.runners.v1.ListVolumesByThreadResponse
+	(*BatchUpdateVolumeSampledAtRequest)(nil),    // 65: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
+	(*BatchUpdateVolumeSampledAtResponse)(nil),   // 66: agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
+	nil,                                   // 67: agynio.api.runners.v1.Runner.LabelsEntry
+	nil,                                   // 68: agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
+	nil,                                   // 69: agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
+	(*timestamppb.Timestamp)(nil),         // 70: google.protobuf.Timestamp
+	(*v1.StreamWorkloadLogsRequest)(nil),  // 71: agynio.api.runner.v1.StreamWorkloadLogsRequest
+	(*v1.StreamWorkloadLogsResponse)(nil), // 72: agynio.api.runner.v1.StreamWorkloadLogsResponse
 }
 var file_agynio_api_runners_v1_runners_proto_depIdxs = []int32{
-	69, // 0: agynio.api.runners.v1.EntityMeta.created_at:type_name -> google.protobuf.Timestamp
-	69, // 1: agynio.api.runners.v1.EntityMeta.updated_at:type_name -> google.protobuf.Timestamp
-	69, // 2: agynio.api.runners.v1.SampledAtEntry.sampled_at:type_name -> google.protobuf.Timestamp
-	11, // 3: agynio.api.runners.v1.Runner.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	70, // 0: agynio.api.runners.v1.EntityMeta.created_at:type_name -> google.protobuf.Timestamp
+	70, // 1: agynio.api.runners.v1.EntityMeta.updated_at:type_name -> google.protobuf.Timestamp
+	70, // 2: agynio.api.runners.v1.SampledAtEntry.sampled_at:type_name -> google.protobuf.Timestamp
+	12, // 3: agynio.api.runners.v1.Runner.meta:type_name -> agynio.api.runners.v1.EntityMeta
 	1,  // 4: agynio.api.runners.v1.Runner.status:type_name -> agynio.api.runners.v1.RunnerStatus
-	66, // 5: agynio.api.runners.v1.Runner.labels:type_name -> agynio.api.runners.v1.Runner.LabelsEntry
-	67, // 6: agynio.api.runners.v1.RegisterRunnerRequest.labels:type_name -> agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
-	13, // 7: agynio.api.runners.v1.RegisterRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	13, // 8: agynio.api.runners.v1.GetRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	13, // 9: agynio.api.runners.v1.ListRunnersResponse.runners:type_name -> agynio.api.runners.v1.Runner
-	68, // 10: agynio.api.runners.v1.UpdateRunnerRequest.labels:type_name -> agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
-	13, // 11: agynio.api.runners.v1.UpdateRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	13, // 12: agynio.api.runners.v1.ValidateServiceTokenResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	4,  // 13: agynio.api.runners.v1.Container.role:type_name -> agynio.api.runners.v1.ContainerRole
-	5,  // 14: agynio.api.runners.v1.Container.status:type_name -> agynio.api.runners.v1.ContainerStatus
-	69, // 15: agynio.api.runners.v1.Container.started_at:type_name -> google.protobuf.Timestamp
-	69, // 16: agynio.api.runners.v1.Container.finished_at:type_name -> google.protobuf.Timestamp
-	11, // 17: agynio.api.runners.v1.Workload.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	67, // 5: agynio.api.runners.v1.Runner.labels:type_name -> agynio.api.runners.v1.Runner.LabelsEntry
+	68, // 6: agynio.api.runners.v1.RegisterRunnerRequest.labels:type_name -> agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
+	14, // 7: agynio.api.runners.v1.RegisterRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	14, // 8: agynio.api.runners.v1.GetRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	14, // 9: agynio.api.runners.v1.ListRunnersResponse.runners:type_name -> agynio.api.runners.v1.Runner
+	69, // 10: agynio.api.runners.v1.UpdateRunnerRequest.labels:type_name -> agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
+	14, // 11: agynio.api.runners.v1.UpdateRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	14, // 12: agynio.api.runners.v1.ValidateServiceTokenResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	5,  // 13: agynio.api.runners.v1.Container.role:type_name -> agynio.api.runners.v1.ContainerRole
+	6,  // 14: agynio.api.runners.v1.Container.status:type_name -> agynio.api.runners.v1.ContainerStatus
+	70, // 15: agynio.api.runners.v1.Container.started_at:type_name -> google.protobuf.Timestamp
+	70, // 16: agynio.api.runners.v1.Container.finished_at:type_name -> google.protobuf.Timestamp
+	12, // 17: agynio.api.runners.v1.Workload.meta:type_name -> agynio.api.runners.v1.EntityMeta
 	2,  // 18: agynio.api.runners.v1.Workload.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	28, // 19: agynio.api.runners.v1.Workload.containers:type_name -> agynio.api.runners.v1.Container
-	69, // 20: agynio.api.runners.v1.Workload.last_activity_at:type_name -> google.protobuf.Timestamp
-	69, // 21: agynio.api.runners.v1.Workload.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	69, // 22: agynio.api.runners.v1.Workload.removed_at:type_name -> google.protobuf.Timestamp
-	3,  // 23: agynio.api.runners.v1.Workload.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
-	2,  // 24: agynio.api.runners.v1.CreateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	28, // 25: agynio.api.runners.v1.CreateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
-	29, // 26: agynio.api.runners.v1.CreateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	2,  // 27: agynio.api.runners.v1.UpdateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	28, // 28: agynio.api.runners.v1.UpdateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
-	69, // 29: agynio.api.runners.v1.UpdateWorkloadRequest.removed_at:type_name -> google.protobuf.Timestamp
-	69, // 30: agynio.api.runners.v1.UpdateWorkloadRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	3,  // 31: agynio.api.runners.v1.UpdateWorkloadRequest.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
-	29, // 32: agynio.api.runners.v1.UpdateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	2,  // 33: agynio.api.runners.v1.UpdateWorkloadStatusRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	28, // 34: agynio.api.runners.v1.UpdateWorkloadStatusRequest.containers:type_name -> agynio.api.runners.v1.Container
-	29, // 35: agynio.api.runners.v1.UpdateWorkloadStatusResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	29, // 36: agynio.api.runners.v1.GetWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	6,  // 37: agynio.api.runners.v1.ListWorkloadsSort.field:type_name -> agynio.api.runners.v1.ListWorkloadsSortField
-	0,  // 38: agynio.api.runners.v1.ListWorkloadsSort.direction:type_name -> agynio.api.runners.v1.SortDirection
-	2,  // 39: agynio.api.runners.v1.ListWorkloadsFilter.status_in:type_name -> agynio.api.runners.v1.WorkloadStatus
-	69, // 40: agynio.api.runners.v1.ListWorkloadsFilter.started_after:type_name -> google.protobuf.Timestamp
-	69, // 41: agynio.api.runners.v1.ListWorkloadsFilter.started_before:type_name -> google.protobuf.Timestamp
-	2,  // 42: agynio.api.runners.v1.ListWorkloadsByThreadRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
-	29, // 43: agynio.api.runners.v1.ListWorkloadsByThreadResponse.workloads:type_name -> agynio.api.runners.v1.Workload
-	2,  // 44: agynio.api.runners.v1.ListWorkloadsRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
-	43, // 45: agynio.api.runners.v1.ListWorkloadsRequest.filter:type_name -> agynio.api.runners.v1.ListWorkloadsFilter
-	42, // 46: agynio.api.runners.v1.ListWorkloadsRequest.sort:type_name -> agynio.api.runners.v1.ListWorkloadsSort
-	29, // 47: agynio.api.runners.v1.ListWorkloadsResponse.workloads:type_name -> agynio.api.runners.v1.Workload
-	12, // 48: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
-	11, // 49: agynio.api.runners.v1.Volume.meta:type_name -> agynio.api.runners.v1.EntityMeta
-	7,  // 50: agynio.api.runners.v1.Volume.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	69, // 51: agynio.api.runners.v1.Volume.removed_at:type_name -> google.protobuf.Timestamp
-	69, // 52: agynio.api.runners.v1.Volume.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	51, // 53: agynio.api.runners.v1.Volume.attachments:type_name -> agynio.api.runners.v1.Attachment
-	8,  // 54: agynio.api.runners.v1.Attachment.kind:type_name -> agynio.api.runners.v1.AttachmentKind
-	7,  // 55: agynio.api.runners.v1.CreateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	50, // 56: agynio.api.runners.v1.CreateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	7,  // 57: agynio.api.runners.v1.UpdateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	69, // 58: agynio.api.runners.v1.UpdateVolumeRequest.removed_at:type_name -> google.protobuf.Timestamp
-	69, // 59: agynio.api.runners.v1.UpdateVolumeRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	50, // 60: agynio.api.runners.v1.UpdateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	50, // 61: agynio.api.runners.v1.GetVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	10, // 62: agynio.api.runners.v1.ListVolumesSort.field:type_name -> agynio.api.runners.v1.ListVolumesSortField
-	0,  // 63: agynio.api.runners.v1.ListVolumesSort.direction:type_name -> agynio.api.runners.v1.SortDirection
-	7,  // 64: agynio.api.runners.v1.ListVolumesFilter.status_in:type_name -> agynio.api.runners.v1.VolumeStatus
-	9,  // 65: agynio.api.runners.v1.ListVolumesFilter.attached_to_kind_in:type_name -> agynio.api.runners.v1.VolumeAttachmentFilterKind
-	7,  // 66: agynio.api.runners.v1.ListVolumesRequest.statuses:type_name -> agynio.api.runners.v1.VolumeStatus
-	59, // 67: agynio.api.runners.v1.ListVolumesRequest.filter:type_name -> agynio.api.runners.v1.ListVolumesFilter
-	58, // 68: agynio.api.runners.v1.ListVolumesRequest.sort:type_name -> agynio.api.runners.v1.ListVolumesSort
-	50, // 69: agynio.api.runners.v1.ListVolumesResponse.volumes:type_name -> agynio.api.runners.v1.Volume
-	50, // 70: agynio.api.runners.v1.ListVolumesByThreadResponse.volumes:type_name -> agynio.api.runners.v1.Volume
-	12, // 71: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
-	14, // 72: agynio.api.runners.v1.RunnersService.RegisterRunner:input_type -> agynio.api.runners.v1.RegisterRunnerRequest
-	16, // 73: agynio.api.runners.v1.RunnersService.GetRunner:input_type -> agynio.api.runners.v1.GetRunnerRequest
-	18, // 74: agynio.api.runners.v1.RunnersService.ListRunners:input_type -> agynio.api.runners.v1.ListRunnersRequest
-	20, // 75: agynio.api.runners.v1.RunnersService.UpdateRunner:input_type -> agynio.api.runners.v1.UpdateRunnerRequest
-	22, // 76: agynio.api.runners.v1.RunnersService.DeleteRunner:input_type -> agynio.api.runners.v1.DeleteRunnerRequest
-	24, // 77: agynio.api.runners.v1.RunnersService.ValidateServiceToken:input_type -> agynio.api.runners.v1.ValidateServiceTokenRequest
-	26, // 78: agynio.api.runners.v1.RunnersService.EnrollRunner:input_type -> agynio.api.runners.v1.EnrollRunnerRequest
-	30, // 79: agynio.api.runners.v1.RunnersService.CreateWorkload:input_type -> agynio.api.runners.v1.CreateWorkloadRequest
-	32, // 80: agynio.api.runners.v1.RunnersService.UpdateWorkload:input_type -> agynio.api.runners.v1.UpdateWorkloadRequest
-	34, // 81: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:input_type -> agynio.api.runners.v1.UpdateWorkloadStatusRequest
-	36, // 82: agynio.api.runners.v1.RunnersService.TouchWorkload:input_type -> agynio.api.runners.v1.TouchWorkloadRequest
-	38, // 83: agynio.api.runners.v1.RunnersService.DeleteWorkload:input_type -> agynio.api.runners.v1.DeleteWorkloadRequest
-	40, // 84: agynio.api.runners.v1.RunnersService.GetWorkload:input_type -> agynio.api.runners.v1.GetWorkloadRequest
-	44, // 85: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:input_type -> agynio.api.runners.v1.ListWorkloadsByThreadRequest
-	46, // 86: agynio.api.runners.v1.RunnersService.ListWorkloads:input_type -> agynio.api.runners.v1.ListWorkloadsRequest
-	48, // 87: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
-	70, // 88: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:input_type -> agynio.api.runner.v1.StreamWorkloadLogsRequest
-	52, // 89: agynio.api.runners.v1.RunnersService.CreateVolume:input_type -> agynio.api.runners.v1.CreateVolumeRequest
-	54, // 90: agynio.api.runners.v1.RunnersService.UpdateVolume:input_type -> agynio.api.runners.v1.UpdateVolumeRequest
-	56, // 91: agynio.api.runners.v1.RunnersService.GetVolume:input_type -> agynio.api.runners.v1.GetVolumeRequest
-	60, // 92: agynio.api.runners.v1.RunnersService.ListVolumes:input_type -> agynio.api.runners.v1.ListVolumesRequest
-	62, // 93: agynio.api.runners.v1.RunnersService.ListVolumesByThread:input_type -> agynio.api.runners.v1.ListVolumesByThreadRequest
-	64, // 94: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
-	15, // 95: agynio.api.runners.v1.RunnersService.RegisterRunner:output_type -> agynio.api.runners.v1.RegisterRunnerResponse
-	17, // 96: agynio.api.runners.v1.RunnersService.GetRunner:output_type -> agynio.api.runners.v1.GetRunnerResponse
-	19, // 97: agynio.api.runners.v1.RunnersService.ListRunners:output_type -> agynio.api.runners.v1.ListRunnersResponse
-	21, // 98: agynio.api.runners.v1.RunnersService.UpdateRunner:output_type -> agynio.api.runners.v1.UpdateRunnerResponse
-	23, // 99: agynio.api.runners.v1.RunnersService.DeleteRunner:output_type -> agynio.api.runners.v1.DeleteRunnerResponse
-	25, // 100: agynio.api.runners.v1.RunnersService.ValidateServiceToken:output_type -> agynio.api.runners.v1.ValidateServiceTokenResponse
-	27, // 101: agynio.api.runners.v1.RunnersService.EnrollRunner:output_type -> agynio.api.runners.v1.EnrollRunnerResponse
-	31, // 102: agynio.api.runners.v1.RunnersService.CreateWorkload:output_type -> agynio.api.runners.v1.CreateWorkloadResponse
-	33, // 103: agynio.api.runners.v1.RunnersService.UpdateWorkload:output_type -> agynio.api.runners.v1.UpdateWorkloadResponse
-	35, // 104: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:output_type -> agynio.api.runners.v1.UpdateWorkloadStatusResponse
-	37, // 105: agynio.api.runners.v1.RunnersService.TouchWorkload:output_type -> agynio.api.runners.v1.TouchWorkloadResponse
-	39, // 106: agynio.api.runners.v1.RunnersService.DeleteWorkload:output_type -> agynio.api.runners.v1.DeleteWorkloadResponse
-	41, // 107: agynio.api.runners.v1.RunnersService.GetWorkload:output_type -> agynio.api.runners.v1.GetWorkloadResponse
-	45, // 108: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:output_type -> agynio.api.runners.v1.ListWorkloadsByThreadResponse
-	47, // 109: agynio.api.runners.v1.RunnersService.ListWorkloads:output_type -> agynio.api.runners.v1.ListWorkloadsResponse
-	49, // 110: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
-	71, // 111: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:output_type -> agynio.api.runner.v1.StreamWorkloadLogsResponse
-	53, // 112: agynio.api.runners.v1.RunnersService.CreateVolume:output_type -> agynio.api.runners.v1.CreateVolumeResponse
-	55, // 113: agynio.api.runners.v1.RunnersService.UpdateVolume:output_type -> agynio.api.runners.v1.UpdateVolumeResponse
-	57, // 114: agynio.api.runners.v1.RunnersService.GetVolume:output_type -> agynio.api.runners.v1.GetVolumeResponse
-	61, // 115: agynio.api.runners.v1.RunnersService.ListVolumes:output_type -> agynio.api.runners.v1.ListVolumesResponse
-	63, // 116: agynio.api.runners.v1.RunnersService.ListVolumesByThread:output_type -> agynio.api.runners.v1.ListVolumesByThreadResponse
-	65, // 117: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
-	95, // [95:118] is the sub-list for method output_type
-	72, // [72:95] is the sub-list for method input_type
-	72, // [72:72] is the sub-list for extension type_name
-	72, // [72:72] is the sub-list for extension extendee
-	0,  // [0:72] is the sub-list for field type_name
+	29, // 19: agynio.api.runners.v1.Workload.containers:type_name -> agynio.api.runners.v1.Container
+	70, // 20: agynio.api.runners.v1.Workload.last_activity_at:type_name -> google.protobuf.Timestamp
+	70, // 21: agynio.api.runners.v1.Workload.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	70, // 22: agynio.api.runners.v1.Workload.removed_at:type_name -> google.protobuf.Timestamp
+	4,  // 23: agynio.api.runners.v1.Workload.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
+	3,  // 24: agynio.api.runners.v1.Workload.agent_state:type_name -> agynio.api.runners.v1.WorkloadAgentState
+	2,  // 25: agynio.api.runners.v1.CreateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	29, // 26: agynio.api.runners.v1.CreateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
+	30, // 27: agynio.api.runners.v1.CreateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	2,  // 28: agynio.api.runners.v1.UpdateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	29, // 29: agynio.api.runners.v1.UpdateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
+	70, // 30: agynio.api.runners.v1.UpdateWorkloadRequest.removed_at:type_name -> google.protobuf.Timestamp
+	70, // 31: agynio.api.runners.v1.UpdateWorkloadRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	4,  // 32: agynio.api.runners.v1.UpdateWorkloadRequest.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
+	30, // 33: agynio.api.runners.v1.UpdateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	2,  // 34: agynio.api.runners.v1.UpdateWorkloadStatusRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	29, // 35: agynio.api.runners.v1.UpdateWorkloadStatusRequest.containers:type_name -> agynio.api.runners.v1.Container
+	30, // 36: agynio.api.runners.v1.UpdateWorkloadStatusResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	30, // 37: agynio.api.runners.v1.GetWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	7,  // 38: agynio.api.runners.v1.ListWorkloadsSort.field:type_name -> agynio.api.runners.v1.ListWorkloadsSortField
+	0,  // 39: agynio.api.runners.v1.ListWorkloadsSort.direction:type_name -> agynio.api.runners.v1.SortDirection
+	2,  // 40: agynio.api.runners.v1.ListWorkloadsFilter.status_in:type_name -> agynio.api.runners.v1.WorkloadStatus
+	70, // 41: agynio.api.runners.v1.ListWorkloadsFilter.started_after:type_name -> google.protobuf.Timestamp
+	70, // 42: agynio.api.runners.v1.ListWorkloadsFilter.started_before:type_name -> google.protobuf.Timestamp
+	2,  // 43: agynio.api.runners.v1.ListWorkloadsByThreadRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
+	30, // 44: agynio.api.runners.v1.ListWorkloadsByThreadResponse.workloads:type_name -> agynio.api.runners.v1.Workload
+	2,  // 45: agynio.api.runners.v1.ListWorkloadsRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
+	44, // 46: agynio.api.runners.v1.ListWorkloadsRequest.filter:type_name -> agynio.api.runners.v1.ListWorkloadsFilter
+	43, // 47: agynio.api.runners.v1.ListWorkloadsRequest.sort:type_name -> agynio.api.runners.v1.ListWorkloadsSort
+	30, // 48: agynio.api.runners.v1.ListWorkloadsResponse.workloads:type_name -> agynio.api.runners.v1.Workload
+	13, // 49: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
+	12, // 50: agynio.api.runners.v1.Volume.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	8,  // 51: agynio.api.runners.v1.Volume.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	70, // 52: agynio.api.runners.v1.Volume.removed_at:type_name -> google.protobuf.Timestamp
+	70, // 53: agynio.api.runners.v1.Volume.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	52, // 54: agynio.api.runners.v1.Volume.attachments:type_name -> agynio.api.runners.v1.Attachment
+	9,  // 55: agynio.api.runners.v1.Attachment.kind:type_name -> agynio.api.runners.v1.AttachmentKind
+	8,  // 56: agynio.api.runners.v1.CreateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	51, // 57: agynio.api.runners.v1.CreateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	8,  // 58: agynio.api.runners.v1.UpdateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	70, // 59: agynio.api.runners.v1.UpdateVolumeRequest.removed_at:type_name -> google.protobuf.Timestamp
+	70, // 60: agynio.api.runners.v1.UpdateVolumeRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	51, // 61: agynio.api.runners.v1.UpdateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	51, // 62: agynio.api.runners.v1.GetVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	11, // 63: agynio.api.runners.v1.ListVolumesSort.field:type_name -> agynio.api.runners.v1.ListVolumesSortField
+	0,  // 64: agynio.api.runners.v1.ListVolumesSort.direction:type_name -> agynio.api.runners.v1.SortDirection
+	8,  // 65: agynio.api.runners.v1.ListVolumesFilter.status_in:type_name -> agynio.api.runners.v1.VolumeStatus
+	10, // 66: agynio.api.runners.v1.ListVolumesFilter.attached_to_kind_in:type_name -> agynio.api.runners.v1.VolumeAttachmentFilterKind
+	8,  // 67: agynio.api.runners.v1.ListVolumesRequest.statuses:type_name -> agynio.api.runners.v1.VolumeStatus
+	60, // 68: agynio.api.runners.v1.ListVolumesRequest.filter:type_name -> agynio.api.runners.v1.ListVolumesFilter
+	59, // 69: agynio.api.runners.v1.ListVolumesRequest.sort:type_name -> agynio.api.runners.v1.ListVolumesSort
+	51, // 70: agynio.api.runners.v1.ListVolumesResponse.volumes:type_name -> agynio.api.runners.v1.Volume
+	51, // 71: agynio.api.runners.v1.ListVolumesByThreadResponse.volumes:type_name -> agynio.api.runners.v1.Volume
+	13, // 72: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
+	15, // 73: agynio.api.runners.v1.RunnersService.RegisterRunner:input_type -> agynio.api.runners.v1.RegisterRunnerRequest
+	17, // 74: agynio.api.runners.v1.RunnersService.GetRunner:input_type -> agynio.api.runners.v1.GetRunnerRequest
+	19, // 75: agynio.api.runners.v1.RunnersService.ListRunners:input_type -> agynio.api.runners.v1.ListRunnersRequest
+	21, // 76: agynio.api.runners.v1.RunnersService.UpdateRunner:input_type -> agynio.api.runners.v1.UpdateRunnerRequest
+	23, // 77: agynio.api.runners.v1.RunnersService.DeleteRunner:input_type -> agynio.api.runners.v1.DeleteRunnerRequest
+	25, // 78: agynio.api.runners.v1.RunnersService.ValidateServiceToken:input_type -> agynio.api.runners.v1.ValidateServiceTokenRequest
+	27, // 79: agynio.api.runners.v1.RunnersService.EnrollRunner:input_type -> agynio.api.runners.v1.EnrollRunnerRequest
+	31, // 80: agynio.api.runners.v1.RunnersService.CreateWorkload:input_type -> agynio.api.runners.v1.CreateWorkloadRequest
+	33, // 81: agynio.api.runners.v1.RunnersService.UpdateWorkload:input_type -> agynio.api.runners.v1.UpdateWorkloadRequest
+	35, // 82: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:input_type -> agynio.api.runners.v1.UpdateWorkloadStatusRequest
+	37, // 83: agynio.api.runners.v1.RunnersService.TouchWorkload:input_type -> agynio.api.runners.v1.TouchWorkloadRequest
+	39, // 84: agynio.api.runners.v1.RunnersService.DeleteWorkload:input_type -> agynio.api.runners.v1.DeleteWorkloadRequest
+	41, // 85: agynio.api.runners.v1.RunnersService.GetWorkload:input_type -> agynio.api.runners.v1.GetWorkloadRequest
+	45, // 86: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:input_type -> agynio.api.runners.v1.ListWorkloadsByThreadRequest
+	47, // 87: agynio.api.runners.v1.RunnersService.ListWorkloads:input_type -> agynio.api.runners.v1.ListWorkloadsRequest
+	49, // 88: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
+	71, // 89: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:input_type -> agynio.api.runner.v1.StreamWorkloadLogsRequest
+	53, // 90: agynio.api.runners.v1.RunnersService.CreateVolume:input_type -> agynio.api.runners.v1.CreateVolumeRequest
+	55, // 91: agynio.api.runners.v1.RunnersService.UpdateVolume:input_type -> agynio.api.runners.v1.UpdateVolumeRequest
+	57, // 92: agynio.api.runners.v1.RunnersService.GetVolume:input_type -> agynio.api.runners.v1.GetVolumeRequest
+	61, // 93: agynio.api.runners.v1.RunnersService.ListVolumes:input_type -> agynio.api.runners.v1.ListVolumesRequest
+	63, // 94: agynio.api.runners.v1.RunnersService.ListVolumesByThread:input_type -> agynio.api.runners.v1.ListVolumesByThreadRequest
+	65, // 95: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
+	16, // 96: agynio.api.runners.v1.RunnersService.RegisterRunner:output_type -> agynio.api.runners.v1.RegisterRunnerResponse
+	18, // 97: agynio.api.runners.v1.RunnersService.GetRunner:output_type -> agynio.api.runners.v1.GetRunnerResponse
+	20, // 98: agynio.api.runners.v1.RunnersService.ListRunners:output_type -> agynio.api.runners.v1.ListRunnersResponse
+	22, // 99: agynio.api.runners.v1.RunnersService.UpdateRunner:output_type -> agynio.api.runners.v1.UpdateRunnerResponse
+	24, // 100: agynio.api.runners.v1.RunnersService.DeleteRunner:output_type -> agynio.api.runners.v1.DeleteRunnerResponse
+	26, // 101: agynio.api.runners.v1.RunnersService.ValidateServiceToken:output_type -> agynio.api.runners.v1.ValidateServiceTokenResponse
+	28, // 102: agynio.api.runners.v1.RunnersService.EnrollRunner:output_type -> agynio.api.runners.v1.EnrollRunnerResponse
+	32, // 103: agynio.api.runners.v1.RunnersService.CreateWorkload:output_type -> agynio.api.runners.v1.CreateWorkloadResponse
+	34, // 104: agynio.api.runners.v1.RunnersService.UpdateWorkload:output_type -> agynio.api.runners.v1.UpdateWorkloadResponse
+	36, // 105: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:output_type -> agynio.api.runners.v1.UpdateWorkloadStatusResponse
+	38, // 106: agynio.api.runners.v1.RunnersService.TouchWorkload:output_type -> agynio.api.runners.v1.TouchWorkloadResponse
+	40, // 107: agynio.api.runners.v1.RunnersService.DeleteWorkload:output_type -> agynio.api.runners.v1.DeleteWorkloadResponse
+	42, // 108: agynio.api.runners.v1.RunnersService.GetWorkload:output_type -> agynio.api.runners.v1.GetWorkloadResponse
+	46, // 109: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:output_type -> agynio.api.runners.v1.ListWorkloadsByThreadResponse
+	48, // 110: agynio.api.runners.v1.RunnersService.ListWorkloads:output_type -> agynio.api.runners.v1.ListWorkloadsResponse
+	50, // 111: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
+	72, // 112: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:output_type -> agynio.api.runner.v1.StreamWorkloadLogsResponse
+	54, // 113: agynio.api.runners.v1.RunnersService.CreateVolume:output_type -> agynio.api.runners.v1.CreateVolumeResponse
+	56, // 114: agynio.api.runners.v1.RunnersService.UpdateVolume:output_type -> agynio.api.runners.v1.UpdateVolumeResponse
+	58, // 115: agynio.api.runners.v1.RunnersService.GetVolume:output_type -> agynio.api.runners.v1.GetVolumeResponse
+	62, // 116: agynio.api.runners.v1.RunnersService.ListVolumes:output_type -> agynio.api.runners.v1.ListVolumesResponse
+	64, // 117: agynio.api.runners.v1.RunnersService.ListVolumesByThread:output_type -> agynio.api.runners.v1.ListVolumesByThreadResponse
+	66, // 118: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
+	96, // [96:119] is the sub-list for method output_type
+	73, // [73:96] is the sub-list for method input_type
+	73, // [73:73] is the sub-list for extension type_name
+	73, // [73:73] is the sub-list for extension extendee
+	0,  // [0:73] is the sub-list for field type_name
 }
 
 func init() { file_agynio_api_runners_v1_runners_proto_init() }
@@ -4725,7 +4792,7 @@ func file_agynio_api_runners_v1_runners_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agynio_api_runners_v1_runners_proto_rawDesc), len(file_agynio_api_runners_v1_runners_proto_rawDesc)),
-			NumEnums:      11,
+			NumEnums:      12,
 			NumMessages:   58,
 			NumExtensions: 0,
 			NumServices:   1,

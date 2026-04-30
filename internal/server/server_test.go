@@ -306,9 +306,6 @@ func TestCreateChatDeduplicatesParticipants(t *testing.T) {
 		t.Fatalf("CreateThread was not called")
 	}
 	expectedParticipants := []string{"user-2", "user-3"}
-	if len(gotRequest.GetParticipantIds()) != 0 {
-		t.Fatalf("expected participant_ids to be empty, got %v", gotRequest.GetParticipantIds())
-	}
 	if gotRequest.OrganizationId == nil {
 		t.Fatalf("expected organization_id to be set")
 	}
@@ -359,9 +356,6 @@ func TestCreateChatReturnsThreadWhenStoreFails(t *testing.T) {
 			}
 			if req.GetOrganizationId() != orgID.String() {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected organization id %q", req.GetOrganizationId())
-			}
-			if len(req.GetParticipantIds()) != 0 {
-				return nil, status.Errorf(codes.InvalidArgument, "unexpected participant_ids %v", req.GetParticipantIds())
 			}
 			if len(req.GetParticipants()) != 1 {
 				return nil, status.Errorf(codes.InvalidArgument, "unexpected participants %v", req.GetParticipants())
@@ -508,9 +502,10 @@ func TestGetChatsUsesStoreAndThreads(t *testing.T) {
 							CreatedAt: timestamppb.New(createdAt),
 							UpdatedAt: timestamppb.New(createdAt),
 						},
-						ThreadId: threadID1.String(),
-						AgentId:  agentID,
-						Status:   runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+						ThreadId:   threadID1.String(),
+						AgentId:    agentID,
+						Status:     runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+						AgentState: runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING,
 					},
 				},
 			}, nil
@@ -1333,3 +1328,83 @@ func TestThreadMessageToChatMessage(t *testing.T) {
 }
 
 var _ threadsv1.ThreadsServiceClient = (*mockThreadsClient)(nil)
+
+func TestGetChatsWorkloadRunningIdleReturnsFinished(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	orgID := uuid.New()
+	threadID := uuid.New()
+	agentID := "agent-1"
+	workloadID := "workload-1"
+	createdAt := time.Date(2024, 5, 10, 11, 12, 13, 0, time.UTC)
+
+	chatStore := &mockStore{
+		listChatsFunc: func(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
+			return store.ChatListResult{
+				Chats: []store.Chat{{ThreadID: threadID, OrganizationID: orgID, CreatedAt: createdAt, Status: "open"}},
+			}, nil
+		},
+	}
+
+	threads := &mockThreadsClient{
+		getThreadsFunc: func(ctx context.Context, req *threadsv1.GetThreadsRequest, opts ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			return &threadsv1.GetThreadsResponse{
+				Threads: []*threadsv1.Thread{
+					{
+						Id: threadID.String(),
+						Participants: []*threadsv1.Participant{
+							{Id: "user-1", JoinedAt: timestamppb.New(createdAt)},
+							{Id: agentID, JoinedAt: timestamppb.New(createdAt)},
+						},
+						CreatedAt: timestamppb.New(createdAt),
+						UpdatedAt: timestamppb.New(createdAt),
+					},
+				},
+			}, nil
+		},
+		getUnackedMessageCountsFunc: func(ctx context.Context, req *threadsv1.GetUnackedMessageCountsRequest, opts ...grpc.CallOption) (*threadsv1.GetUnackedMessageCountsResponse, error) {
+			return &threadsv1.GetUnackedMessageCountsResponse{CountsByThreadId: map[string]int32{}}, nil
+		},
+	}
+
+	runners := &mockRunnersClient{
+		listWorkloadsByThreadFunc: func(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error) {
+			return &runnersv1.ListWorkloadsByThreadResponse{
+				Workloads: []*runnersv1.Workload{
+					{
+						Meta:       &runnersv1.EntityMeta{Id: workloadID, CreatedAt: timestamppb.New(createdAt), UpdatedAt: timestamppb.New(createdAt)},
+						ThreadId:   threadID.String(),
+						AgentId:    agentID,
+						Status:     runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+						AgentState: runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+					},
+				},
+			}, nil
+		},
+	}
+
+	identityClient := &mockIdentityClient{
+		batchGetIdentityTypesFunc: func(ctx context.Context, req *identityv1.BatchGetIdentityTypesRequest, opts ...grpc.CallOption) (*identityv1.BatchGetIdentityTypesResponse, error) {
+			return &identityv1.BatchGetIdentityTypesResponse{
+				Entries: []*identityv1.IdentityTypeEntry{
+					{IdentityId: "user-1", IdentityType: identityv1.IdentityType_IDENTITY_TYPE_USER},
+					{IdentityId: agentID, IdentityType: identityv1.IdentityType_IDENTITY_TYPE_AGENT},
+				},
+			}, nil
+		},
+	}
+
+	srv := New(threads, runners, identityClient, chatStore)
+	resp, err := srv.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID.String(), PageSize: 1})
+	if err != nil {
+		t.Fatalf("GetChats returned error: %v", err)
+	}
+	if len(resp.GetChats()) != 1 {
+		t.Fatalf("expected 1 chat, got %d", len(resp.GetChats()))
+	}
+	if resp.GetChats()[0].GetActivityStatus() != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED {
+		t.Fatalf("expected activity status finished, got %s", resp.GetChats()[0].GetActivityStatus())
+	}
+	if !reflect.DeepEqual(resp.GetChats()[0].GetActiveWorkloadIds(), []string{workloadID}) {
+		t.Fatalf("expected active workload ids [%s], got %v", workloadID, resp.GetChats()[0].GetActiveWorkloadIds())
+	}
+}

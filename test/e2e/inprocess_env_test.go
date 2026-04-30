@@ -49,7 +49,7 @@ func setupInProcessEnv(t *testing.T) *testEnv {
 	conn, err := grpc.NewClient(lis.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		grpcServer.Stop()
-		if closeErr := lis.Close(); closeErr != nil {
+		if closeErr := lis.Close(); closeErr != nil && !errors.Is(closeErr, net.ErrClosed) {
 			t.Fatalf("dial chat: %v (close listener: %v)", err, closeErr)
 		}
 		t.Fatalf("dial chat: %v", err)
@@ -60,7 +60,7 @@ func setupInProcessEnv(t *testing.T) *testEnv {
 			t.Fatalf("close chat connection: %v", err)
 		}
 		grpcServer.GracefulStop()
-		if err := lis.Close(); err != nil {
+		if err := lis.Close(); err != nil && !errors.Is(err, net.ErrClosed) {
 			t.Fatalf("close listener: %v", err)
 		}
 	})

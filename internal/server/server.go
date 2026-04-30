@@ -761,9 +761,7 @@ func normalizeWorkloadAgentState(state runnersv1.WorkloadAgentState) (runnersv1.
 		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE:
 		return state, nil
 	case runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED:
-		// Backward-compatible behavior: older Runners versions do not set agent_state.
-		// Treat it as PROCESSING so status=RUNNING continues to surface as Running.
-		return runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING, nil
+		return state, nil
 	default:
 		return runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED, fmt.Errorf("unsupported workload agent state %s", state)
 	}

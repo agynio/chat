@@ -43,19 +43,31 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("dial threads: %w", err)
 	}
-	defer threadsConn.Close()
+	defer func() {
+		if err := threadsConn.Close(); err != nil {
+			log.Printf("close threads connection: %v", err)
+		}
+	}()
 
 	runnersConn, err := grpc.NewClient(cfg.RunnersAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("dial runners: %w", err)
 	}
-	defer runnersConn.Close()
+	defer func() {
+		if err := runnersConn.Close(); err != nil {
+			log.Printf("close runners connection: %v", err)
+		}
+	}()
 
 	identityConn, err := grpc.NewClient(cfg.IdentityAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("dial identity: %w", err)
 	}
-	defer identityConn.Close()
+	defer func() {
+		if err := identityConn.Close(); err != nil {
+			log.Printf("close identity connection: %v", err)
+		}
+	}()
 
 	poolCfg, err := pgxpool.ParseConfig(cfg.DatabaseURL)
 	if err != nil {

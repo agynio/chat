@@ -41,7 +41,11 @@ func setupEnv(t *testing.T) *testEnv {
 		t.Fatalf("dial chat: %v", err)
 	}
 
-	t.Cleanup(func() { conn.Close() })
+	t.Cleanup(func() {
+		if err := conn.Close(); err != nil {
+			t.Fatalf("close chat connection: %v", err)
+		}
+	})
 
 	return &testEnv{
 		client: chatv1.NewChatServiceClient(conn),

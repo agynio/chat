@@ -49,14 +49,20 @@ func setupInProcessEnv(t *testing.T) *testEnv {
 	conn, err := grpc.NewClient(lis.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		grpcServer.Stop()
-		lis.Close()
+		if closeErr := lis.Close(); closeErr != nil {
+			t.Fatalf("dial chat: %v (close listener: %v)", err, closeErr)
+		}
 		t.Fatalf("dial chat: %v", err)
 	}
 
 	t.Cleanup(func() {
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			t.Fatalf("close chat connection: %v", err)
+		}
 		grpcServer.GracefulStop()
-		lis.Close()
+		if err := lis.Close(); err != nil {
+			t.Fatalf("close listener: %v", err)
+		}
 	})
 
 	return &testEnv{
@@ -227,9 +233,6 @@ func (t *inMemoryThreads) CreateThread(ctx context.Context, req *threadsv1.Creat
 	addParticipant(callerID)
 	for _, participant := range req.GetParticipants() {
 		addParticipant(participant.GetParticipantId())
-	}
-	for _, participant := range req.GetParticipantIds() {
-		addParticipant(participant)
 	}
 
 	now := time.Now().UTC()

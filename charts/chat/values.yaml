@@ -1,5 +1,5 @@
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "chat"
 
 global:
   imageRegistry: ""
@@ -69,7 +69,12 @@ containerPorts:
 
 command: []
 args: []
-env: []
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: agyn-platform-database-urls
+        key: chat
 envFrom: []
 extraEnvVars: []
 extraEnvVarsCM: ""

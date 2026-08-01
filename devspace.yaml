@@ -181,7 +181,6 @@ dev:
     namespace: ${CHAT_NAMESPACE}
     labelSelector:
       app.kubernetes.io/name: chat
-      app.kubernetes.io/instance: chat
     containers:
       chat:
         container: chat

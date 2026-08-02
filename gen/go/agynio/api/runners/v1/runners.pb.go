@@ -124,6 +124,55 @@ func (RunnerStatus) EnumDescriptor() ([]byte, []int) {
 	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{1}
 }
 
+type RuntimeOwnerKind int32
+
+const (
+	RuntimeOwnerKind_RUNTIME_OWNER_KIND_UNSPECIFIED    RuntimeOwnerKind = 0
+	RuntimeOwnerKind_RUNTIME_OWNER_KIND_AGENT_INSTANCE RuntimeOwnerKind = 1
+	RuntimeOwnerKind_RUNTIME_OWNER_KIND_SANDBOX        RuntimeOwnerKind = 2
+)
+
+// Enum value maps for RuntimeOwnerKind.
+var (
+	RuntimeOwnerKind_name = map[int32]string{
+		0: "RUNTIME_OWNER_KIND_UNSPECIFIED",
+		1: "RUNTIME_OWNER_KIND_AGENT_INSTANCE",
+		2: "RUNTIME_OWNER_KIND_SANDBOX",
+	}
+	RuntimeOwnerKind_value = map[string]int32{
+		"RUNTIME_OWNER_KIND_UNSPECIFIED":    0,
+		"RUNTIME_OWNER_KIND_AGENT_INSTANCE": 1,
+		"RUNTIME_OWNER_KIND_SANDBOX":        2,
+	}
+)
+
+func (x RuntimeOwnerKind) Enum() *RuntimeOwnerKind {
+	p := new(RuntimeOwnerKind)
+	*p = x
+	return p
+}
+
+func (x RuntimeOwnerKind) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RuntimeOwnerKind) Descriptor() protoreflect.EnumDescriptor {
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[2].Descriptor()
+}
+
+func (RuntimeOwnerKind) Type() protoreflect.EnumType {
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[2]
+}
+
+func (x RuntimeOwnerKind) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RuntimeOwnerKind.Descriptor instead.
+func (RuntimeOwnerKind) EnumDescriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{2}
+}
+
 type WorkloadStatus int32
 
 const (
@@ -168,11 +217,11 @@ func (x WorkloadStatus) String() string {
 }
 
 func (WorkloadStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[2].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[3].Descriptor()
 }
 
 func (WorkloadStatus) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[2]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[3]
 }
 
 func (x WorkloadStatus) Number() protoreflect.EnumNumber {
@@ -181,7 +230,7 @@ func (x WorkloadStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WorkloadStatus.Descriptor instead.
 func (WorkloadStatus) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{2}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
 }
 
 type WorkloadAgentState int32
@@ -217,11 +266,11 @@ func (x WorkloadAgentState) String() string {
 }
 
 func (WorkloadAgentState) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[3].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[4].Descriptor()
 }
 
 func (WorkloadAgentState) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[3]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[4]
 }
 
 func (x WorkloadAgentState) Number() protoreflect.EnumNumber {
@@ -230,7 +279,7 @@ func (x WorkloadAgentState) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WorkloadAgentState.Descriptor instead.
 func (WorkloadAgentState) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
 }
 
 type WorkloadFailureReason int32
@@ -275,11 +324,11 @@ func (x WorkloadFailureReason) String() string {
 }
 
 func (WorkloadFailureReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[4].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[5].Descriptor()
 }
 
 func (WorkloadFailureReason) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[4]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[5]
 }
 
 func (x WorkloadFailureReason) Number() protoreflect.EnumNumber {
@@ -288,7 +337,7 @@ func (x WorkloadFailureReason) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WorkloadFailureReason.Descriptor instead.
 func (WorkloadFailureReason) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
 }
 
 type ContainerRole int32
@@ -327,11 +376,11 @@ func (x ContainerRole) String() string {
 }
 
 func (ContainerRole) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[5].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[6].Descriptor()
 }
 
 func (ContainerRole) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[5]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[6]
 }
 
 func (x ContainerRole) Number() protoreflect.EnumNumber {
@@ -340,7 +389,7 @@ func (x ContainerRole) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ContainerRole.Descriptor instead.
 func (ContainerRole) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
 }
 
 type ContainerStatus int32
@@ -379,11 +428,11 @@ func (x ContainerStatus) String() string {
 }
 
 func (ContainerStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[6].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[7].Descriptor()
 }
 
 func (ContainerStatus) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[6]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[7]
 }
 
 func (x ContainerStatus) Number() protoreflect.EnumNumber {
@@ -392,7 +441,7 @@ func (x ContainerStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ContainerStatus.Descriptor instead.
 func (ContainerStatus) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
 }
 
 type ListWorkloadsSortField int32
@@ -437,11 +486,11 @@ func (x ListWorkloadsSortField) String() string {
 }
 
 func (ListWorkloadsSortField) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[7].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[8].Descriptor()
 }
 
 func (ListWorkloadsSortField) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[7]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[8]
 }
 
 func (x ListWorkloadsSortField) Number() protoreflect.EnumNumber {
@@ -450,7 +499,7 @@ func (x ListWorkloadsSortField) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ListWorkloadsSortField.Descriptor instead.
 func (ListWorkloadsSortField) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
 }
 
 type VolumeStatus int32
@@ -495,11 +544,11 @@ func (x VolumeStatus) String() string {
 }
 
 func (VolumeStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[8].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[9].Descriptor()
 }
 
 func (VolumeStatus) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[8]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[9]
 }
 
 func (x VolumeStatus) Number() protoreflect.EnumNumber {
@@ -508,7 +557,7 @@ func (x VolumeStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VolumeStatus.Descriptor instead.
 func (VolumeStatus) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
 }
 
 type AttachmentKind int32
@@ -547,11 +596,11 @@ func (x AttachmentKind) String() string {
 }
 
 func (AttachmentKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[9].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[10].Descriptor()
 }
 
 func (AttachmentKind) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[9]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[10]
 }
 
 func (x AttachmentKind) Number() protoreflect.EnumNumber {
@@ -560,7 +609,7 @@ func (x AttachmentKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AttachmentKind.Descriptor instead.
 func (AttachmentKind) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
 }
 
 type VolumeAttachmentFilterKind int32
@@ -602,11 +651,11 @@ func (x VolumeAttachmentFilterKind) String() string {
 }
 
 func (VolumeAttachmentFilterKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[10].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[11].Descriptor()
 }
 
 func (VolumeAttachmentFilterKind) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[10]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[11]
 }
 
 func (x VolumeAttachmentFilterKind) Number() protoreflect.EnumNumber {
@@ -615,7 +664,7 @@ func (x VolumeAttachmentFilterKind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VolumeAttachmentFilterKind.Descriptor instead.
 func (VolumeAttachmentFilterKind) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{11}
 }
 
 type ListVolumesSortField int32
@@ -657,11 +706,11 @@ func (x ListVolumesSortField) String() string {
 }
 
 func (ListVolumesSortField) Descriptor() protoreflect.EnumDescriptor {
-	return file_agynio_api_runners_v1_runners_proto_enumTypes[11].Descriptor()
+	return file_agynio_api_runners_v1_runners_proto_enumTypes[12].Descriptor()
 }
 
 func (ListVolumesSortField) Type() protoreflect.EnumType {
-	return &file_agynio_api_runners_v1_runners_proto_enumTypes[11]
+	return &file_agynio_api_runners_v1_runners_proto_enumTypes[12]
 }
 
 func (x ListVolumesSortField) Number() protoreflect.EnumNumber {
@@ -670,7 +719,7 @@ func (x ListVolumesSortField) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ListVolumesSortField.Descriptor instead.
 func (ListVolumesSortField) EnumDescriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{11}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{12}
 }
 
 type EntityMeta struct {
@@ -733,6 +782,74 @@ func (x *EntityMeta) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type ComputeResources struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RequestsCpu    string                 `protobuf:"bytes,1,opt,name=requests_cpu,json=requestsCpu,proto3" json:"requests_cpu,omitempty"`
+	RequestsMemory string                 `protobuf:"bytes,2,opt,name=requests_memory,json=requestsMemory,proto3" json:"requests_memory,omitempty"`
+	LimitsCpu      string                 `protobuf:"bytes,3,opt,name=limits_cpu,json=limitsCpu,proto3" json:"limits_cpu,omitempty"`
+	LimitsMemory   string                 `protobuf:"bytes,4,opt,name=limits_memory,json=limitsMemory,proto3" json:"limits_memory,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ComputeResources) Reset() {
+	*x = ComputeResources{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ComputeResources) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ComputeResources) ProtoMessage() {}
+
+func (x *ComputeResources) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ComputeResources.ProtoReflect.Descriptor instead.
+func (*ComputeResources) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ComputeResources) GetRequestsCpu() string {
+	if x != nil {
+		return x.RequestsCpu
+	}
+	return ""
+}
+
+func (x *ComputeResources) GetRequestsMemory() string {
+	if x != nil {
+		return x.RequestsMemory
+	}
+	return ""
+}
+
+func (x *ComputeResources) GetLimitsCpu() string {
+	if x != nil {
+		return x.LimitsCpu
+	}
+	return ""
+}
+
+func (x *ComputeResources) GetLimitsMemory() string {
+	if x != nil {
+		return x.LimitsMemory
+	}
+	return ""
+}
+
 type SampledAtEntry struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -743,7 +860,7 @@ type SampledAtEntry struct {
 
 func (x *SampledAtEntry) Reset() {
 	*x = SampledAtEntry{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[1]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -755,7 +872,7 @@ func (x *SampledAtEntry) String() string {
 func (*SampledAtEntry) ProtoMessage() {}
 
 func (x *SampledAtEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[1]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -768,7 +885,7 @@ func (x *SampledAtEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SampledAtEntry.ProtoReflect.Descriptor instead.
 func (*SampledAtEntry) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{1}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *SampledAtEntry) GetId() string {
@@ -803,7 +920,7 @@ type Runner struct {
 
 func (x *Runner) Reset() {
 	*x = Runner{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[2]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -815,7 +932,7 @@ func (x *Runner) String() string {
 func (*Runner) ProtoMessage() {}
 
 func (x *Runner) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[2]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -828,7 +945,7 @@ func (x *Runner) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Runner.ProtoReflect.Descriptor instead.
 func (*Runner) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{2}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Runner) GetMeta() *EntityMeta {
@@ -900,7 +1017,7 @@ type RegisterRunnerRequest struct {
 
 func (x *RegisterRunnerRequest) Reset() {
 	*x = RegisterRunnerRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[3]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -912,7 +1029,7 @@ func (x *RegisterRunnerRequest) String() string {
 func (*RegisterRunnerRequest) ProtoMessage() {}
 
 func (x *RegisterRunnerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[3]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -925,7 +1042,7 @@ func (x *RegisterRunnerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterRunnerRequest.ProtoReflect.Descriptor instead.
 func (*RegisterRunnerRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{3}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *RegisterRunnerRequest) GetName() string {
@@ -966,7 +1083,7 @@ type RegisterRunnerResponse struct {
 
 func (x *RegisterRunnerResponse) Reset() {
 	*x = RegisterRunnerResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[4]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -978,7 +1095,7 @@ func (x *RegisterRunnerResponse) String() string {
 func (*RegisterRunnerResponse) ProtoMessage() {}
 
 func (x *RegisterRunnerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[4]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -991,7 +1108,7 @@ func (x *RegisterRunnerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterRunnerResponse.ProtoReflect.Descriptor instead.
 func (*RegisterRunnerResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{4}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RegisterRunnerResponse) GetRunner() *Runner {
@@ -1017,7 +1134,7 @@ type GetRunnerRequest struct {
 
 func (x *GetRunnerRequest) Reset() {
 	*x = GetRunnerRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[5]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1029,7 +1146,7 @@ func (x *GetRunnerRequest) String() string {
 func (*GetRunnerRequest) ProtoMessage() {}
 
 func (x *GetRunnerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[5]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1042,7 +1159,7 @@ func (x *GetRunnerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRunnerRequest.ProtoReflect.Descriptor instead.
 func (*GetRunnerRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{5}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetRunnerRequest) GetId() string {
@@ -1061,7 +1178,7 @@ type GetRunnerResponse struct {
 
 func (x *GetRunnerResponse) Reset() {
 	*x = GetRunnerResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[6]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1073,7 +1190,7 @@ func (x *GetRunnerResponse) String() string {
 func (*GetRunnerResponse) ProtoMessage() {}
 
 func (x *GetRunnerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[6]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1086,7 +1203,7 @@ func (x *GetRunnerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRunnerResponse.ProtoReflect.Descriptor instead.
 func (*GetRunnerResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{6}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetRunnerResponse) GetRunner() *Runner {
@@ -1107,7 +1224,7 @@ type ListRunnersRequest struct {
 
 func (x *ListRunnersRequest) Reset() {
 	*x = ListRunnersRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[7]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1119,7 +1236,7 @@ func (x *ListRunnersRequest) String() string {
 func (*ListRunnersRequest) ProtoMessage() {}
 
 func (x *ListRunnersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[7]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1132,7 +1249,7 @@ func (x *ListRunnersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRunnersRequest.ProtoReflect.Descriptor instead.
 func (*ListRunnersRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{7}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListRunnersRequest) GetPageSize() int32 {
@@ -1166,7 +1283,7 @@ type ListRunnersResponse struct {
 
 func (x *ListRunnersResponse) Reset() {
 	*x = ListRunnersResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[8]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1178,7 +1295,7 @@ func (x *ListRunnersResponse) String() string {
 func (*ListRunnersResponse) ProtoMessage() {}
 
 func (x *ListRunnersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[8]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1191,7 +1308,7 @@ func (x *ListRunnersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRunnersResponse.ProtoReflect.Descriptor instead.
 func (*ListRunnersResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{8}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListRunnersResponse) GetRunners() []*Runner {
@@ -1222,7 +1339,7 @@ type UpdateRunnerRequest struct {
 
 func (x *UpdateRunnerRequest) Reset() {
 	*x = UpdateRunnerRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[9]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1234,7 +1351,7 @@ func (x *UpdateRunnerRequest) String() string {
 func (*UpdateRunnerRequest) ProtoMessage() {}
 
 func (x *UpdateRunnerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[9]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1247,7 +1364,7 @@ func (x *UpdateRunnerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRunnerRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRunnerRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{9}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UpdateRunnerRequest) GetId() string {
@@ -1287,7 +1404,7 @@ type UpdateRunnerResponse struct {
 
 func (x *UpdateRunnerResponse) Reset() {
 	*x = UpdateRunnerResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[10]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1299,7 +1416,7 @@ func (x *UpdateRunnerResponse) String() string {
 func (*UpdateRunnerResponse) ProtoMessage() {}
 
 func (x *UpdateRunnerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[10]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1312,7 +1429,7 @@ func (x *UpdateRunnerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRunnerResponse.ProtoReflect.Descriptor instead.
 func (*UpdateRunnerResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{10}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UpdateRunnerResponse) GetRunner() *Runner {
@@ -1331,7 +1448,7 @@ type DeleteRunnerRequest struct {
 
 func (x *DeleteRunnerRequest) Reset() {
 	*x = DeleteRunnerRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[11]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1343,7 +1460,7 @@ func (x *DeleteRunnerRequest) String() string {
 func (*DeleteRunnerRequest) ProtoMessage() {}
 
 func (x *DeleteRunnerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[11]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1356,7 +1473,7 @@ func (x *DeleteRunnerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRunnerRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRunnerRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{11}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteRunnerRequest) GetId() string {
@@ -1374,7 +1491,7 @@ type DeleteRunnerResponse struct {
 
 func (x *DeleteRunnerResponse) Reset() {
 	*x = DeleteRunnerResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[12]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1386,7 +1503,7 @@ func (x *DeleteRunnerResponse) String() string {
 func (*DeleteRunnerResponse) ProtoMessage() {}
 
 func (x *DeleteRunnerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[12]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1399,7 +1516,7 @@ func (x *DeleteRunnerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRunnerResponse.ProtoReflect.Descriptor instead.
 func (*DeleteRunnerResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{12}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{13}
 }
 
 type ValidateServiceTokenRequest struct {
@@ -1411,7 +1528,7 @@ type ValidateServiceTokenRequest struct {
 
 func (x *ValidateServiceTokenRequest) Reset() {
 	*x = ValidateServiceTokenRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[13]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1423,7 +1540,7 @@ func (x *ValidateServiceTokenRequest) String() string {
 func (*ValidateServiceTokenRequest) ProtoMessage() {}
 
 func (x *ValidateServiceTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[13]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1436,7 +1553,7 @@ func (x *ValidateServiceTokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateServiceTokenRequest.ProtoReflect.Descriptor instead.
 func (*ValidateServiceTokenRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{13}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ValidateServiceTokenRequest) GetTokenHash() string {
@@ -1455,7 +1572,7 @@ type ValidateServiceTokenResponse struct {
 
 func (x *ValidateServiceTokenResponse) Reset() {
 	*x = ValidateServiceTokenResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[14]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1467,7 +1584,7 @@ func (x *ValidateServiceTokenResponse) String() string {
 func (*ValidateServiceTokenResponse) ProtoMessage() {}
 
 func (x *ValidateServiceTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[14]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1480,7 +1597,7 @@ func (x *ValidateServiceTokenResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateServiceTokenResponse.ProtoReflect.Descriptor instead.
 func (*ValidateServiceTokenResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{14}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ValidateServiceTokenResponse) GetRunner() *Runner {
@@ -1499,7 +1616,7 @@ type EnrollRunnerRequest struct {
 
 func (x *EnrollRunnerRequest) Reset() {
 	*x = EnrollRunnerRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[15]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1511,7 +1628,7 @@ func (x *EnrollRunnerRequest) String() string {
 func (*EnrollRunnerRequest) ProtoMessage() {}
 
 func (x *EnrollRunnerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[15]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1524,7 +1641,7 @@ func (x *EnrollRunnerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnrollRunnerRequest.ProtoReflect.Descriptor instead.
 func (*EnrollRunnerRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{15}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *EnrollRunnerRequest) GetServiceToken() string {
@@ -1545,7 +1662,7 @@ type EnrollRunnerResponse struct {
 
 func (x *EnrollRunnerResponse) Reset() {
 	*x = EnrollRunnerResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[16]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1557,7 +1674,7 @@ func (x *EnrollRunnerResponse) String() string {
 func (*EnrollRunnerResponse) ProtoMessage() {}
 
 func (x *EnrollRunnerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[16]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1570,7 +1687,7 @@ func (x *EnrollRunnerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnrollRunnerResponse.ProtoReflect.Descriptor instead.
 func (*EnrollRunnerResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{16}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *EnrollRunnerResponse) GetIdentityJson() []byte {
@@ -1590,6 +1707,1119 @@ func (x *EnrollRunnerResponse) GetServiceName() string {
 func (x *EnrollRunnerResponse) GetIdentityId() string {
 	if x != nil {
 		return x.IdentityId
+	}
+	return ""
+}
+
+type Flavor struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Catalog entries have no platform identity — they are named entries in a
+	// runner's report, replaced wholesale on the next report. Unset for reported
+	// entries; retained for callers still reading it.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+	Meta           *EntityMeta       `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
+	RunnerId       string            `protobuf:"bytes,2,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	Name           string            `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Resources      *ComputeResources `protobuf:"bytes,4,opt,name=resources,proto3" json:"resources,omitempty"`
+	Default        bool              `protobuf:"varint,5,opt,name=default,proto3" json:"default,omitempty"`
+	Deprecated     bool              `protobuf:"varint,6,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	OrganizationId *string           `protobuf:"bytes,7,opt,name=organization_id,json=organizationId,proto3,oneof" json:"organization_id,omitempty"`
+	RunnerName     string            `protobuf:"bytes,8,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *Flavor) Reset() {
+	*x = Flavor{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Flavor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Flavor) ProtoMessage() {}
+
+func (x *Flavor) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Flavor.ProtoReflect.Descriptor instead.
+func (*Flavor) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{18}
+}
+
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+func (x *Flavor) GetMeta() *EntityMeta {
+	if x != nil {
+		return x.Meta
+	}
+	return nil
+}
+
+func (x *Flavor) GetRunnerId() string {
+	if x != nil {
+		return x.RunnerId
+	}
+	return ""
+}
+
+func (x *Flavor) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Flavor) GetResources() *ComputeResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *Flavor) GetDefault() bool {
+	if x != nil {
+		return x.Default
+	}
+	return false
+}
+
+func (x *Flavor) GetDeprecated() bool {
+	if x != nil {
+		return x.Deprecated
+	}
+	return false
+}
+
+func (x *Flavor) GetOrganizationId() string {
+	if x != nil && x.OrganizationId != nil {
+		return *x.OrganizationId
+	}
+	return ""
+}
+
+func (x *Flavor) GetRunnerName() string {
+	if x != nil {
+		return x.RunnerName
+	}
+	return ""
+}
+
+type CreateFlavorRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RunnerId      string                 `protobuf:"bytes,1,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Resources     *ComputeResources      `protobuf:"bytes,3,opt,name=resources,proto3" json:"resources,omitempty"`
+	Default       bool                   `protobuf:"varint,4,opt,name=default,proto3" json:"default,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateFlavorRequest) Reset() {
+	*x = CreateFlavorRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateFlavorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFlavorRequest) ProtoMessage() {}
+
+func (x *CreateFlavorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFlavorRequest.ProtoReflect.Descriptor instead.
+func (*CreateFlavorRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *CreateFlavorRequest) GetRunnerId() string {
+	if x != nil {
+		return x.RunnerId
+	}
+	return ""
+}
+
+func (x *CreateFlavorRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateFlavorRequest) GetResources() *ComputeResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *CreateFlavorRequest) GetDefault() bool {
+	if x != nil {
+		return x.Default
+	}
+	return false
+}
+
+type CreateFlavorResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Flavor        *Flavor                `protobuf:"bytes,1,opt,name=flavor,proto3" json:"flavor,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateFlavorResponse) Reset() {
+	*x = CreateFlavorResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateFlavorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFlavorResponse) ProtoMessage() {}
+
+func (x *CreateFlavorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFlavorResponse.ProtoReflect.Descriptor instead.
+func (*CreateFlavorResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CreateFlavorResponse) GetFlavor() *Flavor {
+	if x != nil {
+		return x.Flavor
+	}
+	return nil
+}
+
+type GetFlavorRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFlavorRequest) Reset() {
+	*x = GetFlavorRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFlavorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFlavorRequest) ProtoMessage() {}
+
+func (x *GetFlavorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFlavorRequest.ProtoReflect.Descriptor instead.
+func (*GetFlavorRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GetFlavorRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetFlavorResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Flavor        *Flavor                `protobuf:"bytes,1,opt,name=flavor,proto3" json:"flavor,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFlavorResponse) Reset() {
+	*x = GetFlavorResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFlavorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFlavorResponse) ProtoMessage() {}
+
+func (x *GetFlavorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFlavorResponse.ProtoReflect.Descriptor instead.
+func (*GetFlavorResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetFlavorResponse) GetFlavor() *Flavor {
+	if x != nil {
+		return x.Flavor
+	}
+	return nil
+}
+
+type UpdateFlavorRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Resources     *ComputeResources      `protobuf:"bytes,3,opt,name=resources,proto3,oneof" json:"resources,omitempty"`
+	Default       *bool                  `protobuf:"varint,4,opt,name=default,proto3,oneof" json:"default,omitempty"`
+	Deprecated    *bool                  `protobuf:"varint,5,opt,name=deprecated,proto3,oneof" json:"deprecated,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateFlavorRequest) Reset() {
+	*x = UpdateFlavorRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateFlavorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFlavorRequest) ProtoMessage() {}
+
+func (x *UpdateFlavorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFlavorRequest.ProtoReflect.Descriptor instead.
+func (*UpdateFlavorRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *UpdateFlavorRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateFlavorRequest) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *UpdateFlavorRequest) GetResources() *ComputeResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *UpdateFlavorRequest) GetDefault() bool {
+	if x != nil && x.Default != nil {
+		return *x.Default
+	}
+	return false
+}
+
+func (x *UpdateFlavorRequest) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
+	}
+	return false
+}
+
+type UpdateFlavorResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Flavor        *Flavor                `protobuf:"bytes,1,opt,name=flavor,proto3" json:"flavor,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateFlavorResponse) Reset() {
+	*x = UpdateFlavorResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateFlavorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFlavorResponse) ProtoMessage() {}
+
+func (x *UpdateFlavorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFlavorResponse.ProtoReflect.Descriptor instead.
+func (*UpdateFlavorResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *UpdateFlavorResponse) GetFlavor() *Flavor {
+	if x != nil {
+		return x.Flavor
+	}
+	return nil
+}
+
+type DeleteFlavorRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteFlavorRequest) Reset() {
+	*x = DeleteFlavorRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteFlavorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFlavorRequest) ProtoMessage() {}
+
+func (x *DeleteFlavorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFlavorRequest.ProtoReflect.Descriptor instead.
+func (*DeleteFlavorRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *DeleteFlavorRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteFlavorResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteFlavorResponse) Reset() {
+	*x = DeleteFlavorResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteFlavorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFlavorResponse) ProtoMessage() {}
+
+func (x *DeleteFlavorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFlavorResponse.ProtoReflect.Descriptor instead.
+func (*DeleteFlavorResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{26}
+}
+
+type ListFlavorsRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	PageSize          int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken         string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	RunnerId          *string                `protobuf:"bytes,3,opt,name=runner_id,json=runnerId,proto3,oneof" json:"runner_id,omitempty"`
+	OrganizationId    *string                `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3,oneof" json:"organization_id,omitempty"`
+	IncludeDeprecated *bool                  `protobuf:"varint,5,opt,name=include_deprecated,json=includeDeprecated,proto3,oneof" json:"include_deprecated,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ListFlavorsRequest) Reset() {
+	*x = ListFlavorsRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListFlavorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFlavorsRequest) ProtoMessage() {}
+
+func (x *ListFlavorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFlavorsRequest.ProtoReflect.Descriptor instead.
+func (*ListFlavorsRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *ListFlavorsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListFlavorsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListFlavorsRequest) GetRunnerId() string {
+	if x != nil && x.RunnerId != nil {
+		return *x.RunnerId
+	}
+	return ""
+}
+
+func (x *ListFlavorsRequest) GetOrganizationId() string {
+	if x != nil && x.OrganizationId != nil {
+		return *x.OrganizationId
+	}
+	return ""
+}
+
+func (x *ListFlavorsRequest) GetIncludeDeprecated() bool {
+	if x != nil && x.IncludeDeprecated != nil {
+		return *x.IncludeDeprecated
+	}
+	return false
+}
+
+type ListFlavorsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Flavors       []*Flavor              `protobuf:"bytes,1,rep,name=flavors,proto3" json:"flavors,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListFlavorsResponse) Reset() {
+	*x = ListFlavorsResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListFlavorsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFlavorsResponse) ProtoMessage() {}
+
+func (x *ListFlavorsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFlavorsResponse.ProtoReflect.Descriptor instead.
+func (*ListFlavorsResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *ListFlavorsResponse) GetFlavors() []*Flavor {
+	if x != nil {
+		return x.Flavors
+	}
+	return nil
+}
+
+func (x *ListFlavorsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+type StorageClass struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RunnerId       string                 `protobuf:"bytes,1,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Default        bool                   `protobuf:"varint,3,opt,name=default,proto3" json:"default,omitempty"`
+	Deprecated     bool                   `protobuf:"varint,4,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	OrganizationId *string                `protobuf:"bytes,5,opt,name=organization_id,json=organizationId,proto3,oneof" json:"organization_id,omitempty"`
+	RunnerName     string                 `protobuf:"bytes,6,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *StorageClass) Reset() {
+	*x = StorageClass{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StorageClass) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StorageClass) ProtoMessage() {}
+
+func (x *StorageClass) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StorageClass.ProtoReflect.Descriptor instead.
+func (*StorageClass) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *StorageClass) GetRunnerId() string {
+	if x != nil {
+		return x.RunnerId
+	}
+	return ""
+}
+
+func (x *StorageClass) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *StorageClass) GetDefault() bool {
+	if x != nil {
+		return x.Default
+	}
+	return false
+}
+
+func (x *StorageClass) GetDeprecated() bool {
+	if x != nil {
+		return x.Deprecated
+	}
+	return false
+}
+
+func (x *StorageClass) GetOrganizationId() string {
+	if x != nil && x.OrganizationId != nil {
+		return *x.OrganizationId
+	}
+	return ""
+}
+
+func (x *StorageClass) GetRunnerName() string {
+	if x != nil {
+		return x.RunnerName
+	}
+	return ""
+}
+
+// FlavorEntry and StorageClassEntry are what a runner declares in its own
+// configuration; the platform-scoped fields above are filled in on read.
+type FlavorEntry struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Resources     *ComputeResources      `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
+	Default       bool                   `protobuf:"varint,3,opt,name=default,proto3" json:"default,omitempty"`
+	Deprecated    bool                   `protobuf:"varint,4,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FlavorEntry) Reset() {
+	*x = FlavorEntry{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FlavorEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FlavorEntry) ProtoMessage() {}
+
+func (x *FlavorEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FlavorEntry.ProtoReflect.Descriptor instead.
+func (*FlavorEntry) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *FlavorEntry) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *FlavorEntry) GetResources() *ComputeResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *FlavorEntry) GetDefault() bool {
+	if x != nil {
+		return x.Default
+	}
+	return false
+}
+
+func (x *FlavorEntry) GetDeprecated() bool {
+	if x != nil {
+		return x.Deprecated
+	}
+	return false
+}
+
+type StorageClassEntry struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Default       bool                   `protobuf:"varint,2,opt,name=default,proto3" json:"default,omitempty"`
+	Deprecated    bool                   `protobuf:"varint,3,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StorageClassEntry) Reset() {
+	*x = StorageClassEntry{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StorageClassEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StorageClassEntry) ProtoMessage() {}
+
+func (x *StorageClassEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StorageClassEntry.ProtoReflect.Descriptor instead.
+func (*StorageClassEntry) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *StorageClassEntry) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *StorageClassEntry) GetDefault() bool {
+	if x != nil {
+		return x.Default
+	}
+	return false
+}
+
+func (x *StorageClassEntry) GetDeprecated() bool {
+	if x != nil {
+		return x.Deprecated
+	}
+	return false
+}
+
+type ReportRunnerCatalogRequest struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	RunnerId string                 `protobuf:"bytes,1,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	// Authenticates the report, as for EnrollRunner.
+	ServiceToken   string               `protobuf:"bytes,2,opt,name=service_token,json=serviceToken,proto3" json:"service_token,omitempty"`
+	Flavors        []*FlavorEntry       `protobuf:"bytes,3,rep,name=flavors,proto3" json:"flavors,omitempty"`
+	StorageClasses []*StorageClassEntry `protobuf:"bytes,4,rep,name=storage_classes,json=storageClasses,proto3" json:"storage_classes,omitempty"`
+	Capabilities   []string             `protobuf:"bytes,5,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ReportRunnerCatalogRequest) Reset() {
+	*x = ReportRunnerCatalogRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportRunnerCatalogRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportRunnerCatalogRequest) ProtoMessage() {}
+
+func (x *ReportRunnerCatalogRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportRunnerCatalogRequest.ProtoReflect.Descriptor instead.
+func (*ReportRunnerCatalogRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *ReportRunnerCatalogRequest) GetRunnerId() string {
+	if x != nil {
+		return x.RunnerId
+	}
+	return ""
+}
+
+func (x *ReportRunnerCatalogRequest) GetServiceToken() string {
+	if x != nil {
+		return x.ServiceToken
+	}
+	return ""
+}
+
+func (x *ReportRunnerCatalogRequest) GetFlavors() []*FlavorEntry {
+	if x != nil {
+		return x.Flavors
+	}
+	return nil
+}
+
+func (x *ReportRunnerCatalogRequest) GetStorageClasses() []*StorageClassEntry {
+	if x != nil {
+		return x.StorageClasses
+	}
+	return nil
+}
+
+func (x *ReportRunnerCatalogRequest) GetCapabilities() []string {
+	if x != nil {
+		return x.Capabilities
+	}
+	return nil
+}
+
+type ReportRunnerCatalogResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	FlavorCount       int32                  `protobuf:"varint,1,opt,name=flavor_count,json=flavorCount,proto3" json:"flavor_count,omitempty"`
+	StorageClassCount int32                  `protobuf:"varint,2,opt,name=storage_class_count,json=storageClassCount,proto3" json:"storage_class_count,omitempty"`
+	CapabilityCount   int32                  `protobuf:"varint,3,opt,name=capability_count,json=capabilityCount,proto3" json:"capability_count,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ReportRunnerCatalogResponse) Reset() {
+	*x = ReportRunnerCatalogResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportRunnerCatalogResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportRunnerCatalogResponse) ProtoMessage() {}
+
+func (x *ReportRunnerCatalogResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportRunnerCatalogResponse.ProtoReflect.Descriptor instead.
+func (*ReportRunnerCatalogResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *ReportRunnerCatalogResponse) GetFlavorCount() int32 {
+	if x != nil {
+		return x.FlavorCount
+	}
+	return 0
+}
+
+func (x *ReportRunnerCatalogResponse) GetStorageClassCount() int32 {
+	if x != nil {
+		return x.StorageClassCount
+	}
+	return 0
+}
+
+func (x *ReportRunnerCatalogResponse) GetCapabilityCount() int32 {
+	if x != nil {
+		return x.CapabilityCount
+	}
+	return 0
+}
+
+type ListStorageClassesRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	PageSize          int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken         string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	RunnerId          *string                `protobuf:"bytes,3,opt,name=runner_id,json=runnerId,proto3,oneof" json:"runner_id,omitempty"`
+	OrganizationId    *string                `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3,oneof" json:"organization_id,omitempty"`
+	IncludeDeprecated *bool                  `protobuf:"varint,5,opt,name=include_deprecated,json=includeDeprecated,proto3,oneof" json:"include_deprecated,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ListStorageClassesRequest) Reset() {
+	*x = ListStorageClassesRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStorageClassesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStorageClassesRequest) ProtoMessage() {}
+
+func (x *ListStorageClassesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListStorageClassesRequest.ProtoReflect.Descriptor instead.
+func (*ListStorageClassesRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *ListStorageClassesRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListStorageClassesRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListStorageClassesRequest) GetRunnerId() string {
+	if x != nil && x.RunnerId != nil {
+		return *x.RunnerId
+	}
+	return ""
+}
+
+func (x *ListStorageClassesRequest) GetOrganizationId() string {
+	if x != nil && x.OrganizationId != nil {
+		return *x.OrganizationId
+	}
+	return ""
+}
+
+func (x *ListStorageClassesRequest) GetIncludeDeprecated() bool {
+	if x != nil && x.IncludeDeprecated != nil {
+		return *x.IncludeDeprecated
+	}
+	return false
+}
+
+type ListStorageClassesResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	StorageClasses []*StorageClass        `protobuf:"bytes,1,rep,name=storage_classes,json=storageClasses,proto3" json:"storage_classes,omitempty"`
+	NextPageToken  string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ListStorageClassesResponse) Reset() {
+	*x = ListStorageClassesResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStorageClassesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStorageClassesResponse) ProtoMessage() {}
+
+func (x *ListStorageClassesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListStorageClassesResponse.ProtoReflect.Descriptor instead.
+func (*ListStorageClassesResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *ListStorageClassesResponse) GetStorageClasses() []*StorageClass {
+	if x != nil {
+		return x.StorageClasses
+	}
+	return nil
+}
+
+func (x *ListStorageClassesResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
 	}
 	return ""
 }
@@ -1615,7 +2845,7 @@ type Container struct {
 
 func (x *Container) Reset() {
 	*x = Container{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[17]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1627,7 +2857,7 @@ func (x *Container) String() string {
 func (*Container) ProtoMessage() {}
 
 func (x *Container) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[17]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1640,7 +2870,7 @@ func (x *Container) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Container.ProtoReflect.Descriptor instead.
 func (*Container) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{17}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *Container) GetContainerId() string {
@@ -1721,10 +2951,14 @@ func (x *Container) GetFinishedAt() *timestamppb.Timestamp {
 }
 
 type Workload struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	Meta                   *EntityMeta            `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
-	RunnerId               string                 `protobuf:"bytes,2,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
-	ThreadId               string                 `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Meta     *EntityMeta            `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
+	RunnerId string                 `protobuf:"bytes,2,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	ThreadId string                 `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	// Deprecated: use agent_class_id. Unset/absent agent ownership is expressed
+	// by owner_kind plus agent_class_id presence, not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 	AgentId                string                 `protobuf:"bytes,4,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
 	OrganizationId         string                 `protobuf:"bytes,5,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	Status                 WorkloadStatus         `protobuf:"varint,6,opt,name=status,proto3,enum=agynio.api.runners.v1.WorkloadStatus" json:"status,omitempty"`
@@ -1736,6 +2970,8 @@ type Workload struct {
 	RemovedAt              *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=removed_at,json=removedAt,proto3,oneof" json:"removed_at,omitempty"`
 	AllocatedCpuMillicores int32                  `protobuf:"varint,13,opt,name=allocated_cpu_millicores,json=allocatedCpuMillicores,proto3" json:"allocated_cpu_millicores,omitempty"`
 	AllocatedRamBytes      int64                  `protobuf:"varint,14,opt,name=allocated_ram_bytes,json=allocatedRamBytes,proto3" json:"allocated_ram_bytes,omitempty"`
+	// Flavor the workload started on. Empty when it started without an environment.
+	Flavor string `protobuf:"bytes,26,opt,name=flavor,proto3" json:"flavor,omitempty"`
 	// Machine-readable reason for failures when status is WORKLOAD_STATUS_FAILED.
 	// When status is not FAILED, this value may be unset or stale.
 	FailureReason *WorkloadFailureReason `protobuf:"varint,15,opt,name=failure_reason,json=failureReason,proto3,enum=agynio.api.runners.v1.WorkloadFailureReason,oneof" json:"failure_reason,omitempty"`
@@ -1743,18 +2979,28 @@ type Workload struct {
 	// programmatic parsing. When status is not FAILED, this value may be unset
 	// or stale.
 	FailureMessage *string `protobuf:"bytes,16,opt,name=failure_message,json=failureMessage,proto3,oneof" json:"failure_message,omitempty"`
-	// Denormalized display name for agent_id.
+	// Deprecated: use agent_class_name. Unset/absent agent ownership is
+	// expressed by agent_class_name presence, not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 	AgentName string `protobuf:"bytes,17,opt,name=agent_name,json=agentName,proto3" json:"agent_name,omitempty"`
 	// Denormalized display name for runner_id.
-	RunnerName    string             `protobuf:"bytes,18,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
-	AgentState    WorkloadAgentState `protobuf:"varint,19,opt,name=agent_state,json=agentState,proto3,enum=agynio.api.runners.v1.WorkloadAgentState" json:"agent_state,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	RunnerName     string             `protobuf:"bytes,18,opt,name=runner_name,json=runnerName,proto3" json:"runner_name,omitempty"`
+	AgentState     WorkloadAgentState `protobuf:"varint,19,opt,name=agent_state,json=agentState,proto3,enum=agynio.api.runners.v1.WorkloadAgentState" json:"agent_state,omitempty"`
+	OwnerKind      RuntimeOwnerKind   `protobuf:"varint,20,opt,name=owner_kind,json=ownerKind,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind,omitempty"`
+	OwnerId        string             `protobuf:"bytes,21,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	OwnerName      *string            `protobuf:"bytes,22,opt,name=owner_name,json=ownerName,proto3,oneof" json:"owner_name,omitempty"`
+	AgentClassId   *string            `protobuf:"bytes,23,opt,name=agent_class_id,json=agentClassId,proto3,oneof" json:"agent_class_id,omitempty"`
+	AgentClassName *string            `protobuf:"bytes,24,opt,name=agent_class_name,json=agentClassName,proto3,oneof" json:"agent_class_name,omitempty"`
+	// Present when owner_kind is RUNTIME_OWNER_KIND_AGENT_INSTANCE; absent otherwise.
+	AgentInstanceId *string `protobuf:"bytes,25,opt,name=agent_instance_id,json=agentInstanceId,proto3,oneof" json:"agent_instance_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Workload) Reset() {
 	*x = Workload{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[18]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1766,7 +3012,7 @@ func (x *Workload) String() string {
 func (*Workload) ProtoMessage() {}
 
 func (x *Workload) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[18]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1779,7 +3025,7 @@ func (x *Workload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Workload.ProtoReflect.Descriptor instead.
 func (*Workload) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{18}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *Workload) GetMeta() *EntityMeta {
@@ -1803,6 +3049,7 @@ func (x *Workload) GetThreadId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *Workload) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
@@ -1880,6 +3127,13 @@ func (x *Workload) GetAllocatedRamBytes() int64 {
 	return 0
 }
 
+func (x *Workload) GetFlavor() string {
+	if x != nil {
+		return x.Flavor
+	}
+	return ""
+}
+
 func (x *Workload) GetFailureReason() WorkloadFailureReason {
 	if x != nil && x.FailureReason != nil {
 		return *x.FailureReason
@@ -1894,6 +3148,7 @@ func (x *Workload) GetFailureMessage() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *Workload) GetAgentName() string {
 	if x != nil {
 		return x.AgentName
@@ -1915,25 +3170,77 @@ func (x *Workload) GetAgentState() WorkloadAgentState {
 	return WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED
 }
 
+func (x *Workload) GetOwnerKind() RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKind
+	}
+	return RuntimeOwnerKind_RUNTIME_OWNER_KIND_UNSPECIFIED
+}
+
+func (x *Workload) GetOwnerId() string {
+	if x != nil {
+		return x.OwnerId
+	}
+	return ""
+}
+
+func (x *Workload) GetOwnerName() string {
+	if x != nil && x.OwnerName != nil {
+		return *x.OwnerName
+	}
+	return ""
+}
+
+func (x *Workload) GetAgentClassId() string {
+	if x != nil && x.AgentClassId != nil {
+		return *x.AgentClassId
+	}
+	return ""
+}
+
+func (x *Workload) GetAgentClassName() string {
+	if x != nil && x.AgentClassName != nil {
+		return *x.AgentClassName
+	}
+	return ""
+}
+
+func (x *Workload) GetAgentInstanceId() string {
+	if x != nil && x.AgentInstanceId != nil {
+		return *x.AgentInstanceId
+	}
+	return ""
+}
+
 type CreateWorkloadRequest struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	Id                     string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	RunnerId               string                 `protobuf:"bytes,2,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
-	ThreadId               string                 `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
-	AgentId                string                 `protobuf:"bytes,4,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	OrganizationId         string                 `protobuf:"bytes,5,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	Status                 WorkloadStatus         `protobuf:"varint,6,opt,name=status,proto3,enum=agynio.api.runners.v1.WorkloadStatus" json:"status,omitempty"`
-	Containers             []*Container           `protobuf:"bytes,7,rep,name=containers,proto3" json:"containers,omitempty"`
-	ZitiIdentityId         string                 `protobuf:"bytes,8,opt,name=ziti_identity_id,json=zitiIdentityId,proto3" json:"ziti_identity_id,omitempty"`
-	AllocatedCpuMillicores int32                  `protobuf:"varint,9,opt,name=allocated_cpu_millicores,json=allocatedCpuMillicores,proto3" json:"allocated_cpu_millicores,omitempty"`
-	AllocatedRamBytes      int64                  `protobuf:"varint,10,opt,name=allocated_ram_bytes,json=allocatedRamBytes,proto3" json:"allocated_ram_bytes,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Id       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	RunnerId string                 `protobuf:"bytes,2,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	ThreadId string                 `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	// Deprecated: use agent_class_id. Unset/absent agent ownership is expressed
+	// by owner_kind plus agent_class_id presence, not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+	AgentId                string           `protobuf:"bytes,4,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	OrganizationId         string           `protobuf:"bytes,5,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	Status                 WorkloadStatus   `protobuf:"varint,6,opt,name=status,proto3,enum=agynio.api.runners.v1.WorkloadStatus" json:"status,omitempty"`
+	Containers             []*Container     `protobuf:"bytes,7,rep,name=containers,proto3" json:"containers,omitempty"`
+	ZitiIdentityId         string           `protobuf:"bytes,8,opt,name=ziti_identity_id,json=zitiIdentityId,proto3" json:"ziti_identity_id,omitempty"`
+	AllocatedCpuMillicores int32            `protobuf:"varint,9,opt,name=allocated_cpu_millicores,json=allocatedCpuMillicores,proto3" json:"allocated_cpu_millicores,omitempty"`
+	AllocatedRamBytes      int64            `protobuf:"varint,10,opt,name=allocated_ram_bytes,json=allocatedRamBytes,proto3" json:"allocated_ram_bytes,omitempty"`
+	OwnerKind              RuntimeOwnerKind `protobuf:"varint,11,opt,name=owner_kind,json=ownerKind,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind,omitempty"`
+	OwnerId                string           `protobuf:"bytes,12,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	AgentClassId           *string          `protobuf:"bytes,13,opt,name=agent_class_id,json=agentClassId,proto3,oneof" json:"agent_class_id,omitempty"`
+	// Present when owner_kind is RUNTIME_OWNER_KIND_AGENT_INSTANCE; absent otherwise.
+	AgentInstanceId *string `protobuf:"bytes,14,opt,name=agent_instance_id,json=agentInstanceId,proto3,oneof" json:"agent_instance_id,omitempty"`
+	Flavor          string  `protobuf:"bytes,15,opt,name=flavor,proto3" json:"flavor,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CreateWorkloadRequest) Reset() {
 	*x = CreateWorkloadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[19]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1945,7 +3252,7 @@ func (x *CreateWorkloadRequest) String() string {
 func (*CreateWorkloadRequest) ProtoMessage() {}
 
 func (x *CreateWorkloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[19]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1958,7 +3265,7 @@ func (x *CreateWorkloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateWorkloadRequest.ProtoReflect.Descriptor instead.
 func (*CreateWorkloadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{19}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *CreateWorkloadRequest) GetId() string {
@@ -1982,6 +3289,7 @@ func (x *CreateWorkloadRequest) GetThreadId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *CreateWorkloadRequest) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
@@ -2031,6 +3339,41 @@ func (x *CreateWorkloadRequest) GetAllocatedRamBytes() int64 {
 	return 0
 }
 
+func (x *CreateWorkloadRequest) GetOwnerKind() RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKind
+	}
+	return RuntimeOwnerKind_RUNTIME_OWNER_KIND_UNSPECIFIED
+}
+
+func (x *CreateWorkloadRequest) GetOwnerId() string {
+	if x != nil {
+		return x.OwnerId
+	}
+	return ""
+}
+
+func (x *CreateWorkloadRequest) GetAgentClassId() string {
+	if x != nil && x.AgentClassId != nil {
+		return *x.AgentClassId
+	}
+	return ""
+}
+
+func (x *CreateWorkloadRequest) GetAgentInstanceId() string {
+	if x != nil && x.AgentInstanceId != nil {
+		return *x.AgentInstanceId
+	}
+	return ""
+}
+
+func (x *CreateWorkloadRequest) GetFlavor() string {
+	if x != nil {
+		return x.Flavor
+	}
+	return ""
+}
+
 type CreateWorkloadResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Workload      *Workload              `protobuf:"bytes,1,opt,name=workload,proto3" json:"workload,omitempty"`
@@ -2040,7 +3383,7 @@ type CreateWorkloadResponse struct {
 
 func (x *CreateWorkloadResponse) Reset() {
 	*x = CreateWorkloadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[20]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2052,7 +3395,7 @@ func (x *CreateWorkloadResponse) String() string {
 func (*CreateWorkloadResponse) ProtoMessage() {}
 
 func (x *CreateWorkloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[20]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2065,7 +3408,7 @@ func (x *CreateWorkloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateWorkloadResponse.ProtoReflect.Descriptor instead.
 func (*CreateWorkloadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{20}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *CreateWorkloadResponse) GetWorkload() *Workload {
@@ -2093,7 +3436,7 @@ type UpdateWorkloadRequest struct {
 
 func (x *UpdateWorkloadRequest) Reset() {
 	*x = UpdateWorkloadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[21]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2105,7 +3448,7 @@ func (x *UpdateWorkloadRequest) String() string {
 func (*UpdateWorkloadRequest) ProtoMessage() {}
 
 func (x *UpdateWorkloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[21]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2118,7 +3461,7 @@ func (x *UpdateWorkloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateWorkloadRequest.ProtoReflect.Descriptor instead.
 func (*UpdateWorkloadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{21}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *UpdateWorkloadRequest) GetId() string {
@@ -2186,7 +3529,7 @@ type UpdateWorkloadResponse struct {
 
 func (x *UpdateWorkloadResponse) Reset() {
 	*x = UpdateWorkloadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[22]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2198,7 +3541,7 @@ func (x *UpdateWorkloadResponse) String() string {
 func (*UpdateWorkloadResponse) ProtoMessage() {}
 
 func (x *UpdateWorkloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[22]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2211,7 +3554,7 @@ func (x *UpdateWorkloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateWorkloadResponse.ProtoReflect.Descriptor instead.
 func (*UpdateWorkloadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{22}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *UpdateWorkloadResponse) GetWorkload() *Workload {
@@ -2234,7 +3577,7 @@ type UpdateWorkloadStatusRequest struct {
 
 func (x *UpdateWorkloadStatusRequest) Reset() {
 	*x = UpdateWorkloadStatusRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[23]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2246,7 +3589,7 @@ func (x *UpdateWorkloadStatusRequest) String() string {
 func (*UpdateWorkloadStatusRequest) ProtoMessage() {}
 
 func (x *UpdateWorkloadStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[23]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2259,7 +3602,7 @@ func (x *UpdateWorkloadStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateWorkloadStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateWorkloadStatusRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{23}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *UpdateWorkloadStatusRequest) GetId() string {
@@ -2292,7 +3635,7 @@ type UpdateWorkloadStatusResponse struct {
 
 func (x *UpdateWorkloadStatusResponse) Reset() {
 	*x = UpdateWorkloadStatusResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[24]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2304,7 +3647,7 @@ func (x *UpdateWorkloadStatusResponse) String() string {
 func (*UpdateWorkloadStatusResponse) ProtoMessage() {}
 
 func (x *UpdateWorkloadStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[24]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2317,7 +3660,7 @@ func (x *UpdateWorkloadStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateWorkloadStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateWorkloadStatusResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{24}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *UpdateWorkloadStatusResponse) GetWorkload() *Workload {
@@ -2336,7 +3679,7 @@ type TouchWorkloadRequest struct {
 
 func (x *TouchWorkloadRequest) Reset() {
 	*x = TouchWorkloadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[25]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2348,7 +3691,7 @@ func (x *TouchWorkloadRequest) String() string {
 func (*TouchWorkloadRequest) ProtoMessage() {}
 
 func (x *TouchWorkloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[25]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2361,7 +3704,7 @@ func (x *TouchWorkloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TouchWorkloadRequest.ProtoReflect.Descriptor instead.
 func (*TouchWorkloadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{25}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *TouchWorkloadRequest) GetId() string {
@@ -2379,7 +3722,7 @@ type TouchWorkloadResponse struct {
 
 func (x *TouchWorkloadResponse) Reset() {
 	*x = TouchWorkloadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[26]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2391,7 +3734,7 @@ func (x *TouchWorkloadResponse) String() string {
 func (*TouchWorkloadResponse) ProtoMessage() {}
 
 func (x *TouchWorkloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[26]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2404,7 +3747,7 @@ func (x *TouchWorkloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TouchWorkloadResponse.ProtoReflect.Descriptor instead.
 func (*TouchWorkloadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{26}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{45}
 }
 
 type DeleteWorkloadRequest struct {
@@ -2416,7 +3759,7 @@ type DeleteWorkloadRequest struct {
 
 func (x *DeleteWorkloadRequest) Reset() {
 	*x = DeleteWorkloadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[27]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2428,7 +3771,7 @@ func (x *DeleteWorkloadRequest) String() string {
 func (*DeleteWorkloadRequest) ProtoMessage() {}
 
 func (x *DeleteWorkloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[27]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2441,7 +3784,7 @@ func (x *DeleteWorkloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWorkloadRequest.ProtoReflect.Descriptor instead.
 func (*DeleteWorkloadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{27}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *DeleteWorkloadRequest) GetId() string {
@@ -2459,7 +3802,7 @@ type DeleteWorkloadResponse struct {
 
 func (x *DeleteWorkloadResponse) Reset() {
 	*x = DeleteWorkloadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[28]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2471,7 +3814,7 @@ func (x *DeleteWorkloadResponse) String() string {
 func (*DeleteWorkloadResponse) ProtoMessage() {}
 
 func (x *DeleteWorkloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[28]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2484,7 +3827,7 @@ func (x *DeleteWorkloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteWorkloadResponse.ProtoReflect.Descriptor instead.
 func (*DeleteWorkloadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{28}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{47}
 }
 
 type GetWorkloadRequest struct {
@@ -2496,7 +3839,7 @@ type GetWorkloadRequest struct {
 
 func (x *GetWorkloadRequest) Reset() {
 	*x = GetWorkloadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[29]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2508,7 +3851,7 @@ func (x *GetWorkloadRequest) String() string {
 func (*GetWorkloadRequest) ProtoMessage() {}
 
 func (x *GetWorkloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[29]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2521,7 +3864,7 @@ func (x *GetWorkloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWorkloadRequest.ProtoReflect.Descriptor instead.
 func (*GetWorkloadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{29}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *GetWorkloadRequest) GetId() string {
@@ -2540,7 +3883,7 @@ type GetWorkloadResponse struct {
 
 func (x *GetWorkloadResponse) Reset() {
 	*x = GetWorkloadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[30]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2552,7 +3895,7 @@ func (x *GetWorkloadResponse) String() string {
 func (*GetWorkloadResponse) ProtoMessage() {}
 
 func (x *GetWorkloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[30]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2565,7 +3908,7 @@ func (x *GetWorkloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWorkloadResponse.ProtoReflect.Descriptor instead.
 func (*GetWorkloadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{30}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *GetWorkloadResponse) GetWorkload() *Workload {
@@ -2585,7 +3928,7 @@ type ListWorkloadsSort struct {
 
 func (x *ListWorkloadsSort) Reset() {
 	*x = ListWorkloadsSort{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[31]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2597,7 +3940,7 @@ func (x *ListWorkloadsSort) String() string {
 func (*ListWorkloadsSort) ProtoMessage() {}
 
 func (x *ListWorkloadsSort) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[31]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2610,7 +3953,7 @@ func (x *ListWorkloadsSort) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsSort.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsSort) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{31}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ListWorkloadsSort) GetField() ListWorkloadsSortField {
@@ -2635,13 +3978,15 @@ type ListWorkloadsFilter struct {
 	StartedAfter  *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=started_after,json=startedAfter,proto3,oneof" json:"started_after,omitempty"`
 	StartedBefore *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=started_before,json=startedBefore,proto3,oneof" json:"started_before,omitempty"`
 	PendingSample *bool                  `protobuf:"varint,6,opt,name=pending_sample,json=pendingSample,proto3,oneof" json:"pending_sample,omitempty"`
+	OwnerKindIn   []RuntimeOwnerKind     `protobuf:"varint,7,rep,packed,name=owner_kind_in,json=ownerKindIn,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind_in,omitempty"`
+	OwnerIdIn     []string               `protobuf:"bytes,8,rep,name=owner_id_in,json=ownerIdIn,proto3" json:"owner_id_in,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListWorkloadsFilter) Reset() {
 	*x = ListWorkloadsFilter{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[32]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2653,7 +3998,7 @@ func (x *ListWorkloadsFilter) String() string {
 func (*ListWorkloadsFilter) ProtoMessage() {}
 
 func (x *ListWorkloadsFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[32]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2666,7 +4011,7 @@ func (x *ListWorkloadsFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsFilter.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsFilter) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{32}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *ListWorkloadsFilter) GetAgentIdIn() []string {
@@ -2711,6 +4056,20 @@ func (x *ListWorkloadsFilter) GetPendingSample() bool {
 	return false
 }
 
+func (x *ListWorkloadsFilter) GetOwnerKindIn() []RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKindIn
+	}
+	return nil
+}
+
+func (x *ListWorkloadsFilter) GetOwnerIdIn() []string {
+	if x != nil {
+		return x.OwnerIdIn
+	}
+	return nil
+}
+
 type ListWorkloadsByThreadRequest struct {
 	state     protoimpl.MessageState `protogen:"open.v1"`
 	ThreadId  string                 `protobuf:"bytes,1,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
@@ -2725,7 +4084,7 @@ type ListWorkloadsByThreadRequest struct {
 
 func (x *ListWorkloadsByThreadRequest) Reset() {
 	*x = ListWorkloadsByThreadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[33]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2737,7 +4096,7 @@ func (x *ListWorkloadsByThreadRequest) String() string {
 func (*ListWorkloadsByThreadRequest) ProtoMessage() {}
 
 func (x *ListWorkloadsByThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[33]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2750,7 +4109,7 @@ func (x *ListWorkloadsByThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsByThreadRequest.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsByThreadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{33}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *ListWorkloadsByThreadRequest) GetThreadId() string {
@@ -2799,7 +4158,7 @@ type ListWorkloadsByThreadResponse struct {
 
 func (x *ListWorkloadsByThreadResponse) Reset() {
 	*x = ListWorkloadsByThreadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[34]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2811,7 +4170,7 @@ func (x *ListWorkloadsByThreadResponse) String() string {
 func (*ListWorkloadsByThreadResponse) ProtoMessage() {}
 
 func (x *ListWorkloadsByThreadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[34]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2824,7 +4183,7 @@ func (x *ListWorkloadsByThreadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsByThreadResponse.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsByThreadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{34}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *ListWorkloadsByThreadResponse) GetWorkloads() []*Workload {
@@ -2835,6 +4194,128 @@ func (x *ListWorkloadsByThreadResponse) GetWorkloads() []*Workload {
 }
 
 func (x *ListWorkloadsByThreadResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+type ListWorkloadsByAgentInstanceRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	AgentInstanceId string                 `protobuf:"bytes,1,opt,name=agent_instance_id,json=agentInstanceId,proto3" json:"agent_instance_id,omitempty"`
+	PageSize        int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken       string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// Optional status filter. An empty list returns workloads for all statuses.
+	Statuses      []WorkloadStatus `protobuf:"varint,4,rep,packed,name=statuses,proto3,enum=agynio.api.runners.v1.WorkloadStatus" json:"statuses,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) Reset() {
+	*x = ListWorkloadsByAgentInstanceRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[54]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWorkloadsByAgentInstanceRequest) ProtoMessage() {}
+
+func (x *ListWorkloadsByAgentInstanceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[54]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWorkloadsByAgentInstanceRequest.ProtoReflect.Descriptor instead.
+func (*ListWorkloadsByAgentInstanceRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{54}
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) GetAgentInstanceId() string {
+	if x != nil {
+		return x.AgentInstanceId
+	}
+	return ""
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListWorkloadsByAgentInstanceRequest) GetStatuses() []WorkloadStatus {
+	if x != nil {
+		return x.Statuses
+	}
+	return nil
+}
+
+type ListWorkloadsByAgentInstanceResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Ordered by created_at DESC, id DESC for stable pagination.
+	Workloads     []*Workload `protobuf:"bytes,1,rep,name=workloads,proto3" json:"workloads,omitempty"`
+	NextPageToken string      `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListWorkloadsByAgentInstanceResponse) Reset() {
+	*x = ListWorkloadsByAgentInstanceResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[55]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListWorkloadsByAgentInstanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWorkloadsByAgentInstanceResponse) ProtoMessage() {}
+
+func (x *ListWorkloadsByAgentInstanceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[55]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWorkloadsByAgentInstanceResponse.ProtoReflect.Descriptor instead.
+func (*ListWorkloadsByAgentInstanceResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{55}
+}
+
+func (x *ListWorkloadsByAgentInstanceResponse) GetWorkloads() []*Workload {
+	if x != nil {
+		return x.Workloads
+	}
+	return nil
+}
+
+func (x *ListWorkloadsByAgentInstanceResponse) GetNextPageToken() string {
 	if x != nil {
 		return x.NextPageToken
 	}
@@ -2868,7 +4349,7 @@ type ListWorkloadsRequest struct {
 
 func (x *ListWorkloadsRequest) Reset() {
 	*x = ListWorkloadsRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[35]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2880,7 +4361,7 @@ func (x *ListWorkloadsRequest) String() string {
 func (*ListWorkloadsRequest) ProtoMessage() {}
 
 func (x *ListWorkloadsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[35]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2893,7 +4374,7 @@ func (x *ListWorkloadsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsRequest.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{35}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *ListWorkloadsRequest) GetPageSize() int32 {
@@ -2965,7 +4446,7 @@ type ListWorkloadsResponse struct {
 
 func (x *ListWorkloadsResponse) Reset() {
 	*x = ListWorkloadsResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[36]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2977,7 +4458,7 @@ func (x *ListWorkloadsResponse) String() string {
 func (*ListWorkloadsResponse) ProtoMessage() {}
 
 func (x *ListWorkloadsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[36]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2990,7 +4471,7 @@ func (x *ListWorkloadsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListWorkloadsResponse.ProtoReflect.Descriptor instead.
 func (*ListWorkloadsResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{36}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *ListWorkloadsResponse) GetWorkloads() []*Workload {
@@ -3016,7 +4497,7 @@ type BatchUpdateWorkloadSampledAtRequest struct {
 
 func (x *BatchUpdateWorkloadSampledAtRequest) Reset() {
 	*x = BatchUpdateWorkloadSampledAtRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[37]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3028,7 +4509,7 @@ func (x *BatchUpdateWorkloadSampledAtRequest) String() string {
 func (*BatchUpdateWorkloadSampledAtRequest) ProtoMessage() {}
 
 func (x *BatchUpdateWorkloadSampledAtRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[37]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3041,7 +4522,7 @@ func (x *BatchUpdateWorkloadSampledAtRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use BatchUpdateWorkloadSampledAtRequest.ProtoReflect.Descriptor instead.
 func (*BatchUpdateWorkloadSampledAtRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{37}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *BatchUpdateWorkloadSampledAtRequest) GetEntries() []*SampledAtEntry {
@@ -3059,7 +4540,7 @@ type BatchUpdateWorkloadSampledAtResponse struct {
 
 func (x *BatchUpdateWorkloadSampledAtResponse) Reset() {
 	*x = BatchUpdateWorkloadSampledAtResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[38]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3071,7 +4552,7 @@ func (x *BatchUpdateWorkloadSampledAtResponse) String() string {
 func (*BatchUpdateWorkloadSampledAtResponse) ProtoMessage() {}
 
 func (x *BatchUpdateWorkloadSampledAtResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[38]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3084,33 +4565,54 @@ func (x *BatchUpdateWorkloadSampledAtResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use BatchUpdateWorkloadSampledAtResponse.ProtoReflect.Descriptor instead.
 func (*BatchUpdateWorkloadSampledAtResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{38}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{59}
 }
 
 type Volume struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Meta                  *EntityMeta            `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
-	InstanceId            *string                `protobuf:"bytes,2,opt,name=instance_id,json=instanceId,proto3,oneof" json:"instance_id,omitempty"`
-	VolumeId              string                 `protobuf:"bytes,3,opt,name=volume_id,json=volumeId,proto3" json:"volume_id,omitempty"`
-	ThreadId              string                 `protobuf:"bytes,4,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
-	RunnerId              string                 `protobuf:"bytes,5,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Meta       *EntityMeta            `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta,omitempty"`
+	InstanceId *string                `protobuf:"bytes,2,opt,name=instance_id,json=instanceId,proto3,oneof" json:"instance_id,omitempty"`
+	// Deprecated: use volume_definition_id. Runtime-only sandbox workspace
+	// volumes are expressed by owner_kind plus volume_definition_id presence,
+	// not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+	VolumeId string `protobuf:"bytes,3,opt,name=volume_id,json=volumeId,proto3" json:"volume_id,omitempty"`
+	ThreadId string `protobuf:"bytes,4,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	RunnerId string `protobuf:"bytes,5,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	// Deprecated: use agent_class_id. Sandbox-owned volumes are expressed by
+	// owner_kind plus agent_class_id presence, not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 	AgentId               string                 `protobuf:"bytes,6,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
 	OrganizationId        string                 `protobuf:"bytes,7,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	SizeGb                string                 `protobuf:"bytes,8,opt,name=size_gb,json=sizeGb,proto3" json:"size_gb,omitempty"`
 	Status                VolumeStatus           `protobuf:"varint,9,opt,name=status,proto3,enum=agynio.api.runners.v1.VolumeStatus" json:"status,omitempty"`
 	RemovedAt             *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=removed_at,json=removedAt,proto3,oneof" json:"removed_at,omitempty"`
 	LastMeteringSampledAt *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=last_metering_sampled_at,json=lastMeteringSampledAt,proto3,oneof" json:"last_metering_sampled_at,omitempty"`
-	// Denormalized display name for volume_id.
+	// Deprecated: use volume_definition_name. Runtime-only sandbox workspace
+	// volumes are expressed by volume_definition_name presence, not by an empty
+	// string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 	VolumeName string `protobuf:"bytes,12,opt,name=volume_name,json=volumeName,proto3" json:"volume_name,omitempty"`
 	// Current attachments for this volume; empty when unattached.
-	Attachments   []*Attachment `protobuf:"bytes,13,rep,name=attachments,proto3" json:"attachments,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Attachments          []*Attachment    `protobuf:"bytes,13,rep,name=attachments,proto3" json:"attachments,omitempty"`
+	OwnerKind            RuntimeOwnerKind `protobuf:"varint,14,opt,name=owner_kind,json=ownerKind,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind,omitempty"`
+	OwnerId              string           `protobuf:"bytes,15,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	OwnerName            *string          `protobuf:"bytes,16,opt,name=owner_name,json=ownerName,proto3,oneof" json:"owner_name,omitempty"`
+	VolumeDefinitionId   *string          `protobuf:"bytes,17,opt,name=volume_definition_id,json=volumeDefinitionId,proto3,oneof" json:"volume_definition_id,omitempty"`
+	AgentClassId         *string          `protobuf:"bytes,18,opt,name=agent_class_id,json=agentClassId,proto3,oneof" json:"agent_class_id,omitempty"`
+	VolumeDefinitionName *string          `protobuf:"bytes,19,opt,name=volume_definition_name,json=volumeDefinitionName,proto3,oneof" json:"volume_definition_name,omitempty"`
+	// Present when owner_kind is RUNTIME_OWNER_KIND_AGENT_INSTANCE; absent otherwise.
+	AgentInstanceId *string `protobuf:"bytes,20,opt,name=agent_instance_id,json=agentInstanceId,proto3,oneof" json:"agent_instance_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Volume) Reset() {
 	*x = Volume{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[39]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3122,7 +4624,7 @@ func (x *Volume) String() string {
 func (*Volume) ProtoMessage() {}
 
 func (x *Volume) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[39]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3135,7 +4637,7 @@ func (x *Volume) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Volume.ProtoReflect.Descriptor instead.
 func (*Volume) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{39}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *Volume) GetMeta() *EntityMeta {
@@ -3152,6 +4654,7 @@ func (x *Volume) GetInstanceId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *Volume) GetVolumeId() string {
 	if x != nil {
 		return x.VolumeId
@@ -3173,6 +4676,7 @@ func (x *Volume) GetRunnerId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *Volume) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
@@ -3215,6 +4719,7 @@ func (x *Volume) GetLastMeteringSampledAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *Volume) GetVolumeName() string {
 	if x != nil {
 		return x.VolumeName
@@ -3229,6 +4734,55 @@ func (x *Volume) GetAttachments() []*Attachment {
 	return nil
 }
 
+func (x *Volume) GetOwnerKind() RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKind
+	}
+	return RuntimeOwnerKind_RUNTIME_OWNER_KIND_UNSPECIFIED
+}
+
+func (x *Volume) GetOwnerId() string {
+	if x != nil {
+		return x.OwnerId
+	}
+	return ""
+}
+
+func (x *Volume) GetOwnerName() string {
+	if x != nil && x.OwnerName != nil {
+		return *x.OwnerName
+	}
+	return ""
+}
+
+func (x *Volume) GetVolumeDefinitionId() string {
+	if x != nil && x.VolumeDefinitionId != nil {
+		return *x.VolumeDefinitionId
+	}
+	return ""
+}
+
+func (x *Volume) GetAgentClassId() string {
+	if x != nil && x.AgentClassId != nil {
+		return *x.AgentClassId
+	}
+	return ""
+}
+
+func (x *Volume) GetVolumeDefinitionName() string {
+	if x != nil && x.VolumeDefinitionName != nil {
+		return *x.VolumeDefinitionName
+	}
+	return ""
+}
+
+func (x *Volume) GetAgentInstanceId() string {
+	if x != nil && x.AgentInstanceId != nil {
+		return *x.AgentInstanceId
+	}
+	return ""
+}
+
 type Attachment struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Kind          AttachmentKind         `protobuf:"varint,1,opt,name=kind,proto3,enum=agynio.api.runners.v1.AttachmentKind" json:"kind,omitempty"`
@@ -3240,7 +4794,7 @@ type Attachment struct {
 
 func (x *Attachment) Reset() {
 	*x = Attachment{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[40]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3252,7 +4806,7 @@ func (x *Attachment) String() string {
 func (*Attachment) ProtoMessage() {}
 
 func (x *Attachment) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[40]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3265,7 +4819,7 @@ func (x *Attachment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Attachment.ProtoReflect.Descriptor instead.
 func (*Attachment) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{40}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *Attachment) GetKind() AttachmentKind {
@@ -3290,22 +4844,37 @@ func (x *Attachment) GetName() string {
 }
 
 type CreateVolumeRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	VolumeId       string                 `protobuf:"bytes,2,opt,name=volume_id,json=volumeId,proto3" json:"volume_id,omitempty"`
-	ThreadId       string                 `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
-	RunnerId       string                 `protobuf:"bytes,4,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
-	AgentId        string                 `protobuf:"bytes,5,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	OrganizationId string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	SizeGb         string                 `protobuf:"bytes,7,opt,name=size_gb,json=sizeGb,proto3" json:"size_gb,omitempty"`
-	Status         VolumeStatus           `protobuf:"varint,8,opt,name=status,proto3,enum=agynio.api.runners.v1.VolumeStatus" json:"status,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Deprecated: use volume_definition_id. Runtime-only sandbox workspace
+	// volumes are expressed by owner_kind plus volume_definition_id presence,
+	// not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+	VolumeId string `protobuf:"bytes,2,opt,name=volume_id,json=volumeId,proto3" json:"volume_id,omitempty"`
+	ThreadId string `protobuf:"bytes,3,opt,name=thread_id,json=threadId,proto3" json:"thread_id,omitempty"`
+	RunnerId string `protobuf:"bytes,4,opt,name=runner_id,json=runnerId,proto3" json:"runner_id,omitempty"`
+	// Deprecated: use agent_class_id. Sandbox-owned volumes are expressed by
+	// owner_kind plus agent_class_id presence, not by an empty string sentinel.
+	//
+	// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
+	AgentId            string           `protobuf:"bytes,5,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	OrganizationId     string           `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	SizeGb             string           `protobuf:"bytes,7,opt,name=size_gb,json=sizeGb,proto3" json:"size_gb,omitempty"`
+	Status             VolumeStatus     `protobuf:"varint,8,opt,name=status,proto3,enum=agynio.api.runners.v1.VolumeStatus" json:"status,omitempty"`
+	OwnerKind          RuntimeOwnerKind `protobuf:"varint,9,opt,name=owner_kind,json=ownerKind,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind,omitempty"`
+	OwnerId            string           `protobuf:"bytes,10,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	VolumeDefinitionId *string          `protobuf:"bytes,11,opt,name=volume_definition_id,json=volumeDefinitionId,proto3,oneof" json:"volume_definition_id,omitempty"`
+	AgentClassId       *string          `protobuf:"bytes,12,opt,name=agent_class_id,json=agentClassId,proto3,oneof" json:"agent_class_id,omitempty"`
+	// Present when owner_kind is RUNTIME_OWNER_KIND_AGENT_INSTANCE; absent otherwise.
+	AgentInstanceId *string `protobuf:"bytes,13,opt,name=agent_instance_id,json=agentInstanceId,proto3,oneof" json:"agent_instance_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CreateVolumeRequest) Reset() {
 	*x = CreateVolumeRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[41]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3317,7 +4886,7 @@ func (x *CreateVolumeRequest) String() string {
 func (*CreateVolumeRequest) ProtoMessage() {}
 
 func (x *CreateVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[41]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3330,7 +4899,7 @@ func (x *CreateVolumeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateVolumeRequest.ProtoReflect.Descriptor instead.
 func (*CreateVolumeRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{41}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *CreateVolumeRequest) GetId() string {
@@ -3340,6 +4909,7 @@ func (x *CreateVolumeRequest) GetId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *CreateVolumeRequest) GetVolumeId() string {
 	if x != nil {
 		return x.VolumeId
@@ -3361,6 +4931,7 @@ func (x *CreateVolumeRequest) GetRunnerId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in agynio/api/runners/v1/runners.proto.
 func (x *CreateVolumeRequest) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
@@ -3389,6 +4960,41 @@ func (x *CreateVolumeRequest) GetStatus() VolumeStatus {
 	return VolumeStatus_VOLUME_STATUS_UNSPECIFIED
 }
 
+func (x *CreateVolumeRequest) GetOwnerKind() RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKind
+	}
+	return RuntimeOwnerKind_RUNTIME_OWNER_KIND_UNSPECIFIED
+}
+
+func (x *CreateVolumeRequest) GetOwnerId() string {
+	if x != nil {
+		return x.OwnerId
+	}
+	return ""
+}
+
+func (x *CreateVolumeRequest) GetVolumeDefinitionId() string {
+	if x != nil && x.VolumeDefinitionId != nil {
+		return *x.VolumeDefinitionId
+	}
+	return ""
+}
+
+func (x *CreateVolumeRequest) GetAgentClassId() string {
+	if x != nil && x.AgentClassId != nil {
+		return *x.AgentClassId
+	}
+	return ""
+}
+
+func (x *CreateVolumeRequest) GetAgentInstanceId() string {
+	if x != nil && x.AgentInstanceId != nil {
+		return *x.AgentInstanceId
+	}
+	return ""
+}
+
 type CreateVolumeResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Volume        *Volume                `protobuf:"bytes,1,opt,name=volume,proto3" json:"volume,omitempty"`
@@ -3398,7 +5004,7 @@ type CreateVolumeResponse struct {
 
 func (x *CreateVolumeResponse) Reset() {
 	*x = CreateVolumeResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[42]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3410,7 +5016,7 @@ func (x *CreateVolumeResponse) String() string {
 func (*CreateVolumeResponse) ProtoMessage() {}
 
 func (x *CreateVolumeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[42]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3423,7 +5029,7 @@ func (x *CreateVolumeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateVolumeResponse.ProtoReflect.Descriptor instead.
 func (*CreateVolumeResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{42}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *CreateVolumeResponse) GetVolume() *Volume {
@@ -3446,7 +5052,7 @@ type UpdateVolumeRequest struct {
 
 func (x *UpdateVolumeRequest) Reset() {
 	*x = UpdateVolumeRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[43]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3458,7 +5064,7 @@ func (x *UpdateVolumeRequest) String() string {
 func (*UpdateVolumeRequest) ProtoMessage() {}
 
 func (x *UpdateVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[43]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3471,7 +5077,7 @@ func (x *UpdateVolumeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVolumeRequest.ProtoReflect.Descriptor instead.
 func (*UpdateVolumeRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{43}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *UpdateVolumeRequest) GetId() string {
@@ -3518,7 +5124,7 @@ type UpdateVolumeResponse struct {
 
 func (x *UpdateVolumeResponse) Reset() {
 	*x = UpdateVolumeResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[44]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3530,7 +5136,7 @@ func (x *UpdateVolumeResponse) String() string {
 func (*UpdateVolumeResponse) ProtoMessage() {}
 
 func (x *UpdateVolumeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[44]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3543,7 +5149,7 @@ func (x *UpdateVolumeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVolumeResponse.ProtoReflect.Descriptor instead.
 func (*UpdateVolumeResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{44}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *UpdateVolumeResponse) GetVolume() *Volume {
@@ -3562,7 +5168,7 @@ type GetVolumeRequest struct {
 
 func (x *GetVolumeRequest) Reset() {
 	*x = GetVolumeRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[45]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3574,7 +5180,7 @@ func (x *GetVolumeRequest) String() string {
 func (*GetVolumeRequest) ProtoMessage() {}
 
 func (x *GetVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[45]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3587,7 +5193,7 @@ func (x *GetVolumeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVolumeRequest.ProtoReflect.Descriptor instead.
 func (*GetVolumeRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{45}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *GetVolumeRequest) GetId() string {
@@ -3606,7 +5212,7 @@ type GetVolumeResponse struct {
 
 func (x *GetVolumeResponse) Reset() {
 	*x = GetVolumeResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[46]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3618,7 +5224,7 @@ func (x *GetVolumeResponse) String() string {
 func (*GetVolumeResponse) ProtoMessage() {}
 
 func (x *GetVolumeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[46]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3631,7 +5237,7 @@ func (x *GetVolumeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVolumeResponse.ProtoReflect.Descriptor instead.
 func (*GetVolumeResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{46}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *GetVolumeResponse) GetVolume() *Volume {
@@ -3651,7 +5257,7 @@ type ListVolumesSort struct {
 
 func (x *ListVolumesSort) Reset() {
 	*x = ListVolumesSort{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[47]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3663,7 +5269,7 @@ func (x *ListVolumesSort) String() string {
 func (*ListVolumesSort) ProtoMessage() {}
 
 func (x *ListVolumesSort) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[47]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3676,7 +5282,7 @@ func (x *ListVolumesSort) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesSort.ProtoReflect.Descriptor instead.
 func (*ListVolumesSort) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{47}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *ListVolumesSort) GetField() ListVolumesSortField {
@@ -3700,13 +5306,15 @@ type ListVolumesFilter struct {
 	AttachedToKindIn    []VolumeAttachmentFilterKind `protobuf:"varint,3,rep,packed,name=attached_to_kind_in,json=attachedToKindIn,proto3,enum=agynio.api.runners.v1.VolumeAttachmentFilterKind" json:"attached_to_kind_in,omitempty"`
 	PendingSample       *bool                        `protobuf:"varint,4,opt,name=pending_sample,json=pendingSample,proto3,oneof" json:"pending_sample,omitempty"`
 	VolumeNameSubstring *string                      `protobuf:"bytes,5,opt,name=volume_name_substring,json=volumeNameSubstring,proto3,oneof" json:"volume_name_substring,omitempty"`
+	OwnerKindIn         []RuntimeOwnerKind           `protobuf:"varint,6,rep,packed,name=owner_kind_in,json=ownerKindIn,proto3,enum=agynio.api.runners.v1.RuntimeOwnerKind" json:"owner_kind_in,omitempty"`
+	OwnerIdIn           []string                     `protobuf:"bytes,7,rep,name=owner_id_in,json=ownerIdIn,proto3" json:"owner_id_in,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
 
 func (x *ListVolumesFilter) Reset() {
 	*x = ListVolumesFilter{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[48]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3718,7 +5326,7 @@ func (x *ListVolumesFilter) String() string {
 func (*ListVolumesFilter) ProtoMessage() {}
 
 func (x *ListVolumesFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[48]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3731,7 +5339,7 @@ func (x *ListVolumesFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesFilter.ProtoReflect.Descriptor instead.
 func (*ListVolumesFilter) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{48}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *ListVolumesFilter) GetStatusIn() []VolumeStatus {
@@ -3769,6 +5377,20 @@ func (x *ListVolumesFilter) GetVolumeNameSubstring() string {
 	return ""
 }
 
+func (x *ListVolumesFilter) GetOwnerKindIn() []RuntimeOwnerKind {
+	if x != nil {
+		return x.OwnerKindIn
+	}
+	return nil
+}
+
+func (x *ListVolumesFilter) GetOwnerIdIn() []string {
+	if x != nil {
+		return x.OwnerIdIn
+	}
+	return nil
+}
+
 type ListVolumesRequest struct {
 	state    protoimpl.MessageState `protogen:"open.v1"`
 	PageSize int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
@@ -3796,7 +5418,7 @@ type ListVolumesRequest struct {
 
 func (x *ListVolumesRequest) Reset() {
 	*x = ListVolumesRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[49]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3808,7 +5430,7 @@ func (x *ListVolumesRequest) String() string {
 func (*ListVolumesRequest) ProtoMessage() {}
 
 func (x *ListVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[49]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3821,7 +5443,7 @@ func (x *ListVolumesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesRequest.ProtoReflect.Descriptor instead.
 func (*ListVolumesRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{49}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *ListVolumesRequest) GetPageSize() int32 {
@@ -3893,7 +5515,7 @@ type ListVolumesResponse struct {
 
 func (x *ListVolumesResponse) Reset() {
 	*x = ListVolumesResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[50]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3905,7 +5527,7 @@ func (x *ListVolumesResponse) String() string {
 func (*ListVolumesResponse) ProtoMessage() {}
 
 func (x *ListVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[50]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3918,7 +5540,7 @@ func (x *ListVolumesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesResponse.ProtoReflect.Descriptor instead.
 func (*ListVolumesResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{50}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *ListVolumesResponse) GetVolumes() []*Volume {
@@ -3946,7 +5568,7 @@ type ListVolumesByThreadRequest struct {
 
 func (x *ListVolumesByThreadRequest) Reset() {
 	*x = ListVolumesByThreadRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[51]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3958,7 +5580,7 @@ func (x *ListVolumesByThreadRequest) String() string {
 func (*ListVolumesByThreadRequest) ProtoMessage() {}
 
 func (x *ListVolumesByThreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[51]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3971,7 +5593,7 @@ func (x *ListVolumesByThreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesByThreadRequest.ProtoReflect.Descriptor instead.
 func (*ListVolumesByThreadRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{51}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *ListVolumesByThreadRequest) GetThreadId() string {
@@ -4005,7 +5627,7 @@ type ListVolumesByThreadResponse struct {
 
 func (x *ListVolumesByThreadResponse) Reset() {
 	*x = ListVolumesByThreadResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[52]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4017,7 +5639,7 @@ func (x *ListVolumesByThreadResponse) String() string {
 func (*ListVolumesByThreadResponse) ProtoMessage() {}
 
 func (x *ListVolumesByThreadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[52]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4030,7 +5652,7 @@ func (x *ListVolumesByThreadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVolumesByThreadResponse.ProtoReflect.Descriptor instead.
 func (*ListVolumesByThreadResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{52}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *ListVolumesByThreadResponse) GetVolumes() []*Volume {
@@ -4047,6 +5669,127 @@ func (x *ListVolumesByThreadResponse) GetNextPageToken() string {
 	return ""
 }
 
+type ListVolumesByAgentInstanceRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	AgentInstanceId string                 `protobuf:"bytes,1,opt,name=agent_instance_id,json=agentInstanceId,proto3" json:"agent_instance_id,omitempty"`
+	PageSize        int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken       string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// Optional status filter. An empty list returns volumes for all statuses.
+	Statuses      []VolumeStatus `protobuf:"varint,4,rep,packed,name=statuses,proto3,enum=agynio.api.runners.v1.VolumeStatus" json:"statuses,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListVolumesByAgentInstanceRequest) Reset() {
+	*x = ListVolumesByAgentInstanceRequest{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[74]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListVolumesByAgentInstanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListVolumesByAgentInstanceRequest) ProtoMessage() {}
+
+func (x *ListVolumesByAgentInstanceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[74]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListVolumesByAgentInstanceRequest.ProtoReflect.Descriptor instead.
+func (*ListVolumesByAgentInstanceRequest) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{74}
+}
+
+func (x *ListVolumesByAgentInstanceRequest) GetAgentInstanceId() string {
+	if x != nil {
+		return x.AgentInstanceId
+	}
+	return ""
+}
+
+func (x *ListVolumesByAgentInstanceRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListVolumesByAgentInstanceRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListVolumesByAgentInstanceRequest) GetStatuses() []VolumeStatus {
+	if x != nil {
+		return x.Statuses
+	}
+	return nil
+}
+
+type ListVolumesByAgentInstanceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Volumes       []*Volume              `protobuf:"bytes,1,rep,name=volumes,proto3" json:"volumes,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListVolumesByAgentInstanceResponse) Reset() {
+	*x = ListVolumesByAgentInstanceResponse{}
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[75]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListVolumesByAgentInstanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListVolumesByAgentInstanceResponse) ProtoMessage() {}
+
+func (x *ListVolumesByAgentInstanceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[75]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListVolumesByAgentInstanceResponse.ProtoReflect.Descriptor instead.
+func (*ListVolumesByAgentInstanceResponse) Descriptor() ([]byte, []int) {
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{75}
+}
+
+func (x *ListVolumesByAgentInstanceResponse) GetVolumes() []*Volume {
+	if x != nil {
+		return x.Volumes
+	}
+	return nil
+}
+
+func (x *ListVolumesByAgentInstanceResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 type BatchUpdateVolumeSampledAtRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Entries       []*SampledAtEntry      `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
@@ -4056,7 +5799,7 @@ type BatchUpdateVolumeSampledAtRequest struct {
 
 func (x *BatchUpdateVolumeSampledAtRequest) Reset() {
 	*x = BatchUpdateVolumeSampledAtRequest{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[53]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4068,7 +5811,7 @@ func (x *BatchUpdateVolumeSampledAtRequest) String() string {
 func (*BatchUpdateVolumeSampledAtRequest) ProtoMessage() {}
 
 func (x *BatchUpdateVolumeSampledAtRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[53]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4081,7 +5824,7 @@ func (x *BatchUpdateVolumeSampledAtRequest) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use BatchUpdateVolumeSampledAtRequest.ProtoReflect.Descriptor instead.
 func (*BatchUpdateVolumeSampledAtRequest) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{53}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *BatchUpdateVolumeSampledAtRequest) GetEntries() []*SampledAtEntry {
@@ -4099,7 +5842,7 @@ type BatchUpdateVolumeSampledAtResponse struct {
 
 func (x *BatchUpdateVolumeSampledAtResponse) Reset() {
 	*x = BatchUpdateVolumeSampledAtResponse{}
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[54]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4111,7 +5854,7 @@ func (x *BatchUpdateVolumeSampledAtResponse) String() string {
 func (*BatchUpdateVolumeSampledAtResponse) ProtoMessage() {}
 
 func (x *BatchUpdateVolumeSampledAtResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[54]
+	mi := &file_agynio_api_runners_v1_runners_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4124,7 +5867,7 @@ func (x *BatchUpdateVolumeSampledAtResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use BatchUpdateVolumeSampledAtResponse.ProtoReflect.Descriptor instead.
 func (*BatchUpdateVolumeSampledAtResponse) Descriptor() ([]byte, []int) {
-	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{54}
+	return file_agynio_api_runners_v1_runners_proto_rawDescGZIP(), []int{77}
 }
 
 var File_agynio_api_runners_v1_runners_proto protoreflect.FileDescriptor
@@ -4138,7 +5881,13 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"[\n" +
+	"updated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xa2\x01\n" +
+	"\x10ComputeResources\x12!\n" +
+	"\frequests_cpu\x18\x01 \x01(\tR\vrequestsCpu\x12'\n" +
+	"\x0frequests_memory\x18\x02 \x01(\tR\x0erequestsMemory\x12\x1d\n" +
+	"\n" +
+	"limits_cpu\x18\x03 \x01(\tR\tlimitsCpu\x12#\n" +
+	"\rlimits_memory\x18\x04 \x01(\tR\flimitsMemory\"[\n" +
 	"\x0eSampledAtEntry\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
@@ -4207,7 +5956,112 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\ridentity_json\x18\x01 \x01(\fR\fidentityJson\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1f\n" +
 	"\videntity_id\x18\x03 \x01(\tR\n" +
-	"identityId\"\x9b\x04\n" +
+	"identityId\"\xd8\x02\n" +
+	"\x06Flavor\x129\n" +
+	"\x04meta\x18\x01 \x01(\v2!.agynio.api.runners.v1.EntityMetaB\x02\x18\x01R\x04meta\x12\x1b\n" +
+	"\trunner_id\x18\x02 \x01(\tR\brunnerId\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12E\n" +
+	"\tresources\x18\x04 \x01(\v2'.agynio.api.runners.v1.ComputeResourcesR\tresources\x12\x18\n" +
+	"\adefault\x18\x05 \x01(\bR\adefault\x12\x1e\n" +
+	"\n" +
+	"deprecated\x18\x06 \x01(\bR\n" +
+	"deprecated\x12,\n" +
+	"\x0forganization_id\x18\a \x01(\tH\x00R\x0eorganizationId\x88\x01\x01\x12\x1f\n" +
+	"\vrunner_name\x18\b \x01(\tR\n" +
+	"runnerNameB\x12\n" +
+	"\x10_organization_id\"\xa7\x01\n" +
+	"\x13CreateFlavorRequest\x12\x1b\n" +
+	"\trunner_id\x18\x01 \x01(\tR\brunnerId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12E\n" +
+	"\tresources\x18\x03 \x01(\v2'.agynio.api.runners.v1.ComputeResourcesR\tresources\x12\x18\n" +
+	"\adefault\x18\x04 \x01(\bR\adefault\"M\n" +
+	"\x14CreateFlavorResponse\x125\n" +
+	"\x06flavor\x18\x01 \x01(\v2\x1d.agynio.api.runners.v1.FlavorR\x06flavor\"\"\n" +
+	"\x10GetFlavorRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"J\n" +
+	"\x11GetFlavorResponse\x125\n" +
+	"\x06flavor\x18\x01 \x01(\v2\x1d.agynio.api.runners.v1.FlavorR\x06flavor\"\x80\x02\n" +
+	"\x13UpdateFlavorRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\x04name\x18\x02 \x01(\tH\x00R\x04name\x88\x01\x01\x12J\n" +
+	"\tresources\x18\x03 \x01(\v2'.agynio.api.runners.v1.ComputeResourcesH\x01R\tresources\x88\x01\x01\x12\x1d\n" +
+	"\adefault\x18\x04 \x01(\bH\x02R\adefault\x88\x01\x01\x12#\n" +
+	"\n" +
+	"deprecated\x18\x05 \x01(\bH\x03R\n" +
+	"deprecated\x88\x01\x01B\a\n" +
+	"\x05_nameB\f\n" +
+	"\n" +
+	"_resourcesB\n" +
+	"\n" +
+	"\b_defaultB\r\n" +
+	"\v_deprecated\"M\n" +
+	"\x14UpdateFlavorResponse\x125\n" +
+	"\x06flavor\x18\x01 \x01(\v2\x1d.agynio.api.runners.v1.FlavorR\x06flavor\"%\n" +
+	"\x13DeleteFlavorRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x16\n" +
+	"\x14DeleteFlavorResponse\"\x8d\x02\n" +
+	"\x12ListFlavorsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\x12 \n" +
+	"\trunner_id\x18\x03 \x01(\tH\x00R\brunnerId\x88\x01\x01\x12,\n" +
+	"\x0forganization_id\x18\x04 \x01(\tH\x01R\x0eorganizationId\x88\x01\x01\x122\n" +
+	"\x12include_deprecated\x18\x05 \x01(\bH\x02R\x11includeDeprecated\x88\x01\x01B\f\n" +
+	"\n" +
+	"_runner_idB\x12\n" +
+	"\x10_organization_idB\x15\n" +
+	"\x13_include_deprecated\"v\n" +
+	"\x13ListFlavorsResponse\x127\n" +
+	"\aflavors\x18\x01 \x03(\v2\x1d.agynio.api.runners.v1.FlavorR\aflavors\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xdc\x01\n" +
+	"\fStorageClass\x12\x1b\n" +
+	"\trunner_id\x18\x01 \x01(\tR\brunnerId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x18\n" +
+	"\adefault\x18\x03 \x01(\bR\adefault\x12\x1e\n" +
+	"\n" +
+	"deprecated\x18\x04 \x01(\bR\n" +
+	"deprecated\x12,\n" +
+	"\x0forganization_id\x18\x05 \x01(\tH\x00R\x0eorganizationId\x88\x01\x01\x12\x1f\n" +
+	"\vrunner_name\x18\x06 \x01(\tR\n" +
+	"runnerNameB\x12\n" +
+	"\x10_organization_id\"\xa2\x01\n" +
+	"\vFlavorEntry\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12E\n" +
+	"\tresources\x18\x02 \x01(\v2'.agynio.api.runners.v1.ComputeResourcesR\tresources\x12\x18\n" +
+	"\adefault\x18\x03 \x01(\bR\adefault\x12\x1e\n" +
+	"\n" +
+	"deprecated\x18\x04 \x01(\bR\n" +
+	"deprecated\"a\n" +
+	"\x11StorageClassEntry\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\adefault\x18\x02 \x01(\bR\adefault\x12\x1e\n" +
+	"\n" +
+	"deprecated\x18\x03 \x01(\bR\n" +
+	"deprecated\"\x93\x02\n" +
+	"\x1aReportRunnerCatalogRequest\x12\x1b\n" +
+	"\trunner_id\x18\x01 \x01(\tR\brunnerId\x12#\n" +
+	"\rservice_token\x18\x02 \x01(\tR\fserviceToken\x12<\n" +
+	"\aflavors\x18\x03 \x03(\v2\".agynio.api.runners.v1.FlavorEntryR\aflavors\x12Q\n" +
+	"\x0fstorage_classes\x18\x04 \x03(\v2(.agynio.api.runners.v1.StorageClassEntryR\x0estorageClasses\x12\"\n" +
+	"\fcapabilities\x18\x05 \x03(\tR\fcapabilities\"\x9b\x01\n" +
+	"\x1bReportRunnerCatalogResponse\x12!\n" +
+	"\fflavor_count\x18\x01 \x01(\x05R\vflavorCount\x12.\n" +
+	"\x13storage_class_count\x18\x02 \x01(\x05R\x11storageClassCount\x12)\n" +
+	"\x10capability_count\x18\x03 \x01(\x05R\x0fcapabilityCount\"\x94\x02\n" +
+	"\x19ListStorageClassesRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\x12 \n" +
+	"\trunner_id\x18\x03 \x01(\tH\x00R\brunnerId\x88\x01\x01\x12,\n" +
+	"\x0forganization_id\x18\x04 \x01(\tH\x01R\x0eorganizationId\x88\x01\x01\x122\n" +
+	"\x12include_deprecated\x18\x05 \x01(\bH\x02R\x11includeDeprecated\x88\x01\x01B\f\n" +
+	"\n" +
+	"_runner_idB\x12\n" +
+	"\x10_organization_idB\x15\n" +
+	"\x13_include_deprecated\"\x92\x01\n" +
+	"\x1aListStorageClassesResponse\x12L\n" +
+	"\x0fstorage_classes\x18\x01 \x03(\v2#.agynio.api.runners.v1.StorageClassR\x0estorageClasses\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\x9b\x04\n" +
 	"\tContainer\x12!\n" +
 	"\fcontainer_id\x18\x01 \x01(\tR\vcontainerId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x128\n" +
@@ -4229,12 +6083,12 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\n" +
 	"_exit_codeB\r\n" +
 	"\v_started_atB\x0e\n" +
-	"\f_finished_at\"\xd1\b\n" +
+	"\f_finished_at\"\xd0\v\n" +
 	"\bWorkload\x125\n" +
 	"\x04meta\x18\x01 \x01(\v2!.agynio.api.runners.v1.EntityMetaR\x04meta\x12\x1b\n" +
 	"\trunner_id\x18\x02 \x01(\tR\brunnerId\x12\x1b\n" +
-	"\tthread_id\x18\x03 \x01(\tR\bthreadId\x12\x19\n" +
-	"\bagent_id\x18\x04 \x01(\tR\aagentId\x12'\n" +
+	"\tthread_id\x18\x03 \x01(\tR\bthreadId\x12\x1d\n" +
+	"\bagent_id\x18\x04 \x01(\tB\x02\x18\x01R\aagentId\x12'\n" +
 	"\x0forganization_id\x18\x05 \x01(\tR\x0eorganizationId\x12=\n" +
 	"\x06status\x18\x06 \x01(\x0e2%.agynio.api.runners.v1.WorkloadStatusR\x06status\x12@\n" +
 	"\n" +
@@ -4249,25 +6103,38 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\n" +
 	"removed_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampH\x02R\tremovedAt\x88\x01\x01\x128\n" +
 	"\x18allocated_cpu_millicores\x18\r \x01(\x05R\x16allocatedCpuMillicores\x12.\n" +
-	"\x13allocated_ram_bytes\x18\x0e \x01(\x03R\x11allocatedRamBytes\x12X\n" +
+	"\x13allocated_ram_bytes\x18\x0e \x01(\x03R\x11allocatedRamBytes\x12\x16\n" +
+	"\x06flavor\x18\x1a \x01(\tR\x06flavor\x12X\n" +
 	"\x0efailure_reason\x18\x0f \x01(\x0e2,.agynio.api.runners.v1.WorkloadFailureReasonH\x03R\rfailureReason\x88\x01\x01\x12,\n" +
-	"\x0ffailure_message\x18\x10 \x01(\tH\x04R\x0efailureMessage\x88\x01\x01\x12\x1d\n" +
+	"\x0ffailure_message\x18\x10 \x01(\tH\x04R\x0efailureMessage\x88\x01\x01\x12!\n" +
 	"\n" +
-	"agent_name\x18\x11 \x01(\tR\tagentName\x12\x1f\n" +
+	"agent_name\x18\x11 \x01(\tB\x02\x18\x01R\tagentName\x12\x1f\n" +
 	"\vrunner_name\x18\x12 \x01(\tR\n" +
 	"runnerName\x12J\n" +
 	"\vagent_state\x18\x13 \x01(\x0e2).agynio.api.runners.v1.WorkloadAgentStateR\n" +
-	"agentStateB\x0e\n" +
+	"agentState\x12F\n" +
+	"\n" +
+	"owner_kind\x18\x14 \x01(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\townerKind\x12\x19\n" +
+	"\bowner_id\x18\x15 \x01(\tR\aownerId\x12\"\n" +
+	"\n" +
+	"owner_name\x18\x16 \x01(\tH\x05R\townerName\x88\x01\x01\x12)\n" +
+	"\x0eagent_class_id\x18\x17 \x01(\tH\x06R\fagentClassId\x88\x01\x01\x12-\n" +
+	"\x10agent_class_name\x18\x18 \x01(\tH\aR\x0eagentClassName\x88\x01\x01\x12/\n" +
+	"\x11agent_instance_id\x18\x19 \x01(\tH\bR\x0fagentInstanceId\x88\x01\x01B\x0e\n" +
 	"\f_instance_idB\x1b\n" +
 	"\x19_last_metering_sampled_atB\r\n" +
 	"\v_removed_atB\x11\n" +
 	"\x0f_failure_reasonB\x12\n" +
-	"\x10_failure_message\"\xba\x03\n" +
+	"\x10_failure_messageB\r\n" +
+	"\v_owner_nameB\x11\n" +
+	"\x0f_agent_class_idB\x13\n" +
+	"\x11_agent_class_nameB\x14\n" +
+	"\x12_agent_instance_id\"\xbe\x05\n" +
 	"\x15CreateWorkloadRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\trunner_id\x18\x02 \x01(\tR\brunnerId\x12\x1b\n" +
-	"\tthread_id\x18\x03 \x01(\tR\bthreadId\x12\x19\n" +
-	"\bagent_id\x18\x04 \x01(\tR\aagentId\x12'\n" +
+	"\tthread_id\x18\x03 \x01(\tR\bthreadId\x12\x1d\n" +
+	"\bagent_id\x18\x04 \x01(\tB\x02\x18\x01R\aagentId\x12'\n" +
 	"\x0forganization_id\x18\x05 \x01(\tR\x0eorganizationId\x12=\n" +
 	"\x06status\x18\x06 \x01(\x0e2%.agynio.api.runners.v1.WorkloadStatusR\x06status\x12@\n" +
 	"\n" +
@@ -4276,7 +6143,15 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x10ziti_identity_id\x18\b \x01(\tR\x0ezitiIdentityId\x128\n" +
 	"\x18allocated_cpu_millicores\x18\t \x01(\x05R\x16allocatedCpuMillicores\x12.\n" +
 	"\x13allocated_ram_bytes\x18\n" +
-	" \x01(\x03R\x11allocatedRamBytes\"U\n" +
+	" \x01(\x03R\x11allocatedRamBytes\x12F\n" +
+	"\n" +
+	"owner_kind\x18\v \x01(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\townerKind\x12\x19\n" +
+	"\bowner_id\x18\f \x01(\tR\aownerId\x12)\n" +
+	"\x0eagent_class_id\x18\r \x01(\tH\x00R\fagentClassId\x88\x01\x01\x12/\n" +
+	"\x11agent_instance_id\x18\x0e \x01(\tH\x01R\x0fagentInstanceId\x88\x01\x01\x12\x16\n" +
+	"\x06flavor\x18\x0f \x01(\tR\x06flavorB\x11\n" +
+	"\x0f_agent_class_idB\x14\n" +
+	"\x12_agent_instance_id\"U\n" +
 	"\x16CreateWorkloadResponse\x12;\n" +
 	"\bworkload\x18\x01 \x01(\v2\x1f.agynio.api.runners.v1.WorkloadR\bworkload\"\xe3\x04\n" +
 	"\x15UpdateWorkloadRequest\x12\x0e\n" +
@@ -4320,7 +6195,7 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\bworkload\x18\x01 \x01(\v2\x1f.agynio.api.runners.v1.WorkloadR\bworkload\"\x9c\x01\n" +
 	"\x11ListWorkloadsSort\x12C\n" +
 	"\x05field\x18\x01 \x01(\x0e2-.agynio.api.runners.v1.ListWorkloadsSortFieldR\x05field\x12B\n" +
-	"\tdirection\x18\x02 \x01(\x0e2$.agynio.api.runners.v1.SortDirectionR\tdirection\"\x8d\x03\n" +
+	"\tdirection\x18\x02 \x01(\x0e2$.agynio.api.runners.v1.SortDirectionR\tdirection\"\xfa\x03\n" +
 	"\x13ListWorkloadsFilter\x12\x1e\n" +
 	"\vagent_id_in\x18\x01 \x03(\tR\tagentIdIn\x12 \n" +
 	"\frunner_id_in\x18\x02 \x03(\tR\n" +
@@ -4328,7 +6203,9 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\tstatus_in\x18\x03 \x03(\x0e2%.agynio.api.runners.v1.WorkloadStatusR\bstatusIn\x12D\n" +
 	"\rstarted_after\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\fstartedAfter\x88\x01\x01\x12F\n" +
 	"\x0estarted_before\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\rstartedBefore\x88\x01\x01\x12*\n" +
-	"\x0epending_sample\x18\x06 \x01(\bH\x02R\rpendingSample\x88\x01\x01B\x10\n" +
+	"\x0epending_sample\x18\x06 \x01(\bH\x02R\rpendingSample\x88\x01\x01\x12K\n" +
+	"\rowner_kind_in\x18\a \x03(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\vownerKindIn\x12\x1e\n" +
+	"\vowner_id_in\x18\b \x03(\tR\townerIdInB\x10\n" +
 	"\x0e_started_afterB\x11\n" +
 	"\x0f_started_beforeB\x11\n" +
 	"\x0f_pending_sample\"\xe7\x01\n" +
@@ -4341,6 +6218,15 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\bstatuses\x18\x05 \x03(\x0e2%.agynio.api.runners.v1.WorkloadStatusR\bstatusesB\v\n" +
 	"\t_agent_id\"\x86\x01\n" +
 	"\x1dListWorkloadsByThreadResponse\x12=\n" +
+	"\tworkloads\x18\x01 \x03(\v2\x1f.agynio.api.runners.v1.WorkloadR\tworkloads\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xd0\x01\n" +
+	"#ListWorkloadsByAgentInstanceRequest\x12*\n" +
+	"\x11agent_instance_id\x18\x01 \x01(\tR\x0fagentInstanceId\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x03 \x01(\tR\tpageToken\x12A\n" +
+	"\bstatuses\x18\x04 \x03(\x0e2%.agynio.api.runners.v1.WorkloadStatusR\bstatuses\"\x8d\x01\n" +
+	"$ListWorkloadsByAgentInstanceResponse\x12=\n" +
 	"\tworkloads\x18\x01 \x03(\v2\x1f.agynio.api.runners.v1.WorkloadR\tworkloads\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xd4\x03\n" +
 	"\x14ListWorkloadsRequest\x12\x1b\n" +
@@ -4362,42 +6248,66 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"f\n" +
 	"#BatchUpdateWorkloadSampledAtRequest\x12?\n" +
 	"\aentries\x18\x01 \x03(\v2%.agynio.api.runners.v1.SampledAtEntryR\aentries\"&\n" +
-	"$BatchUpdateWorkloadSampledAtResponse\"\x92\x05\n" +
+	"$BatchUpdateWorkloadSampledAtResponse\"\xdf\b\n" +
 	"\x06Volume\x125\n" +
 	"\x04meta\x18\x01 \x01(\v2!.agynio.api.runners.v1.EntityMetaR\x04meta\x12$\n" +
 	"\vinstance_id\x18\x02 \x01(\tH\x00R\n" +
-	"instanceId\x88\x01\x01\x12\x1b\n" +
-	"\tvolume_id\x18\x03 \x01(\tR\bvolumeId\x12\x1b\n" +
+	"instanceId\x88\x01\x01\x12\x1f\n" +
+	"\tvolume_id\x18\x03 \x01(\tB\x02\x18\x01R\bvolumeId\x12\x1b\n" +
 	"\tthread_id\x18\x04 \x01(\tR\bthreadId\x12\x1b\n" +
-	"\trunner_id\x18\x05 \x01(\tR\brunnerId\x12\x19\n" +
-	"\bagent_id\x18\x06 \x01(\tR\aagentId\x12'\n" +
+	"\trunner_id\x18\x05 \x01(\tR\brunnerId\x12\x1d\n" +
+	"\bagent_id\x18\x06 \x01(\tB\x02\x18\x01R\aagentId\x12'\n" +
 	"\x0forganization_id\x18\a \x01(\tR\x0eorganizationId\x12\x17\n" +
 	"\asize_gb\x18\b \x01(\tR\x06sizeGb\x12;\n" +
 	"\x06status\x18\t \x01(\x0e2#.agynio.api.runners.v1.VolumeStatusR\x06status\x12>\n" +
 	"\n" +
 	"removed_at\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tremovedAt\x88\x01\x01\x12X\n" +
-	"\x18last_metering_sampled_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampH\x02R\x15lastMeteringSampledAt\x88\x01\x01\x12\x1f\n" +
-	"\vvolume_name\x18\f \x01(\tR\n" +
+	"\x18last_metering_sampled_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampH\x02R\x15lastMeteringSampledAt\x88\x01\x01\x12#\n" +
+	"\vvolume_name\x18\f \x01(\tB\x02\x18\x01R\n" +
 	"volumeName\x12C\n" +
-	"\vattachments\x18\r \x03(\v2!.agynio.api.runners.v1.AttachmentR\vattachmentsB\x0e\n" +
+	"\vattachments\x18\r \x03(\v2!.agynio.api.runners.v1.AttachmentR\vattachments\x12F\n" +
+	"\n" +
+	"owner_kind\x18\x0e \x01(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\townerKind\x12\x19\n" +
+	"\bowner_id\x18\x0f \x01(\tR\aownerId\x12\"\n" +
+	"\n" +
+	"owner_name\x18\x10 \x01(\tH\x03R\townerName\x88\x01\x01\x125\n" +
+	"\x14volume_definition_id\x18\x11 \x01(\tH\x04R\x12volumeDefinitionId\x88\x01\x01\x12)\n" +
+	"\x0eagent_class_id\x18\x12 \x01(\tH\x05R\fagentClassId\x88\x01\x01\x129\n" +
+	"\x16volume_definition_name\x18\x13 \x01(\tH\x06R\x14volumeDefinitionName\x88\x01\x01\x12/\n" +
+	"\x11agent_instance_id\x18\x14 \x01(\tH\aR\x0fagentInstanceId\x88\x01\x01B\x0e\n" +
 	"\f_instance_idB\r\n" +
 	"\v_removed_atB\x1b\n" +
-	"\x19_last_metering_sampled_at\"k\n" +
+	"\x19_last_metering_sampled_atB\r\n" +
+	"\v_owner_nameB\x17\n" +
+	"\x15_volume_definition_idB\x11\n" +
+	"\x0f_agent_class_idB\x19\n" +
+	"\x17_volume_definition_nameB\x14\n" +
+	"\x12_agent_instance_id\"k\n" +
 	"\n" +
 	"Attachment\x129\n" +
 	"\x04kind\x18\x01 \x01(\x0e2%.agynio.api.runners.v1.AttachmentKindR\x04kind\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\"\x96\x02\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\"\xd6\x04\n" +
 	"\x13CreateVolumeRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
-	"\tvolume_id\x18\x02 \x01(\tR\bvolumeId\x12\x1b\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\tvolume_id\x18\x02 \x01(\tB\x02\x18\x01R\bvolumeId\x12\x1b\n" +
 	"\tthread_id\x18\x03 \x01(\tR\bthreadId\x12\x1b\n" +
-	"\trunner_id\x18\x04 \x01(\tR\brunnerId\x12\x19\n" +
-	"\bagent_id\x18\x05 \x01(\tR\aagentId\x12'\n" +
+	"\trunner_id\x18\x04 \x01(\tR\brunnerId\x12\x1d\n" +
+	"\bagent_id\x18\x05 \x01(\tB\x02\x18\x01R\aagentId\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x12\x17\n" +
 	"\asize_gb\x18\a \x01(\tR\x06sizeGb\x12;\n" +
-	"\x06status\x18\b \x01(\x0e2#.agynio.api.runners.v1.VolumeStatusR\x06status\"M\n" +
+	"\x06status\x18\b \x01(\x0e2#.agynio.api.runners.v1.VolumeStatusR\x06status\x12F\n" +
+	"\n" +
+	"owner_kind\x18\t \x01(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\townerKind\x12\x19\n" +
+	"\bowner_id\x18\n" +
+	" \x01(\tR\aownerId\x125\n" +
+	"\x14volume_definition_id\x18\v \x01(\tH\x00R\x12volumeDefinitionId\x88\x01\x01\x12)\n" +
+	"\x0eagent_class_id\x18\f \x01(\tH\x01R\fagentClassId\x88\x01\x01\x12/\n" +
+	"\x11agent_instance_id\x18\r \x01(\tH\x02R\x0fagentInstanceId\x88\x01\x01B\x17\n" +
+	"\x15_volume_definition_idB\x11\n" +
+	"\x0f_agent_class_idB\x14\n" +
+	"\x12_agent_instance_id\"M\n" +
 	"\x14CreateVolumeResponse\x125\n" +
 	"\x06volume\x18\x01 \x01(\v2\x1d.agynio.api.runners.v1.VolumeR\x06volume\"\xee\x02\n" +
 	"\x13UpdateVolumeRequest\x12\x0e\n" +
@@ -4420,14 +6330,16 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x06volume\x18\x01 \x01(\v2\x1d.agynio.api.runners.v1.VolumeR\x06volume\"\x98\x01\n" +
 	"\x0fListVolumesSort\x12A\n" +
 	"\x05field\x18\x01 \x01(\x0e2+.agynio.api.runners.v1.ListVolumesSortFieldR\x05field\x12B\n" +
-	"\tdirection\x18\x02 \x01(\x0e2$.agynio.api.runners.v1.SortDirectionR\tdirection\"\xeb\x02\n" +
+	"\tdirection\x18\x02 \x01(\x0e2$.agynio.api.runners.v1.SortDirectionR\tdirection\"\xd8\x03\n" +
 	"\x11ListVolumesFilter\x12@\n" +
 	"\tstatus_in\x18\x01 \x03(\x0e2#.agynio.api.runners.v1.VolumeStatusR\bstatusIn\x12 \n" +
 	"\frunner_id_in\x18\x02 \x03(\tR\n" +
 	"runnerIdIn\x12`\n" +
 	"\x13attached_to_kind_in\x18\x03 \x03(\x0e21.agynio.api.runners.v1.VolumeAttachmentFilterKindR\x10attachedToKindIn\x12*\n" +
 	"\x0epending_sample\x18\x04 \x01(\bH\x00R\rpendingSample\x88\x01\x01\x127\n" +
-	"\x15volume_name_substring\x18\x05 \x01(\tH\x01R\x13volumeNameSubstring\x88\x01\x01B\x11\n" +
+	"\x15volume_name_substring\x18\x05 \x01(\tH\x01R\x13volumeNameSubstring\x88\x01\x01\x12K\n" +
+	"\rowner_kind_in\x18\x06 \x03(\x0e2'.agynio.api.runners.v1.RuntimeOwnerKindR\vownerKindIn\x12\x1e\n" +
+	"\vowner_id_in\x18\a \x03(\tR\townerIdInB\x11\n" +
 	"\x0f_pending_sampleB\x18\n" +
 	"\x16_volume_name_substring\"\xcc\x03\n" +
 	"\x12ListVolumesRequest\x12\x1b\n" +
@@ -4454,6 +6366,15 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"page_token\x18\x03 \x01(\tR\tpageToken\"~\n" +
 	"\x1bListVolumesByThreadResponse\x127\n" +
 	"\avolumes\x18\x01 \x03(\v2\x1d.agynio.api.runners.v1.VolumeR\avolumes\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xcc\x01\n" +
+	"!ListVolumesByAgentInstanceRequest\x12*\n" +
+	"\x11agent_instance_id\x18\x01 \x01(\tR\x0fagentInstanceId\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x03 \x01(\tR\tpageToken\x12?\n" +
+	"\bstatuses\x18\x04 \x03(\x0e2#.agynio.api.runners.v1.VolumeStatusR\bstatuses\"\x85\x01\n" +
+	"\"ListVolumesByAgentInstanceResponse\x127\n" +
+	"\avolumes\x18\x01 \x03(\v2\x1d.agynio.api.runners.v1.VolumeR\avolumes\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"d\n" +
 	"!BatchUpdateVolumeSampledAtRequest\x12?\n" +
 	"\aentries\x18\x01 \x03(\v2%.agynio.api.runners.v1.SampledAtEntryR\aentries\"$\n" +
@@ -4466,7 +6387,11 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x19RUNNER_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15RUNNER_STATUS_PENDING\x10\x01\x12\x1a\n" +
 	"\x16RUNNER_STATUS_ENROLLED\x10\x02\x12\x19\n" +
-	"\x15RUNNER_STATUS_OFFLINE\x10\x03*\xc3\x01\n" +
+	"\x15RUNNER_STATUS_OFFLINE\x10\x03*}\n" +
+	"\x10RuntimeOwnerKind\x12\"\n" +
+	"\x1eRUNTIME_OWNER_KIND_UNSPECIFIED\x10\x00\x12%\n" +
+	"!RUNTIME_OWNER_KIND_AGENT_INSTANCE\x10\x01\x12\x1e\n" +
+	"\x1aRUNTIME_OWNER_KIND_SANDBOX\x10\x02*\xc3\x01\n" +
 	"\x0eWorkloadStatus\x12\x1f\n" +
 	"\x1bWORKLOAD_STATUS_UNSPECIFIED\x10\x00\x12\x1c\n" +
 	"\x18WORKLOAD_STATUS_STARTING\x10\x01\x12\x1b\n" +
@@ -4525,7 +6450,7 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\x1cLIST_VOLUMES_SORT_FIELD_NAME\x10\x01\x12 \n" +
 	"\x1cLIST_VOLUMES_SORT_FIELD_SIZE\x10\x02\x12\"\n" +
 	"\x1eLIST_VOLUMES_SORT_FIELD_STATUS\x10\x03\x12#\n" +
-	"\x1fLIST_VOLUMES_SORT_FIELD_CREATED\x10\x042\xd1\x14\n" +
+	"\x1fLIST_VOLUMES_SORT_FIELD_CREATED\x10\x042\x8d\x1d\n" +
 	"\x0eRunnersService\x12m\n" +
 	"\x0eRegisterRunner\x12,.agynio.api.runners.v1.RegisterRunnerRequest\x1a-.agynio.api.runners.v1.RegisterRunnerResponse\x12^\n" +
 	"\tGetRunner\x12'.agynio.api.runners.v1.GetRunnerRequest\x1a(.agynio.api.runners.v1.GetRunnerResponse\x12d\n" +
@@ -4533,14 +6458,22 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\fUpdateRunner\x12*.agynio.api.runners.v1.UpdateRunnerRequest\x1a+.agynio.api.runners.v1.UpdateRunnerResponse\x12g\n" +
 	"\fDeleteRunner\x12*.agynio.api.runners.v1.DeleteRunnerRequest\x1a+.agynio.api.runners.v1.DeleteRunnerResponse\x12\x7f\n" +
 	"\x14ValidateServiceToken\x122.agynio.api.runners.v1.ValidateServiceTokenRequest\x1a3.agynio.api.runners.v1.ValidateServiceTokenResponse\x12g\n" +
-	"\fEnrollRunner\x12*.agynio.api.runners.v1.EnrollRunnerRequest\x1a+.agynio.api.runners.v1.EnrollRunnerResponse\x12m\n" +
+	"\fEnrollRunner\x12*.agynio.api.runners.v1.EnrollRunnerRequest\x1a+.agynio.api.runners.v1.EnrollRunnerResponse\x12l\n" +
+	"\fCreateFlavor\x12*.agynio.api.runners.v1.CreateFlavorRequest\x1a+.agynio.api.runners.v1.CreateFlavorResponse\"\x03\x88\x02\x01\x12c\n" +
+	"\tGetFlavor\x12'.agynio.api.runners.v1.GetFlavorRequest\x1a(.agynio.api.runners.v1.GetFlavorResponse\"\x03\x88\x02\x01\x12l\n" +
+	"\fUpdateFlavor\x12*.agynio.api.runners.v1.UpdateFlavorRequest\x1a+.agynio.api.runners.v1.UpdateFlavorResponse\"\x03\x88\x02\x01\x12l\n" +
+	"\fDeleteFlavor\x12*.agynio.api.runners.v1.DeleteFlavorRequest\x1a+.agynio.api.runners.v1.DeleteFlavorResponse\"\x03\x88\x02\x01\x12d\n" +
+	"\vListFlavors\x12).agynio.api.runners.v1.ListFlavorsRequest\x1a*.agynio.api.runners.v1.ListFlavorsResponse\x12|\n" +
+	"\x13ReportRunnerCatalog\x121.agynio.api.runners.v1.ReportRunnerCatalogRequest\x1a2.agynio.api.runners.v1.ReportRunnerCatalogResponse\x12y\n" +
+	"\x12ListStorageClasses\x120.agynio.api.runners.v1.ListStorageClassesRequest\x1a1.agynio.api.runners.v1.ListStorageClassesResponse\x12m\n" +
 	"\x0eCreateWorkload\x12,.agynio.api.runners.v1.CreateWorkloadRequest\x1a-.agynio.api.runners.v1.CreateWorkloadResponse\x12m\n" +
 	"\x0eUpdateWorkload\x12,.agynio.api.runners.v1.UpdateWorkloadRequest\x1a-.agynio.api.runners.v1.UpdateWorkloadResponse\x12\x7f\n" +
 	"\x14UpdateWorkloadStatus\x122.agynio.api.runners.v1.UpdateWorkloadStatusRequest\x1a3.agynio.api.runners.v1.UpdateWorkloadStatusResponse\x12j\n" +
 	"\rTouchWorkload\x12+.agynio.api.runners.v1.TouchWorkloadRequest\x1a,.agynio.api.runners.v1.TouchWorkloadResponse\x12m\n" +
 	"\x0eDeleteWorkload\x12,.agynio.api.runners.v1.DeleteWorkloadRequest\x1a-.agynio.api.runners.v1.DeleteWorkloadResponse\x12d\n" +
 	"\vGetWorkload\x12).agynio.api.runners.v1.GetWorkloadRequest\x1a*.agynio.api.runners.v1.GetWorkloadResponse\x12\x82\x01\n" +
-	"\x15ListWorkloadsByThread\x123.agynio.api.runners.v1.ListWorkloadsByThreadRequest\x1a4.agynio.api.runners.v1.ListWorkloadsByThreadResponse\x12j\n" +
+	"\x15ListWorkloadsByThread\x123.agynio.api.runners.v1.ListWorkloadsByThreadRequest\x1a4.agynio.api.runners.v1.ListWorkloadsByThreadResponse\x12\x97\x01\n" +
+	"\x1cListWorkloadsByAgentInstance\x12:.agynio.api.runners.v1.ListWorkloadsByAgentInstanceRequest\x1a;.agynio.api.runners.v1.ListWorkloadsByAgentInstanceResponse\x12j\n" +
 	"\rListWorkloads\x12+.agynio.api.runners.v1.ListWorkloadsRequest\x1a,.agynio.api.runners.v1.ListWorkloadsResponse\x12\x97\x01\n" +
 	"\x1cBatchUpdateWorkloadSampledAt\x12:.agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest\x1a;.agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse\x12y\n" +
 	"\x12StreamWorkloadLogs\x12/.agynio.api.runner.v1.StreamWorkloadLogsRequest\x1a0.agynio.api.runner.v1.StreamWorkloadLogsResponse0\x01\x12g\n" +
@@ -4549,6 +6482,7 @@ const file_agynio_api_runners_v1_runners_proto_rawDesc = "" +
 	"\tGetVolume\x12'.agynio.api.runners.v1.GetVolumeRequest\x1a(.agynio.api.runners.v1.GetVolumeResponse\x12d\n" +
 	"\vListVolumes\x12).agynio.api.runners.v1.ListVolumesRequest\x1a*.agynio.api.runners.v1.ListVolumesResponse\x12|\n" +
 	"\x13ListVolumesByThread\x121.agynio.api.runners.v1.ListVolumesByThreadRequest\x1a2.agynio.api.runners.v1.ListVolumesByThreadResponse\x12\x91\x01\n" +
+	"\x1aListVolumesByAgentInstance\x128.agynio.api.runners.v1.ListVolumesByAgentInstanceRequest\x1a9.agynio.api.runners.v1.ListVolumesByAgentInstanceResponse\x12\x91\x01\n" +
 	"\x1aBatchUpdateVolumeSampledAt\x128.agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest\x1a9.agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponseB\xdf\x01\n" +
 	"\x19com.agynio.api.runners.v1B\fRunnersProtoP\x01Z=github.com/agynio/chat/gen/go/agynio/api/runners/v1;runnersv1\xa2\x02\x03AAR\xaa\x02\x15Agynio.Api.Runners.V1\xca\x02\x15Agynio\\Api\\Runners\\V1\xe2\x02!Agynio\\Api\\Runners\\V1\\GPBMetadata\xea\x02\x18Agynio::Api::Runners::V1b\x06proto3"
 
@@ -4564,208 +6498,272 @@ func file_agynio_api_runners_v1_runners_proto_rawDescGZIP() []byte {
 	return file_agynio_api_runners_v1_runners_proto_rawDescData
 }
 
-var file_agynio_api_runners_v1_runners_proto_enumTypes = make([]protoimpl.EnumInfo, 12)
-var file_agynio_api_runners_v1_runners_proto_msgTypes = make([]protoimpl.MessageInfo, 58)
+var file_agynio_api_runners_v1_runners_proto_enumTypes = make([]protoimpl.EnumInfo, 13)
+var file_agynio_api_runners_v1_runners_proto_msgTypes = make([]protoimpl.MessageInfo, 81)
 var file_agynio_api_runners_v1_runners_proto_goTypes = []any{
 	(SortDirection)(0),                           // 0: agynio.api.runners.v1.SortDirection
 	(RunnerStatus)(0),                            // 1: agynio.api.runners.v1.RunnerStatus
-	(WorkloadStatus)(0),                          // 2: agynio.api.runners.v1.WorkloadStatus
-	(WorkloadAgentState)(0),                      // 3: agynio.api.runners.v1.WorkloadAgentState
-	(WorkloadFailureReason)(0),                   // 4: agynio.api.runners.v1.WorkloadFailureReason
-	(ContainerRole)(0),                           // 5: agynio.api.runners.v1.ContainerRole
-	(ContainerStatus)(0),                         // 6: agynio.api.runners.v1.ContainerStatus
-	(ListWorkloadsSortField)(0),                  // 7: agynio.api.runners.v1.ListWorkloadsSortField
-	(VolumeStatus)(0),                            // 8: agynio.api.runners.v1.VolumeStatus
-	(AttachmentKind)(0),                          // 9: agynio.api.runners.v1.AttachmentKind
-	(VolumeAttachmentFilterKind)(0),              // 10: agynio.api.runners.v1.VolumeAttachmentFilterKind
-	(ListVolumesSortField)(0),                    // 11: agynio.api.runners.v1.ListVolumesSortField
-	(*EntityMeta)(nil),                           // 12: agynio.api.runners.v1.EntityMeta
-	(*SampledAtEntry)(nil),                       // 13: agynio.api.runners.v1.SampledAtEntry
-	(*Runner)(nil),                               // 14: agynio.api.runners.v1.Runner
-	(*RegisterRunnerRequest)(nil),                // 15: agynio.api.runners.v1.RegisterRunnerRequest
-	(*RegisterRunnerResponse)(nil),               // 16: agynio.api.runners.v1.RegisterRunnerResponse
-	(*GetRunnerRequest)(nil),                     // 17: agynio.api.runners.v1.GetRunnerRequest
-	(*GetRunnerResponse)(nil),                    // 18: agynio.api.runners.v1.GetRunnerResponse
-	(*ListRunnersRequest)(nil),                   // 19: agynio.api.runners.v1.ListRunnersRequest
-	(*ListRunnersResponse)(nil),                  // 20: agynio.api.runners.v1.ListRunnersResponse
-	(*UpdateRunnerRequest)(nil),                  // 21: agynio.api.runners.v1.UpdateRunnerRequest
-	(*UpdateRunnerResponse)(nil),                 // 22: agynio.api.runners.v1.UpdateRunnerResponse
-	(*DeleteRunnerRequest)(nil),                  // 23: agynio.api.runners.v1.DeleteRunnerRequest
-	(*DeleteRunnerResponse)(nil),                 // 24: agynio.api.runners.v1.DeleteRunnerResponse
-	(*ValidateServiceTokenRequest)(nil),          // 25: agynio.api.runners.v1.ValidateServiceTokenRequest
-	(*ValidateServiceTokenResponse)(nil),         // 26: agynio.api.runners.v1.ValidateServiceTokenResponse
-	(*EnrollRunnerRequest)(nil),                  // 27: agynio.api.runners.v1.EnrollRunnerRequest
-	(*EnrollRunnerResponse)(nil),                 // 28: agynio.api.runners.v1.EnrollRunnerResponse
-	(*Container)(nil),                            // 29: agynio.api.runners.v1.Container
-	(*Workload)(nil),                             // 30: agynio.api.runners.v1.Workload
-	(*CreateWorkloadRequest)(nil),                // 31: agynio.api.runners.v1.CreateWorkloadRequest
-	(*CreateWorkloadResponse)(nil),               // 32: agynio.api.runners.v1.CreateWorkloadResponse
-	(*UpdateWorkloadRequest)(nil),                // 33: agynio.api.runners.v1.UpdateWorkloadRequest
-	(*UpdateWorkloadResponse)(nil),               // 34: agynio.api.runners.v1.UpdateWorkloadResponse
-	(*UpdateWorkloadStatusRequest)(nil),          // 35: agynio.api.runners.v1.UpdateWorkloadStatusRequest
-	(*UpdateWorkloadStatusResponse)(nil),         // 36: agynio.api.runners.v1.UpdateWorkloadStatusResponse
-	(*TouchWorkloadRequest)(nil),                 // 37: agynio.api.runners.v1.TouchWorkloadRequest
-	(*TouchWorkloadResponse)(nil),                // 38: agynio.api.runners.v1.TouchWorkloadResponse
-	(*DeleteWorkloadRequest)(nil),                // 39: agynio.api.runners.v1.DeleteWorkloadRequest
-	(*DeleteWorkloadResponse)(nil),               // 40: agynio.api.runners.v1.DeleteWorkloadResponse
-	(*GetWorkloadRequest)(nil),                   // 41: agynio.api.runners.v1.GetWorkloadRequest
-	(*GetWorkloadResponse)(nil),                  // 42: agynio.api.runners.v1.GetWorkloadResponse
-	(*ListWorkloadsSort)(nil),                    // 43: agynio.api.runners.v1.ListWorkloadsSort
-	(*ListWorkloadsFilter)(nil),                  // 44: agynio.api.runners.v1.ListWorkloadsFilter
-	(*ListWorkloadsByThreadRequest)(nil),         // 45: agynio.api.runners.v1.ListWorkloadsByThreadRequest
-	(*ListWorkloadsByThreadResponse)(nil),        // 46: agynio.api.runners.v1.ListWorkloadsByThreadResponse
-	(*ListWorkloadsRequest)(nil),                 // 47: agynio.api.runners.v1.ListWorkloadsRequest
-	(*ListWorkloadsResponse)(nil),                // 48: agynio.api.runners.v1.ListWorkloadsResponse
-	(*BatchUpdateWorkloadSampledAtRequest)(nil),  // 49: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
-	(*BatchUpdateWorkloadSampledAtResponse)(nil), // 50: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
-	(*Volume)(nil),                               // 51: agynio.api.runners.v1.Volume
-	(*Attachment)(nil),                           // 52: agynio.api.runners.v1.Attachment
-	(*CreateVolumeRequest)(nil),                  // 53: agynio.api.runners.v1.CreateVolumeRequest
-	(*CreateVolumeResponse)(nil),                 // 54: agynio.api.runners.v1.CreateVolumeResponse
-	(*UpdateVolumeRequest)(nil),                  // 55: agynio.api.runners.v1.UpdateVolumeRequest
-	(*UpdateVolumeResponse)(nil),                 // 56: agynio.api.runners.v1.UpdateVolumeResponse
-	(*GetVolumeRequest)(nil),                     // 57: agynio.api.runners.v1.GetVolumeRequest
-	(*GetVolumeResponse)(nil),                    // 58: agynio.api.runners.v1.GetVolumeResponse
-	(*ListVolumesSort)(nil),                      // 59: agynio.api.runners.v1.ListVolumesSort
-	(*ListVolumesFilter)(nil),                    // 60: agynio.api.runners.v1.ListVolumesFilter
-	(*ListVolumesRequest)(nil),                   // 61: agynio.api.runners.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                  // 62: agynio.api.runners.v1.ListVolumesResponse
-	(*ListVolumesByThreadRequest)(nil),           // 63: agynio.api.runners.v1.ListVolumesByThreadRequest
-	(*ListVolumesByThreadResponse)(nil),          // 64: agynio.api.runners.v1.ListVolumesByThreadResponse
-	(*BatchUpdateVolumeSampledAtRequest)(nil),    // 65: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
-	(*BatchUpdateVolumeSampledAtResponse)(nil),   // 66: agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
-	nil,                                   // 67: agynio.api.runners.v1.Runner.LabelsEntry
-	nil,                                   // 68: agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
-	nil,                                   // 69: agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
-	(*timestamppb.Timestamp)(nil),         // 70: google.protobuf.Timestamp
-	(*v1.StreamWorkloadLogsRequest)(nil),  // 71: agynio.api.runner.v1.StreamWorkloadLogsRequest
-	(*v1.StreamWorkloadLogsResponse)(nil), // 72: agynio.api.runner.v1.StreamWorkloadLogsResponse
+	(RuntimeOwnerKind)(0),                        // 2: agynio.api.runners.v1.RuntimeOwnerKind
+	(WorkloadStatus)(0),                          // 3: agynio.api.runners.v1.WorkloadStatus
+	(WorkloadAgentState)(0),                      // 4: agynio.api.runners.v1.WorkloadAgentState
+	(WorkloadFailureReason)(0),                   // 5: agynio.api.runners.v1.WorkloadFailureReason
+	(ContainerRole)(0),                           // 6: agynio.api.runners.v1.ContainerRole
+	(ContainerStatus)(0),                         // 7: agynio.api.runners.v1.ContainerStatus
+	(ListWorkloadsSortField)(0),                  // 8: agynio.api.runners.v1.ListWorkloadsSortField
+	(VolumeStatus)(0),                            // 9: agynio.api.runners.v1.VolumeStatus
+	(AttachmentKind)(0),                          // 10: agynio.api.runners.v1.AttachmentKind
+	(VolumeAttachmentFilterKind)(0),              // 11: agynio.api.runners.v1.VolumeAttachmentFilterKind
+	(ListVolumesSortField)(0),                    // 12: agynio.api.runners.v1.ListVolumesSortField
+	(*EntityMeta)(nil),                           // 13: agynio.api.runners.v1.EntityMeta
+	(*ComputeResources)(nil),                     // 14: agynio.api.runners.v1.ComputeResources
+	(*SampledAtEntry)(nil),                       // 15: agynio.api.runners.v1.SampledAtEntry
+	(*Runner)(nil),                               // 16: agynio.api.runners.v1.Runner
+	(*RegisterRunnerRequest)(nil),                // 17: agynio.api.runners.v1.RegisterRunnerRequest
+	(*RegisterRunnerResponse)(nil),               // 18: agynio.api.runners.v1.RegisterRunnerResponse
+	(*GetRunnerRequest)(nil),                     // 19: agynio.api.runners.v1.GetRunnerRequest
+	(*GetRunnerResponse)(nil),                    // 20: agynio.api.runners.v1.GetRunnerResponse
+	(*ListRunnersRequest)(nil),                   // 21: agynio.api.runners.v1.ListRunnersRequest
+	(*ListRunnersResponse)(nil),                  // 22: agynio.api.runners.v1.ListRunnersResponse
+	(*UpdateRunnerRequest)(nil),                  // 23: agynio.api.runners.v1.UpdateRunnerRequest
+	(*UpdateRunnerResponse)(nil),                 // 24: agynio.api.runners.v1.UpdateRunnerResponse
+	(*DeleteRunnerRequest)(nil),                  // 25: agynio.api.runners.v1.DeleteRunnerRequest
+	(*DeleteRunnerResponse)(nil),                 // 26: agynio.api.runners.v1.DeleteRunnerResponse
+	(*ValidateServiceTokenRequest)(nil),          // 27: agynio.api.runners.v1.ValidateServiceTokenRequest
+	(*ValidateServiceTokenResponse)(nil),         // 28: agynio.api.runners.v1.ValidateServiceTokenResponse
+	(*EnrollRunnerRequest)(nil),                  // 29: agynio.api.runners.v1.EnrollRunnerRequest
+	(*EnrollRunnerResponse)(nil),                 // 30: agynio.api.runners.v1.EnrollRunnerResponse
+	(*Flavor)(nil),                               // 31: agynio.api.runners.v1.Flavor
+	(*CreateFlavorRequest)(nil),                  // 32: agynio.api.runners.v1.CreateFlavorRequest
+	(*CreateFlavorResponse)(nil),                 // 33: agynio.api.runners.v1.CreateFlavorResponse
+	(*GetFlavorRequest)(nil),                     // 34: agynio.api.runners.v1.GetFlavorRequest
+	(*GetFlavorResponse)(nil),                    // 35: agynio.api.runners.v1.GetFlavorResponse
+	(*UpdateFlavorRequest)(nil),                  // 36: agynio.api.runners.v1.UpdateFlavorRequest
+	(*UpdateFlavorResponse)(nil),                 // 37: agynio.api.runners.v1.UpdateFlavorResponse
+	(*DeleteFlavorRequest)(nil),                  // 38: agynio.api.runners.v1.DeleteFlavorRequest
+	(*DeleteFlavorResponse)(nil),                 // 39: agynio.api.runners.v1.DeleteFlavorResponse
+	(*ListFlavorsRequest)(nil),                   // 40: agynio.api.runners.v1.ListFlavorsRequest
+	(*ListFlavorsResponse)(nil),                  // 41: agynio.api.runners.v1.ListFlavorsResponse
+	(*StorageClass)(nil),                         // 42: agynio.api.runners.v1.StorageClass
+	(*FlavorEntry)(nil),                          // 43: agynio.api.runners.v1.FlavorEntry
+	(*StorageClassEntry)(nil),                    // 44: agynio.api.runners.v1.StorageClassEntry
+	(*ReportRunnerCatalogRequest)(nil),           // 45: agynio.api.runners.v1.ReportRunnerCatalogRequest
+	(*ReportRunnerCatalogResponse)(nil),          // 46: agynio.api.runners.v1.ReportRunnerCatalogResponse
+	(*ListStorageClassesRequest)(nil),            // 47: agynio.api.runners.v1.ListStorageClassesRequest
+	(*ListStorageClassesResponse)(nil),           // 48: agynio.api.runners.v1.ListStorageClassesResponse
+	(*Container)(nil),                            // 49: agynio.api.runners.v1.Container
+	(*Workload)(nil),                             // 50: agynio.api.runners.v1.Workload
+	(*CreateWorkloadRequest)(nil),                // 51: agynio.api.runners.v1.CreateWorkloadRequest
+	(*CreateWorkloadResponse)(nil),               // 52: agynio.api.runners.v1.CreateWorkloadResponse
+	(*UpdateWorkloadRequest)(nil),                // 53: agynio.api.runners.v1.UpdateWorkloadRequest
+	(*UpdateWorkloadResponse)(nil),               // 54: agynio.api.runners.v1.UpdateWorkloadResponse
+	(*UpdateWorkloadStatusRequest)(nil),          // 55: agynio.api.runners.v1.UpdateWorkloadStatusRequest
+	(*UpdateWorkloadStatusResponse)(nil),         // 56: agynio.api.runners.v1.UpdateWorkloadStatusResponse
+	(*TouchWorkloadRequest)(nil),                 // 57: agynio.api.runners.v1.TouchWorkloadRequest
+	(*TouchWorkloadResponse)(nil),                // 58: agynio.api.runners.v1.TouchWorkloadResponse
+	(*DeleteWorkloadRequest)(nil),                // 59: agynio.api.runners.v1.DeleteWorkloadRequest
+	(*DeleteWorkloadResponse)(nil),               // 60: agynio.api.runners.v1.DeleteWorkloadResponse
+	(*GetWorkloadRequest)(nil),                   // 61: agynio.api.runners.v1.GetWorkloadRequest
+	(*GetWorkloadResponse)(nil),                  // 62: agynio.api.runners.v1.GetWorkloadResponse
+	(*ListWorkloadsSort)(nil),                    // 63: agynio.api.runners.v1.ListWorkloadsSort
+	(*ListWorkloadsFilter)(nil),                  // 64: agynio.api.runners.v1.ListWorkloadsFilter
+	(*ListWorkloadsByThreadRequest)(nil),         // 65: agynio.api.runners.v1.ListWorkloadsByThreadRequest
+	(*ListWorkloadsByThreadResponse)(nil),        // 66: agynio.api.runners.v1.ListWorkloadsByThreadResponse
+	(*ListWorkloadsByAgentInstanceRequest)(nil),  // 67: agynio.api.runners.v1.ListWorkloadsByAgentInstanceRequest
+	(*ListWorkloadsByAgentInstanceResponse)(nil), // 68: agynio.api.runners.v1.ListWorkloadsByAgentInstanceResponse
+	(*ListWorkloadsRequest)(nil),                 // 69: agynio.api.runners.v1.ListWorkloadsRequest
+	(*ListWorkloadsResponse)(nil),                // 70: agynio.api.runners.v1.ListWorkloadsResponse
+	(*BatchUpdateWorkloadSampledAtRequest)(nil),  // 71: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
+	(*BatchUpdateWorkloadSampledAtResponse)(nil), // 72: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
+	(*Volume)(nil),                               // 73: agynio.api.runners.v1.Volume
+	(*Attachment)(nil),                           // 74: agynio.api.runners.v1.Attachment
+	(*CreateVolumeRequest)(nil),                  // 75: agynio.api.runners.v1.CreateVolumeRequest
+	(*CreateVolumeResponse)(nil),                 // 76: agynio.api.runners.v1.CreateVolumeResponse
+	(*UpdateVolumeRequest)(nil),                  // 77: agynio.api.runners.v1.UpdateVolumeRequest
+	(*UpdateVolumeResponse)(nil),                 // 78: agynio.api.runners.v1.UpdateVolumeResponse
+	(*GetVolumeRequest)(nil),                     // 79: agynio.api.runners.v1.GetVolumeRequest
+	(*GetVolumeResponse)(nil),                    // 80: agynio.api.runners.v1.GetVolumeResponse
+	(*ListVolumesSort)(nil),                      // 81: agynio.api.runners.v1.ListVolumesSort
+	(*ListVolumesFilter)(nil),                    // 82: agynio.api.runners.v1.ListVolumesFilter
+	(*ListVolumesRequest)(nil),                   // 83: agynio.api.runners.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                  // 84: agynio.api.runners.v1.ListVolumesResponse
+	(*ListVolumesByThreadRequest)(nil),           // 85: agynio.api.runners.v1.ListVolumesByThreadRequest
+	(*ListVolumesByThreadResponse)(nil),          // 86: agynio.api.runners.v1.ListVolumesByThreadResponse
+	(*ListVolumesByAgentInstanceRequest)(nil),    // 87: agynio.api.runners.v1.ListVolumesByAgentInstanceRequest
+	(*ListVolumesByAgentInstanceResponse)(nil),   // 88: agynio.api.runners.v1.ListVolumesByAgentInstanceResponse
+	(*BatchUpdateVolumeSampledAtRequest)(nil),    // 89: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
+	(*BatchUpdateVolumeSampledAtResponse)(nil),   // 90: agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
+	nil,                                   // 91: agynio.api.runners.v1.Runner.LabelsEntry
+	nil,                                   // 92: agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
+	nil,                                   // 93: agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
+	(*timestamppb.Timestamp)(nil),         // 94: google.protobuf.Timestamp
+	(*v1.StreamWorkloadLogsRequest)(nil),  // 95: agynio.api.runner.v1.StreamWorkloadLogsRequest
+	(*v1.StreamWorkloadLogsResponse)(nil), // 96: agynio.api.runner.v1.StreamWorkloadLogsResponse
 }
 var file_agynio_api_runners_v1_runners_proto_depIdxs = []int32{
-	70, // 0: agynio.api.runners.v1.EntityMeta.created_at:type_name -> google.protobuf.Timestamp
-	70, // 1: agynio.api.runners.v1.EntityMeta.updated_at:type_name -> google.protobuf.Timestamp
-	70, // 2: agynio.api.runners.v1.SampledAtEntry.sampled_at:type_name -> google.protobuf.Timestamp
-	12, // 3: agynio.api.runners.v1.Runner.meta:type_name -> agynio.api.runners.v1.EntityMeta
-	1,  // 4: agynio.api.runners.v1.Runner.status:type_name -> agynio.api.runners.v1.RunnerStatus
-	67, // 5: agynio.api.runners.v1.Runner.labels:type_name -> agynio.api.runners.v1.Runner.LabelsEntry
-	68, // 6: agynio.api.runners.v1.RegisterRunnerRequest.labels:type_name -> agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
-	14, // 7: agynio.api.runners.v1.RegisterRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	14, // 8: agynio.api.runners.v1.GetRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	14, // 9: agynio.api.runners.v1.ListRunnersResponse.runners:type_name -> agynio.api.runners.v1.Runner
-	69, // 10: agynio.api.runners.v1.UpdateRunnerRequest.labels:type_name -> agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
-	14, // 11: agynio.api.runners.v1.UpdateRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	14, // 12: agynio.api.runners.v1.ValidateServiceTokenResponse.runner:type_name -> agynio.api.runners.v1.Runner
-	5,  // 13: agynio.api.runners.v1.Container.role:type_name -> agynio.api.runners.v1.ContainerRole
-	6,  // 14: agynio.api.runners.v1.Container.status:type_name -> agynio.api.runners.v1.ContainerStatus
-	70, // 15: agynio.api.runners.v1.Container.started_at:type_name -> google.protobuf.Timestamp
-	70, // 16: agynio.api.runners.v1.Container.finished_at:type_name -> google.protobuf.Timestamp
-	12, // 17: agynio.api.runners.v1.Workload.meta:type_name -> agynio.api.runners.v1.EntityMeta
-	2,  // 18: agynio.api.runners.v1.Workload.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	29, // 19: agynio.api.runners.v1.Workload.containers:type_name -> agynio.api.runners.v1.Container
-	70, // 20: agynio.api.runners.v1.Workload.last_activity_at:type_name -> google.protobuf.Timestamp
-	70, // 21: agynio.api.runners.v1.Workload.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	70, // 22: agynio.api.runners.v1.Workload.removed_at:type_name -> google.protobuf.Timestamp
-	4,  // 23: agynio.api.runners.v1.Workload.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
-	3,  // 24: agynio.api.runners.v1.Workload.agent_state:type_name -> agynio.api.runners.v1.WorkloadAgentState
-	2,  // 25: agynio.api.runners.v1.CreateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	29, // 26: agynio.api.runners.v1.CreateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
-	30, // 27: agynio.api.runners.v1.CreateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	2,  // 28: agynio.api.runners.v1.UpdateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	29, // 29: agynio.api.runners.v1.UpdateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
-	70, // 30: agynio.api.runners.v1.UpdateWorkloadRequest.removed_at:type_name -> google.protobuf.Timestamp
-	70, // 31: agynio.api.runners.v1.UpdateWorkloadRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	4,  // 32: agynio.api.runners.v1.UpdateWorkloadRequest.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
-	30, // 33: agynio.api.runners.v1.UpdateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	2,  // 34: agynio.api.runners.v1.UpdateWorkloadStatusRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
-	29, // 35: agynio.api.runners.v1.UpdateWorkloadStatusRequest.containers:type_name -> agynio.api.runners.v1.Container
-	30, // 36: agynio.api.runners.v1.UpdateWorkloadStatusResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	30, // 37: agynio.api.runners.v1.GetWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
-	7,  // 38: agynio.api.runners.v1.ListWorkloadsSort.field:type_name -> agynio.api.runners.v1.ListWorkloadsSortField
-	0,  // 39: agynio.api.runners.v1.ListWorkloadsSort.direction:type_name -> agynio.api.runners.v1.SortDirection
-	2,  // 40: agynio.api.runners.v1.ListWorkloadsFilter.status_in:type_name -> agynio.api.runners.v1.WorkloadStatus
-	70, // 41: agynio.api.runners.v1.ListWorkloadsFilter.started_after:type_name -> google.protobuf.Timestamp
-	70, // 42: agynio.api.runners.v1.ListWorkloadsFilter.started_before:type_name -> google.protobuf.Timestamp
-	2,  // 43: agynio.api.runners.v1.ListWorkloadsByThreadRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
-	30, // 44: agynio.api.runners.v1.ListWorkloadsByThreadResponse.workloads:type_name -> agynio.api.runners.v1.Workload
-	2,  // 45: agynio.api.runners.v1.ListWorkloadsRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
-	44, // 46: agynio.api.runners.v1.ListWorkloadsRequest.filter:type_name -> agynio.api.runners.v1.ListWorkloadsFilter
-	43, // 47: agynio.api.runners.v1.ListWorkloadsRequest.sort:type_name -> agynio.api.runners.v1.ListWorkloadsSort
-	30, // 48: agynio.api.runners.v1.ListWorkloadsResponse.workloads:type_name -> agynio.api.runners.v1.Workload
-	13, // 49: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
-	12, // 50: agynio.api.runners.v1.Volume.meta:type_name -> agynio.api.runners.v1.EntityMeta
-	8,  // 51: agynio.api.runners.v1.Volume.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	70, // 52: agynio.api.runners.v1.Volume.removed_at:type_name -> google.protobuf.Timestamp
-	70, // 53: agynio.api.runners.v1.Volume.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	52, // 54: agynio.api.runners.v1.Volume.attachments:type_name -> agynio.api.runners.v1.Attachment
-	9,  // 55: agynio.api.runners.v1.Attachment.kind:type_name -> agynio.api.runners.v1.AttachmentKind
-	8,  // 56: agynio.api.runners.v1.CreateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	51, // 57: agynio.api.runners.v1.CreateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	8,  // 58: agynio.api.runners.v1.UpdateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
-	70, // 59: agynio.api.runners.v1.UpdateVolumeRequest.removed_at:type_name -> google.protobuf.Timestamp
-	70, // 60: agynio.api.runners.v1.UpdateVolumeRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
-	51, // 61: agynio.api.runners.v1.UpdateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	51, // 62: agynio.api.runners.v1.GetVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
-	11, // 63: agynio.api.runners.v1.ListVolumesSort.field:type_name -> agynio.api.runners.v1.ListVolumesSortField
-	0,  // 64: agynio.api.runners.v1.ListVolumesSort.direction:type_name -> agynio.api.runners.v1.SortDirection
-	8,  // 65: agynio.api.runners.v1.ListVolumesFilter.status_in:type_name -> agynio.api.runners.v1.VolumeStatus
-	10, // 66: agynio.api.runners.v1.ListVolumesFilter.attached_to_kind_in:type_name -> agynio.api.runners.v1.VolumeAttachmentFilterKind
-	8,  // 67: agynio.api.runners.v1.ListVolumesRequest.statuses:type_name -> agynio.api.runners.v1.VolumeStatus
-	60, // 68: agynio.api.runners.v1.ListVolumesRequest.filter:type_name -> agynio.api.runners.v1.ListVolumesFilter
-	59, // 69: agynio.api.runners.v1.ListVolumesRequest.sort:type_name -> agynio.api.runners.v1.ListVolumesSort
-	51, // 70: agynio.api.runners.v1.ListVolumesResponse.volumes:type_name -> agynio.api.runners.v1.Volume
-	51, // 71: agynio.api.runners.v1.ListVolumesByThreadResponse.volumes:type_name -> agynio.api.runners.v1.Volume
-	13, // 72: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
-	15, // 73: agynio.api.runners.v1.RunnersService.RegisterRunner:input_type -> agynio.api.runners.v1.RegisterRunnerRequest
-	17, // 74: agynio.api.runners.v1.RunnersService.GetRunner:input_type -> agynio.api.runners.v1.GetRunnerRequest
-	19, // 75: agynio.api.runners.v1.RunnersService.ListRunners:input_type -> agynio.api.runners.v1.ListRunnersRequest
-	21, // 76: agynio.api.runners.v1.RunnersService.UpdateRunner:input_type -> agynio.api.runners.v1.UpdateRunnerRequest
-	23, // 77: agynio.api.runners.v1.RunnersService.DeleteRunner:input_type -> agynio.api.runners.v1.DeleteRunnerRequest
-	25, // 78: agynio.api.runners.v1.RunnersService.ValidateServiceToken:input_type -> agynio.api.runners.v1.ValidateServiceTokenRequest
-	27, // 79: agynio.api.runners.v1.RunnersService.EnrollRunner:input_type -> agynio.api.runners.v1.EnrollRunnerRequest
-	31, // 80: agynio.api.runners.v1.RunnersService.CreateWorkload:input_type -> agynio.api.runners.v1.CreateWorkloadRequest
-	33, // 81: agynio.api.runners.v1.RunnersService.UpdateWorkload:input_type -> agynio.api.runners.v1.UpdateWorkloadRequest
-	35, // 82: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:input_type -> agynio.api.runners.v1.UpdateWorkloadStatusRequest
-	37, // 83: agynio.api.runners.v1.RunnersService.TouchWorkload:input_type -> agynio.api.runners.v1.TouchWorkloadRequest
-	39, // 84: agynio.api.runners.v1.RunnersService.DeleteWorkload:input_type -> agynio.api.runners.v1.DeleteWorkloadRequest
-	41, // 85: agynio.api.runners.v1.RunnersService.GetWorkload:input_type -> agynio.api.runners.v1.GetWorkloadRequest
-	45, // 86: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:input_type -> agynio.api.runners.v1.ListWorkloadsByThreadRequest
-	47, // 87: agynio.api.runners.v1.RunnersService.ListWorkloads:input_type -> agynio.api.runners.v1.ListWorkloadsRequest
-	49, // 88: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
-	71, // 89: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:input_type -> agynio.api.runner.v1.StreamWorkloadLogsRequest
-	53, // 90: agynio.api.runners.v1.RunnersService.CreateVolume:input_type -> agynio.api.runners.v1.CreateVolumeRequest
-	55, // 91: agynio.api.runners.v1.RunnersService.UpdateVolume:input_type -> agynio.api.runners.v1.UpdateVolumeRequest
-	57, // 92: agynio.api.runners.v1.RunnersService.GetVolume:input_type -> agynio.api.runners.v1.GetVolumeRequest
-	61, // 93: agynio.api.runners.v1.RunnersService.ListVolumes:input_type -> agynio.api.runners.v1.ListVolumesRequest
-	63, // 94: agynio.api.runners.v1.RunnersService.ListVolumesByThread:input_type -> agynio.api.runners.v1.ListVolumesByThreadRequest
-	65, // 95: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
-	16, // 96: agynio.api.runners.v1.RunnersService.RegisterRunner:output_type -> agynio.api.runners.v1.RegisterRunnerResponse
-	18, // 97: agynio.api.runners.v1.RunnersService.GetRunner:output_type -> agynio.api.runners.v1.GetRunnerResponse
-	20, // 98: agynio.api.runners.v1.RunnersService.ListRunners:output_type -> agynio.api.runners.v1.ListRunnersResponse
-	22, // 99: agynio.api.runners.v1.RunnersService.UpdateRunner:output_type -> agynio.api.runners.v1.UpdateRunnerResponse
-	24, // 100: agynio.api.runners.v1.RunnersService.DeleteRunner:output_type -> agynio.api.runners.v1.DeleteRunnerResponse
-	26, // 101: agynio.api.runners.v1.RunnersService.ValidateServiceToken:output_type -> agynio.api.runners.v1.ValidateServiceTokenResponse
-	28, // 102: agynio.api.runners.v1.RunnersService.EnrollRunner:output_type -> agynio.api.runners.v1.EnrollRunnerResponse
-	32, // 103: agynio.api.runners.v1.RunnersService.CreateWorkload:output_type -> agynio.api.runners.v1.CreateWorkloadResponse
-	34, // 104: agynio.api.runners.v1.RunnersService.UpdateWorkload:output_type -> agynio.api.runners.v1.UpdateWorkloadResponse
-	36, // 105: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:output_type -> agynio.api.runners.v1.UpdateWorkloadStatusResponse
-	38, // 106: agynio.api.runners.v1.RunnersService.TouchWorkload:output_type -> agynio.api.runners.v1.TouchWorkloadResponse
-	40, // 107: agynio.api.runners.v1.RunnersService.DeleteWorkload:output_type -> agynio.api.runners.v1.DeleteWorkloadResponse
-	42, // 108: agynio.api.runners.v1.RunnersService.GetWorkload:output_type -> agynio.api.runners.v1.GetWorkloadResponse
-	46, // 109: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:output_type -> agynio.api.runners.v1.ListWorkloadsByThreadResponse
-	48, // 110: agynio.api.runners.v1.RunnersService.ListWorkloads:output_type -> agynio.api.runners.v1.ListWorkloadsResponse
-	50, // 111: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
-	72, // 112: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:output_type -> agynio.api.runner.v1.StreamWorkloadLogsResponse
-	54, // 113: agynio.api.runners.v1.RunnersService.CreateVolume:output_type -> agynio.api.runners.v1.CreateVolumeResponse
-	56, // 114: agynio.api.runners.v1.RunnersService.UpdateVolume:output_type -> agynio.api.runners.v1.UpdateVolumeResponse
-	58, // 115: agynio.api.runners.v1.RunnersService.GetVolume:output_type -> agynio.api.runners.v1.GetVolumeResponse
-	62, // 116: agynio.api.runners.v1.RunnersService.ListVolumes:output_type -> agynio.api.runners.v1.ListVolumesResponse
-	64, // 117: agynio.api.runners.v1.RunnersService.ListVolumesByThread:output_type -> agynio.api.runners.v1.ListVolumesByThreadResponse
-	66, // 118: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
-	96, // [96:119] is the sub-list for method output_type
-	73, // [73:96] is the sub-list for method input_type
-	73, // [73:73] is the sub-list for extension type_name
-	73, // [73:73] is the sub-list for extension extendee
-	0,  // [0:73] is the sub-list for field type_name
+	94,  // 0: agynio.api.runners.v1.EntityMeta.created_at:type_name -> google.protobuf.Timestamp
+	94,  // 1: agynio.api.runners.v1.EntityMeta.updated_at:type_name -> google.protobuf.Timestamp
+	94,  // 2: agynio.api.runners.v1.SampledAtEntry.sampled_at:type_name -> google.protobuf.Timestamp
+	13,  // 3: agynio.api.runners.v1.Runner.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	1,   // 4: agynio.api.runners.v1.Runner.status:type_name -> agynio.api.runners.v1.RunnerStatus
+	91,  // 5: agynio.api.runners.v1.Runner.labels:type_name -> agynio.api.runners.v1.Runner.LabelsEntry
+	92,  // 6: agynio.api.runners.v1.RegisterRunnerRequest.labels:type_name -> agynio.api.runners.v1.RegisterRunnerRequest.LabelsEntry
+	16,  // 7: agynio.api.runners.v1.RegisterRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	16,  // 8: agynio.api.runners.v1.GetRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	16,  // 9: agynio.api.runners.v1.ListRunnersResponse.runners:type_name -> agynio.api.runners.v1.Runner
+	93,  // 10: agynio.api.runners.v1.UpdateRunnerRequest.labels:type_name -> agynio.api.runners.v1.UpdateRunnerRequest.LabelsEntry
+	16,  // 11: agynio.api.runners.v1.UpdateRunnerResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	16,  // 12: agynio.api.runners.v1.ValidateServiceTokenResponse.runner:type_name -> agynio.api.runners.v1.Runner
+	13,  // 13: agynio.api.runners.v1.Flavor.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	14,  // 14: agynio.api.runners.v1.Flavor.resources:type_name -> agynio.api.runners.v1.ComputeResources
+	14,  // 15: agynio.api.runners.v1.CreateFlavorRequest.resources:type_name -> agynio.api.runners.v1.ComputeResources
+	31,  // 16: agynio.api.runners.v1.CreateFlavorResponse.flavor:type_name -> agynio.api.runners.v1.Flavor
+	31,  // 17: agynio.api.runners.v1.GetFlavorResponse.flavor:type_name -> agynio.api.runners.v1.Flavor
+	14,  // 18: agynio.api.runners.v1.UpdateFlavorRequest.resources:type_name -> agynio.api.runners.v1.ComputeResources
+	31,  // 19: agynio.api.runners.v1.UpdateFlavorResponse.flavor:type_name -> agynio.api.runners.v1.Flavor
+	31,  // 20: agynio.api.runners.v1.ListFlavorsResponse.flavors:type_name -> agynio.api.runners.v1.Flavor
+	14,  // 21: agynio.api.runners.v1.FlavorEntry.resources:type_name -> agynio.api.runners.v1.ComputeResources
+	43,  // 22: agynio.api.runners.v1.ReportRunnerCatalogRequest.flavors:type_name -> agynio.api.runners.v1.FlavorEntry
+	44,  // 23: agynio.api.runners.v1.ReportRunnerCatalogRequest.storage_classes:type_name -> agynio.api.runners.v1.StorageClassEntry
+	42,  // 24: agynio.api.runners.v1.ListStorageClassesResponse.storage_classes:type_name -> agynio.api.runners.v1.StorageClass
+	6,   // 25: agynio.api.runners.v1.Container.role:type_name -> agynio.api.runners.v1.ContainerRole
+	7,   // 26: agynio.api.runners.v1.Container.status:type_name -> agynio.api.runners.v1.ContainerStatus
+	94,  // 27: agynio.api.runners.v1.Container.started_at:type_name -> google.protobuf.Timestamp
+	94,  // 28: agynio.api.runners.v1.Container.finished_at:type_name -> google.protobuf.Timestamp
+	13,  // 29: agynio.api.runners.v1.Workload.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	3,   // 30: agynio.api.runners.v1.Workload.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	49,  // 31: agynio.api.runners.v1.Workload.containers:type_name -> agynio.api.runners.v1.Container
+	94,  // 32: agynio.api.runners.v1.Workload.last_activity_at:type_name -> google.protobuf.Timestamp
+	94,  // 33: agynio.api.runners.v1.Workload.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	94,  // 34: agynio.api.runners.v1.Workload.removed_at:type_name -> google.protobuf.Timestamp
+	5,   // 35: agynio.api.runners.v1.Workload.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
+	4,   // 36: agynio.api.runners.v1.Workload.agent_state:type_name -> agynio.api.runners.v1.WorkloadAgentState
+	2,   // 37: agynio.api.runners.v1.Workload.owner_kind:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	3,   // 38: agynio.api.runners.v1.CreateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	49,  // 39: agynio.api.runners.v1.CreateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
+	2,   // 40: agynio.api.runners.v1.CreateWorkloadRequest.owner_kind:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	50,  // 41: agynio.api.runners.v1.CreateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	3,   // 42: agynio.api.runners.v1.UpdateWorkloadRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	49,  // 43: agynio.api.runners.v1.UpdateWorkloadRequest.containers:type_name -> agynio.api.runners.v1.Container
+	94,  // 44: agynio.api.runners.v1.UpdateWorkloadRequest.removed_at:type_name -> google.protobuf.Timestamp
+	94,  // 45: agynio.api.runners.v1.UpdateWorkloadRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	5,   // 46: agynio.api.runners.v1.UpdateWorkloadRequest.failure_reason:type_name -> agynio.api.runners.v1.WorkloadFailureReason
+	50,  // 47: agynio.api.runners.v1.UpdateWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	3,   // 48: agynio.api.runners.v1.UpdateWorkloadStatusRequest.status:type_name -> agynio.api.runners.v1.WorkloadStatus
+	49,  // 49: agynio.api.runners.v1.UpdateWorkloadStatusRequest.containers:type_name -> agynio.api.runners.v1.Container
+	50,  // 50: agynio.api.runners.v1.UpdateWorkloadStatusResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	50,  // 51: agynio.api.runners.v1.GetWorkloadResponse.workload:type_name -> agynio.api.runners.v1.Workload
+	8,   // 52: agynio.api.runners.v1.ListWorkloadsSort.field:type_name -> agynio.api.runners.v1.ListWorkloadsSortField
+	0,   // 53: agynio.api.runners.v1.ListWorkloadsSort.direction:type_name -> agynio.api.runners.v1.SortDirection
+	3,   // 54: agynio.api.runners.v1.ListWorkloadsFilter.status_in:type_name -> agynio.api.runners.v1.WorkloadStatus
+	94,  // 55: agynio.api.runners.v1.ListWorkloadsFilter.started_after:type_name -> google.protobuf.Timestamp
+	94,  // 56: agynio.api.runners.v1.ListWorkloadsFilter.started_before:type_name -> google.protobuf.Timestamp
+	2,   // 57: agynio.api.runners.v1.ListWorkloadsFilter.owner_kind_in:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	3,   // 58: agynio.api.runners.v1.ListWorkloadsByThreadRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
+	50,  // 59: agynio.api.runners.v1.ListWorkloadsByThreadResponse.workloads:type_name -> agynio.api.runners.v1.Workload
+	3,   // 60: agynio.api.runners.v1.ListWorkloadsByAgentInstanceRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
+	50,  // 61: agynio.api.runners.v1.ListWorkloadsByAgentInstanceResponse.workloads:type_name -> agynio.api.runners.v1.Workload
+	3,   // 62: agynio.api.runners.v1.ListWorkloadsRequest.statuses:type_name -> agynio.api.runners.v1.WorkloadStatus
+	64,  // 63: agynio.api.runners.v1.ListWorkloadsRequest.filter:type_name -> agynio.api.runners.v1.ListWorkloadsFilter
+	63,  // 64: agynio.api.runners.v1.ListWorkloadsRequest.sort:type_name -> agynio.api.runners.v1.ListWorkloadsSort
+	50,  // 65: agynio.api.runners.v1.ListWorkloadsResponse.workloads:type_name -> agynio.api.runners.v1.Workload
+	15,  // 66: agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
+	13,  // 67: agynio.api.runners.v1.Volume.meta:type_name -> agynio.api.runners.v1.EntityMeta
+	9,   // 68: agynio.api.runners.v1.Volume.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	94,  // 69: agynio.api.runners.v1.Volume.removed_at:type_name -> google.protobuf.Timestamp
+	94,  // 70: agynio.api.runners.v1.Volume.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	74,  // 71: agynio.api.runners.v1.Volume.attachments:type_name -> agynio.api.runners.v1.Attachment
+	2,   // 72: agynio.api.runners.v1.Volume.owner_kind:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	10,  // 73: agynio.api.runners.v1.Attachment.kind:type_name -> agynio.api.runners.v1.AttachmentKind
+	9,   // 74: agynio.api.runners.v1.CreateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	2,   // 75: agynio.api.runners.v1.CreateVolumeRequest.owner_kind:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	73,  // 76: agynio.api.runners.v1.CreateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	9,   // 77: agynio.api.runners.v1.UpdateVolumeRequest.status:type_name -> agynio.api.runners.v1.VolumeStatus
+	94,  // 78: agynio.api.runners.v1.UpdateVolumeRequest.removed_at:type_name -> google.protobuf.Timestamp
+	94,  // 79: agynio.api.runners.v1.UpdateVolumeRequest.last_metering_sampled_at:type_name -> google.protobuf.Timestamp
+	73,  // 80: agynio.api.runners.v1.UpdateVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	73,  // 81: agynio.api.runners.v1.GetVolumeResponse.volume:type_name -> agynio.api.runners.v1.Volume
+	12,  // 82: agynio.api.runners.v1.ListVolumesSort.field:type_name -> agynio.api.runners.v1.ListVolumesSortField
+	0,   // 83: agynio.api.runners.v1.ListVolumesSort.direction:type_name -> agynio.api.runners.v1.SortDirection
+	9,   // 84: agynio.api.runners.v1.ListVolumesFilter.status_in:type_name -> agynio.api.runners.v1.VolumeStatus
+	11,  // 85: agynio.api.runners.v1.ListVolumesFilter.attached_to_kind_in:type_name -> agynio.api.runners.v1.VolumeAttachmentFilterKind
+	2,   // 86: agynio.api.runners.v1.ListVolumesFilter.owner_kind_in:type_name -> agynio.api.runners.v1.RuntimeOwnerKind
+	9,   // 87: agynio.api.runners.v1.ListVolumesRequest.statuses:type_name -> agynio.api.runners.v1.VolumeStatus
+	82,  // 88: agynio.api.runners.v1.ListVolumesRequest.filter:type_name -> agynio.api.runners.v1.ListVolumesFilter
+	81,  // 89: agynio.api.runners.v1.ListVolumesRequest.sort:type_name -> agynio.api.runners.v1.ListVolumesSort
+	73,  // 90: agynio.api.runners.v1.ListVolumesResponse.volumes:type_name -> agynio.api.runners.v1.Volume
+	73,  // 91: agynio.api.runners.v1.ListVolumesByThreadResponse.volumes:type_name -> agynio.api.runners.v1.Volume
+	9,   // 92: agynio.api.runners.v1.ListVolumesByAgentInstanceRequest.statuses:type_name -> agynio.api.runners.v1.VolumeStatus
+	73,  // 93: agynio.api.runners.v1.ListVolumesByAgentInstanceResponse.volumes:type_name -> agynio.api.runners.v1.Volume
+	15,  // 94: agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest.entries:type_name -> agynio.api.runners.v1.SampledAtEntry
+	17,  // 95: agynio.api.runners.v1.RunnersService.RegisterRunner:input_type -> agynio.api.runners.v1.RegisterRunnerRequest
+	19,  // 96: agynio.api.runners.v1.RunnersService.GetRunner:input_type -> agynio.api.runners.v1.GetRunnerRequest
+	21,  // 97: agynio.api.runners.v1.RunnersService.ListRunners:input_type -> agynio.api.runners.v1.ListRunnersRequest
+	23,  // 98: agynio.api.runners.v1.RunnersService.UpdateRunner:input_type -> agynio.api.runners.v1.UpdateRunnerRequest
+	25,  // 99: agynio.api.runners.v1.RunnersService.DeleteRunner:input_type -> agynio.api.runners.v1.DeleteRunnerRequest
+	27,  // 100: agynio.api.runners.v1.RunnersService.ValidateServiceToken:input_type -> agynio.api.runners.v1.ValidateServiceTokenRequest
+	29,  // 101: agynio.api.runners.v1.RunnersService.EnrollRunner:input_type -> agynio.api.runners.v1.EnrollRunnerRequest
+	32,  // 102: agynio.api.runners.v1.RunnersService.CreateFlavor:input_type -> agynio.api.runners.v1.CreateFlavorRequest
+	34,  // 103: agynio.api.runners.v1.RunnersService.GetFlavor:input_type -> agynio.api.runners.v1.GetFlavorRequest
+	36,  // 104: agynio.api.runners.v1.RunnersService.UpdateFlavor:input_type -> agynio.api.runners.v1.UpdateFlavorRequest
+	38,  // 105: agynio.api.runners.v1.RunnersService.DeleteFlavor:input_type -> agynio.api.runners.v1.DeleteFlavorRequest
+	40,  // 106: agynio.api.runners.v1.RunnersService.ListFlavors:input_type -> agynio.api.runners.v1.ListFlavorsRequest
+	45,  // 107: agynio.api.runners.v1.RunnersService.ReportRunnerCatalog:input_type -> agynio.api.runners.v1.ReportRunnerCatalogRequest
+	47,  // 108: agynio.api.runners.v1.RunnersService.ListStorageClasses:input_type -> agynio.api.runners.v1.ListStorageClassesRequest
+	51,  // 109: agynio.api.runners.v1.RunnersService.CreateWorkload:input_type -> agynio.api.runners.v1.CreateWorkloadRequest
+	53,  // 110: agynio.api.runners.v1.RunnersService.UpdateWorkload:input_type -> agynio.api.runners.v1.UpdateWorkloadRequest
+	55,  // 111: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:input_type -> agynio.api.runners.v1.UpdateWorkloadStatusRequest
+	57,  // 112: agynio.api.runners.v1.RunnersService.TouchWorkload:input_type -> agynio.api.runners.v1.TouchWorkloadRequest
+	59,  // 113: agynio.api.runners.v1.RunnersService.DeleteWorkload:input_type -> agynio.api.runners.v1.DeleteWorkloadRequest
+	61,  // 114: agynio.api.runners.v1.RunnersService.GetWorkload:input_type -> agynio.api.runners.v1.GetWorkloadRequest
+	65,  // 115: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:input_type -> agynio.api.runners.v1.ListWorkloadsByThreadRequest
+	67,  // 116: agynio.api.runners.v1.RunnersService.ListWorkloadsByAgentInstance:input_type -> agynio.api.runners.v1.ListWorkloadsByAgentInstanceRequest
+	69,  // 117: agynio.api.runners.v1.RunnersService.ListWorkloads:input_type -> agynio.api.runners.v1.ListWorkloadsRequest
+	71,  // 118: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtRequest
+	95,  // 119: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:input_type -> agynio.api.runner.v1.StreamWorkloadLogsRequest
+	75,  // 120: agynio.api.runners.v1.RunnersService.CreateVolume:input_type -> agynio.api.runners.v1.CreateVolumeRequest
+	77,  // 121: agynio.api.runners.v1.RunnersService.UpdateVolume:input_type -> agynio.api.runners.v1.UpdateVolumeRequest
+	79,  // 122: agynio.api.runners.v1.RunnersService.GetVolume:input_type -> agynio.api.runners.v1.GetVolumeRequest
+	83,  // 123: agynio.api.runners.v1.RunnersService.ListVolumes:input_type -> agynio.api.runners.v1.ListVolumesRequest
+	85,  // 124: agynio.api.runners.v1.RunnersService.ListVolumesByThread:input_type -> agynio.api.runners.v1.ListVolumesByThreadRequest
+	87,  // 125: agynio.api.runners.v1.RunnersService.ListVolumesByAgentInstance:input_type -> agynio.api.runners.v1.ListVolumesByAgentInstanceRequest
+	89,  // 126: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:input_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtRequest
+	18,  // 127: agynio.api.runners.v1.RunnersService.RegisterRunner:output_type -> agynio.api.runners.v1.RegisterRunnerResponse
+	20,  // 128: agynio.api.runners.v1.RunnersService.GetRunner:output_type -> agynio.api.runners.v1.GetRunnerResponse
+	22,  // 129: agynio.api.runners.v1.RunnersService.ListRunners:output_type -> agynio.api.runners.v1.ListRunnersResponse
+	24,  // 130: agynio.api.runners.v1.RunnersService.UpdateRunner:output_type -> agynio.api.runners.v1.UpdateRunnerResponse
+	26,  // 131: agynio.api.runners.v1.RunnersService.DeleteRunner:output_type -> agynio.api.runners.v1.DeleteRunnerResponse
+	28,  // 132: agynio.api.runners.v1.RunnersService.ValidateServiceToken:output_type -> agynio.api.runners.v1.ValidateServiceTokenResponse
+	30,  // 133: agynio.api.runners.v1.RunnersService.EnrollRunner:output_type -> agynio.api.runners.v1.EnrollRunnerResponse
+	33,  // 134: agynio.api.runners.v1.RunnersService.CreateFlavor:output_type -> agynio.api.runners.v1.CreateFlavorResponse
+	35,  // 135: agynio.api.runners.v1.RunnersService.GetFlavor:output_type -> agynio.api.runners.v1.GetFlavorResponse
+	37,  // 136: agynio.api.runners.v1.RunnersService.UpdateFlavor:output_type -> agynio.api.runners.v1.UpdateFlavorResponse
+	39,  // 137: agynio.api.runners.v1.RunnersService.DeleteFlavor:output_type -> agynio.api.runners.v1.DeleteFlavorResponse
+	41,  // 138: agynio.api.runners.v1.RunnersService.ListFlavors:output_type -> agynio.api.runners.v1.ListFlavorsResponse
+	46,  // 139: agynio.api.runners.v1.RunnersService.ReportRunnerCatalog:output_type -> agynio.api.runners.v1.ReportRunnerCatalogResponse
+	48,  // 140: agynio.api.runners.v1.RunnersService.ListStorageClasses:output_type -> agynio.api.runners.v1.ListStorageClassesResponse
+	52,  // 141: agynio.api.runners.v1.RunnersService.CreateWorkload:output_type -> agynio.api.runners.v1.CreateWorkloadResponse
+	54,  // 142: agynio.api.runners.v1.RunnersService.UpdateWorkload:output_type -> agynio.api.runners.v1.UpdateWorkloadResponse
+	56,  // 143: agynio.api.runners.v1.RunnersService.UpdateWorkloadStatus:output_type -> agynio.api.runners.v1.UpdateWorkloadStatusResponse
+	58,  // 144: agynio.api.runners.v1.RunnersService.TouchWorkload:output_type -> agynio.api.runners.v1.TouchWorkloadResponse
+	60,  // 145: agynio.api.runners.v1.RunnersService.DeleteWorkload:output_type -> agynio.api.runners.v1.DeleteWorkloadResponse
+	62,  // 146: agynio.api.runners.v1.RunnersService.GetWorkload:output_type -> agynio.api.runners.v1.GetWorkloadResponse
+	66,  // 147: agynio.api.runners.v1.RunnersService.ListWorkloadsByThread:output_type -> agynio.api.runners.v1.ListWorkloadsByThreadResponse
+	68,  // 148: agynio.api.runners.v1.RunnersService.ListWorkloadsByAgentInstance:output_type -> agynio.api.runners.v1.ListWorkloadsByAgentInstanceResponse
+	70,  // 149: agynio.api.runners.v1.RunnersService.ListWorkloads:output_type -> agynio.api.runners.v1.ListWorkloadsResponse
+	72,  // 150: agynio.api.runners.v1.RunnersService.BatchUpdateWorkloadSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateWorkloadSampledAtResponse
+	96,  // 151: agynio.api.runners.v1.RunnersService.StreamWorkloadLogs:output_type -> agynio.api.runner.v1.StreamWorkloadLogsResponse
+	76,  // 152: agynio.api.runners.v1.RunnersService.CreateVolume:output_type -> agynio.api.runners.v1.CreateVolumeResponse
+	78,  // 153: agynio.api.runners.v1.RunnersService.UpdateVolume:output_type -> agynio.api.runners.v1.UpdateVolumeResponse
+	80,  // 154: agynio.api.runners.v1.RunnersService.GetVolume:output_type -> agynio.api.runners.v1.GetVolumeResponse
+	84,  // 155: agynio.api.runners.v1.RunnersService.ListVolumes:output_type -> agynio.api.runners.v1.ListVolumesResponse
+	86,  // 156: agynio.api.runners.v1.RunnersService.ListVolumesByThread:output_type -> agynio.api.runners.v1.ListVolumesByThreadResponse
+	88,  // 157: agynio.api.runners.v1.RunnersService.ListVolumesByAgentInstance:output_type -> agynio.api.runners.v1.ListVolumesByAgentInstanceResponse
+	90,  // 158: agynio.api.runners.v1.RunnersService.BatchUpdateVolumeSampledAt:output_type -> agynio.api.runners.v1.BatchUpdateVolumeSampledAtResponse
+	127, // [127:159] is the sub-list for method output_type
+	95,  // [95:127] is the sub-list for method input_type
+	95,  // [95:95] is the sub-list for extension type_name
+	95,  // [95:95] is the sub-list for extension extendee
+	0,   // [0:95] is the sub-list for field type_name
 }
 
 func init() { file_agynio_api_runners_v1_runners_proto_init() }
@@ -4773,27 +6771,34 @@ func file_agynio_api_runners_v1_runners_proto_init() {
 	if File_agynio_api_runners_v1_runners_proto != nil {
 		return
 	}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[2].OneofWrappers = []any{}
 	file_agynio_api_runners_v1_runners_proto_msgTypes[3].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[7].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[9].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[17].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[4].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[8].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[10].OneofWrappers = []any{}
 	file_agynio_api_runners_v1_runners_proto_msgTypes[18].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[21].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[32].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[33].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[35].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[39].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[43].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[48].OneofWrappers = []any{}
-	file_agynio_api_runners_v1_runners_proto_msgTypes[49].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[23].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[27].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[29].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[34].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[36].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[37].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[38].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[40].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[51].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[52].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[56].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[60].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[62].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[64].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[69].OneofWrappers = []any{}
+	file_agynio_api_runners_v1_runners_proto_msgTypes[70].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agynio_api_runners_v1_runners_proto_rawDesc), len(file_agynio_api_runners_v1_runners_proto_rawDesc)),
-			NumEnums:      12,
-			NumMessages:   58,
+			NumEnums:      13,
+			NumMessages:   81,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

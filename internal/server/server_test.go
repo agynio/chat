@@ -129,7 +129,12 @@ func (m *mockThreadsClient) AckMessages(ctx context.Context, req *threadsv1.AckM
 }
 
 type mockRunnersClient struct {
-	listWorkloadsByThreadFunc func(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error)
+	// Embedded so an RPC added to the service does not have to be restated
+	// here; an unstubbed call panics on the nil interface, which is what a test
+	// that reached it by accident wants.
+	runnersv1.RunnersServiceClient
+	listWorkloadsByAgentInstanceFunc func(ctx context.Context, req *runnersv1.ListWorkloadsByAgentInstanceRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByAgentInstanceResponse, error)
+	listWorkloadsByThreadFunc        func(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error)
 }
 
 func (m *mockRunnersClient) ListWorkloadsByThread(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error) {
@@ -1727,3 +1732,77 @@ func TestThreadMessageToChatMessage(t *testing.T) {
 }
 
 var _ threadsv1.ThreadsServiceClient = (*mockThreadsClient)(nil)
+
+func (m *mockRunnersClient) ListWorkloadsByAgentInstance(ctx context.Context, req *runnersv1.ListWorkloadsByAgentInstanceRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByAgentInstanceResponse, error) {
+	if m.listWorkloadsByAgentInstanceFunc == nil {
+		return nil, unexpectedCall("ListWorkloadsByAgentInstance")
+	}
+	return m.listWorkloadsByAgentInstanceFunc(ctx, req, opts...)
+}
+
+// Workloads belong to instances, so an instance participant is asked about
+// directly. Going through the thread would return every instance of every class
+// on it, and report one instance's work as another's.
+func TestGetChatsActivityAsksAboutAnInstanceByInstance(t *testing.T) {
+	orgID := uuid.New()
+	threadID := uuid.New()
+	instanceID := uuid.NewString()
+	workloadID := uuid.NewString()
+	createdAt := time.Date(2024, 5, 16, 17, 18, 19, 0, time.UTC)
+	thread := newThread(threadID, createdAt, "user-1", instanceID)
+
+	ctx := contextWithIdentity("user-1")
+	chatStore := &mockStore{
+		listChatsFunc: func(context.Context, uuid.UUID, store.ChatListFilter, int32, *store.PageCursor) (store.ChatListResult, error) {
+			return store.ChatListResult{
+				Chats: []store.Chat{{ThreadID: threadID, OrganizationID: orgID, CreatedAt: createdAt, Status: "open"}},
+			}, nil
+		},
+	}
+	threads := &mockThreadsClient{
+		getThreadsFunc: func(context.Context, *threadsv1.GetThreadsRequest, ...grpc.CallOption) (*threadsv1.GetThreadsResponse, error) {
+			return &threadsv1.GetThreadsResponse{Threads: []*threadsv1.Thread{thread}}, nil
+		},
+		getUnackedMessageCountsFunc: func(context.Context, *threadsv1.GetUnackedMessageCountsRequest, ...grpc.CallOption) (*threadsv1.GetUnackedMessageCountsResponse, error) {
+			return &threadsv1.GetUnackedMessageCountsResponse{CountsByThreadId: map[string]int32{}}, nil
+		},
+	}
+	byInstance := 0
+	runners := &mockRunnersClient{
+		listWorkloadsByThreadFunc: func(context.Context, *runnersv1.ListWorkloadsByThreadRequest, ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error) {
+			t.Fatal("an instance participant was looked up through its thread")
+			return nil, nil
+		},
+		listWorkloadsByAgentInstanceFunc: func(_ context.Context, req *runnersv1.ListWorkloadsByAgentInstanceRequest, _ ...grpc.CallOption) (*runnersv1.ListWorkloadsByAgentInstanceResponse, error) {
+			byInstance++
+			if req.GetAgentInstanceId() != instanceID {
+				t.Fatalf("expected instance %s, got %s", instanceID, req.GetAgentInstanceId())
+			}
+			return &runnersv1.ListWorkloadsByAgentInstanceResponse{Workloads: []*runnersv1.Workload{
+				newWorkload(threadID, instanceID, workloadID,
+					runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+					runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_PROCESSING, createdAt),
+			}}, nil
+		},
+	}
+	identityClient := &mockIdentityClient{
+		batchGetIdentityTypesFunc: func(context.Context, *identityv1.BatchGetIdentityTypesRequest, ...grpc.CallOption) (*identityv1.BatchGetIdentityTypesResponse, error) {
+			return &identityv1.BatchGetIdentityTypesResponse{Entries: []*identityv1.IdentityTypeEntry{
+				{IdentityId: "user-1", IdentityType: identityv1.IdentityType_IDENTITY_TYPE_USER},
+				{IdentityId: instanceID, IdentityType: identityv1.IdentityType_IDENTITY_TYPE_AGENT_INSTANCE},
+			}}, nil
+		},
+	}
+
+	server := New(threads, runners, identityClient, chatStore)
+	resp, err := server.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID.String()})
+	if err != nil {
+		t.Fatalf("GetChats failed: %v", err)
+	}
+	if byInstance != 1 {
+		t.Fatalf("expected one lookup by instance, got %d", byInstance)
+	}
+	if got := resp.GetChats()[0].GetActivityStatus(); got != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_RUNNING {
+		t.Fatalf("expected running, got %s", got)
+	}
+}

@@ -57,6 +57,7 @@ type chatActivity struct {
 
 type runnersClient interface {
 	ListWorkloadsByThread(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error)
+	ListWorkloadsByAgentInstance(ctx context.Context, req *runnersv1.ListWorkloadsByAgentInstanceRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByAgentInstanceResponse, error)
 }
 
 type identityClient interface {
@@ -566,7 +567,10 @@ type workloadSummary struct {
 
 type threadAgentPair struct {
 	threadID string
-	agentID  string
+	// An agent class or one of its instances -- workloads belong to instances,
+	// so which one it is decides how they are looked up.
+	agentID    string
+	isInstance bool
 }
 
 type workloadResult struct {
@@ -605,7 +609,11 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 			continue
 		}
 		for _, agentID := range agentIDs {
-			pairs = append(pairs, threadAgentPair{threadID: threadID, agentID: agentID})
+			pairs = append(pairs, threadAgentPair{
+				threadID:   threadID,
+				agentID:    agentID,
+				isInstance: identityTypes[agentID] == identityv1.IdentityType_IDENTITY_TYPE_AGENT_INSTANCE,
+			})
 		}
 	}
 
@@ -621,7 +629,7 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 		go func(pair threadAgentPair) {
 			defer wg.Done()
 			sem <- struct{}{}
-			summary, err := s.workloadSummaryForAgent(ctx, pair.threadID, pair.agentID)
+			summary, err := s.workloadSummaryForAgent(ctx, pair.threadID, pair.agentID, pair.isInstance)
 			<-sem
 			results <- workloadResult{threadID: pair.threadID, agentID: pair.agentID, summary: summary, err: err}
 		}(pair)
@@ -698,7 +706,10 @@ func agentParticipantIDs(thread *threadsv1.Thread, identityTypes map[string]iden
 		if participantID == "" {
 			continue
 		}
-		if identityTypes[participantID] != identityv1.IdentityType_IDENTITY_TYPE_AGENT {
+		switch identityTypes[participantID] {
+		case identityv1.IdentityType_IDENTITY_TYPE_AGENT,
+			identityv1.IdentityType_IDENTITY_TYPE_AGENT_INSTANCE:
+		default:
 			continue
 		}
 		agentIDs = append(agentIDs, participantID)
@@ -706,17 +717,35 @@ func agentParticipantIDs(thread *threadsv1.Thread, identityTypes map[string]iden
 	return agentIDs
 }
 
-func (s *Server) workloadSummaryForAgent(ctx context.Context, threadID, agentID string) (workloadSummary, error) {
+// workloadSummaryForAgent reports what the participant is doing.
+//
+// A participant may be an agent class or one of its instances, and workloads
+// belong to instances -- so an instance is asked about directly rather than
+// through the thread, which would return every instance of every class on it.
+func (s *Server) workloadSummaryForAgent(ctx context.Context, threadID, agentID string, isInstance bool) (workloadSummary, error) {
 	summary := workloadSummary{}
-	resp, err := s.runners.ListWorkloadsByThread(ctx, &runnersv1.ListWorkloadsByThreadRequest{
-		ThreadId: threadID,
-		AgentId:  &agentID,
-		PageSize: latestWorkloadPageSize,
-	})
-	if err != nil {
-		return summary, err
+	var workloadList []*runnersv1.Workload
+	if isInstance {
+		resp, err := s.runners.ListWorkloadsByAgentInstance(ctx, &runnersv1.ListWorkloadsByAgentInstanceRequest{
+			AgentInstanceId: agentID,
+			PageSize:        latestWorkloadPageSize,
+		})
+		if err != nil {
+			return summary, err
+		}
+		workloadList = resp.GetWorkloads()
+	} else {
+		resp, err := s.runners.ListWorkloadsByThread(ctx, &runnersv1.ListWorkloadsByThreadRequest{
+			ThreadId: threadID,
+			AgentId:  &agentID,
+			PageSize: latestWorkloadPageSize,
+		})
+		if err != nil {
+			return summary, err
+		}
+		workloadList = resp.GetWorkloads()
 	}
-	workloads := resp.GetWorkloads()
+	workloads := workloadList
 	if len(workloads) == 0 {
 		return summary, nil
 	}

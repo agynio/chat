@@ -176,10 +176,21 @@ func newInMemoryThreads() *inMemoryThreads {
 	return &inMemoryThreads{threads: make(map[string]*threadState)}
 }
 
-type inMemoryRunners struct{}
+// The generated client is embedded so an RPC added to the service does not have
+// to be restated here.
+type inMemoryRunners struct {
+	runnersv1.RunnersServiceClient
+}
 
 func newInMemoryRunners() *inMemoryRunners {
 	return &inMemoryRunners{}
+}
+
+func (r *inMemoryRunners) ListWorkloadsByAgentInstance(ctx context.Context, _ *runnersv1.ListWorkloadsByAgentInstanceRequest, _ ...grpc.CallOption) (*runnersv1.ListWorkloadsByAgentInstanceResponse, error) {
+	if _, err := outgoingIdentityID(ctx); err != nil {
+		return nil, err
+	}
+	return &runnersv1.ListWorkloadsByAgentInstanceResponse{}, nil
 }
 
 func (r *inMemoryRunners) ListWorkloadsByThread(ctx context.Context, req *runnersv1.ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*runnersv1.ListWorkloadsByThreadResponse, error) {

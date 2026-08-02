@@ -4,24 +4,6 @@ vars:
   CHAT_NAMESPACE: platform
 
 functions:
-  disable_argocd_sync: |-
-    if kubectl get application chat -n argocd >/dev/null 2>&1; then
-      echo "Disabling ArgoCD auto-sync for chat..."
-      kubectl patch application chat -n argocd \
-        --type merge \
-        -p '{"spec":{"syncPolicy":{"automated":null}}}'
-      echo "ArgoCD auto-sync disabled."
-    else
-      echo "WARNING: ArgoCD Application 'chat' not found in argocd namespace."
-    fi
-  restore_argocd_sync: &restore_argocd_sync |-
-    if kubectl get application chat -n argocd >/dev/null 2>&1; then
-      echo "Re-enabling ArgoCD auto-sync for chat..."
-      kubectl patch application chat -n argocd \
-        --type merge \
-        -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
-      echo "ArgoCD auto-sync restored."
-    fi
   patch_deployment: |-
     echo "Patching chat deployment for DevSpace..."
     kubectl patch deployment chat -n ${CHAT_NAMESPACE} --type strategic --patch "$(cat <<'EOF'
@@ -132,7 +114,6 @@ pipelines:
         short: n
         description: "Disable container log streaming"
     run: |-
-      disable_argocd_sync
       patch_deployment
       if [ "$(get_flag "no-logs")" == "true" ]; then
         start_dev --disable-pod-replace chat --set containers.chat.logs.enabled=false
@@ -142,11 +123,8 @@ pipelines:
 
   setup:
     run: |-
-      disable_argocd_sync
-      trap 'restore_argocd_sync' EXIT
       patch_deployment
       wait_healthy
-      restore_argocd_sync
       trap - EXIT
 
   e2e:
@@ -168,13 +146,6 @@ pipelines:
       trap - EXIT
 
 hooks:
-  - name: restore-argocd-auto-sync
-    events:
-      - after:dev:chat
-    command: sh
-    args:
-      - -c
-      - *restore_argocd_sync
 
 dev:
   chat:

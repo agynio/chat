@@ -42,6 +42,7 @@ type chatStore interface {
 	CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
 	GetChat(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
 	UpdateChat(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
+	DeleteChat(ctx context.Context, threadID uuid.UUID) error
 	ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
 }
 
@@ -301,6 +302,34 @@ func (s *Server) UpdateChat(ctx context.Context, req *chatv1.UpdateChatRequest) 
 	}, nil
 }
 
+func (s *Server) DeleteChat(ctx context.Context, req *chatv1.DeleteChatRequest) (*chatv1.DeleteChatResponse, error) {
+	id, err := identity.FromContext(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "identity: %v", err)
+	}
+
+	if req.GetChatId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "chat_id is required")
+	}
+	threadID, err := parseUUID(req.GetChatId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "chat_id: %v", err)
+	}
+
+	// Archive first: a chat left visible but frozen recovers on retry, a hidden
+	// one agents can still write to does not.
+	threadsCtx := identity.AppendToOutgoingContext(ctx, id)
+	if _, err := s.threads.ArchiveThread(threadsCtx, &threadsv1.ArchiveThreadRequest{ThreadId: threadID.String()}); err != nil {
+		return nil, mapThreadsError(err)
+	}
+
+	if err := s.store.DeleteChat(ctx, threadID); err != nil {
+		return nil, toStatusError(err)
+	}
+
+	return &chatv1.DeleteChatResponse{}, nil
+}
+
 func (s *Server) GetMessages(ctx context.Context, req *chatv1.GetMessagesRequest) (*chatv1.GetMessagesResponse, error) {
 	id, err := identity.FromContext(ctx)
 	if err != nil {
@@ -309,6 +338,14 @@ func (s *Server) GetMessages(ctx context.Context, req *chatv1.GetMessagesRequest
 
 	if req.GetChatId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "chat_id is required")
+	}
+	threadID, err := parseUUID(req.GetChatId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "chat_id: %v", err)
+	}
+	// Tells a client holding a link to a deleted chat that it is gone.
+	if _, err := s.store.GetChat(ctx, threadID); err != nil {
+		return nil, toStatusError(err)
 	}
 
 	threadsCtx := identity.AppendToOutgoingContext(ctx, id)

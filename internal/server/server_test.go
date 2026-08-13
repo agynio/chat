@@ -159,6 +159,7 @@ type mockStore struct {
 	createChatFunc func(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
 	getChatFunc    func(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
 	updateChatFunc func(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
+	deleteChatFunc func(ctx context.Context, threadID uuid.UUID) error
 	listChatsFunc  func(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
 }
 
@@ -181,6 +182,13 @@ func (m *mockStore) UpdateChat(ctx context.Context, threadID uuid.UUID, params s
 		return store.Chat{}, unexpectedStoreCall("UpdateChat")
 	}
 	return m.updateChatFunc(ctx, threadID, params)
+}
+
+func (m *mockStore) DeleteChat(ctx context.Context, threadID uuid.UUID) error {
+	if m.deleteChatFunc == nil {
+		return unexpectedStoreCall("DeleteChat")
+	}
+	return m.deleteChatFunc(ctx, threadID)
 }
 
 func (m *mockStore) ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
@@ -1460,9 +1468,92 @@ func TestUpdateChatNotFound(t *testing.T) {
 	requireStatusCode(t, err, codes.NotFound)
 }
 
+func TestDeleteChatRequiresIdentity(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{})
+	_, err := srv.DeleteChat(context.Background(), &chatv1.DeleteChatRequest{ChatId: uuid.NewString()})
+	requireStatusCode(t, err, codes.Unauthenticated)
+}
+
+func TestDeleteChatRejectsInvalidChatID(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{})
+	_, err := srv.DeleteChat(contextWithIdentity("user-1"), &chatv1.DeleteChatRequest{ChatId: "not-a-uuid"})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestDeleteChatArchivesThreadThenMarksChatDeleted(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	threadID := uuid.New()
+
+	var calls []string
+	var gotArchiveReq *threadsv1.ArchiveThreadRequest
+	var gotThreadID uuid.UUID
+	threads := &mockThreadsClient{
+		archiveThreadFunc: func(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error) {
+			calls = append(calls, "ArchiveThread")
+			gotArchiveReq = req
+			return &threadsv1.ArchiveThreadResponse{
+				Thread: &threadsv1.Thread{Id: threadID.String(), Status: threadsv1.ThreadStatus_THREAD_STATUS_ARCHIVED},
+			}, nil
+		},
+	}
+	chatStore := &mockStore{
+		deleteChatFunc: func(ctx context.Context, chatID uuid.UUID) error {
+			calls = append(calls, "DeleteChat")
+			gotThreadID = chatID
+			return nil
+		},
+	}
+
+	srv := New(threads, &mockRunnersClient{}, &mockIdentityClient{}, chatStore)
+	if _, err := srv.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: threadID.String()}); err != nil {
+		t.Fatalf("DeleteChat returned error: %v", err)
+	}
+
+	if gotArchiveReq.GetThreadId() != threadID.String() {
+		t.Fatalf("archived thread %q, want %q", gotArchiveReq.GetThreadId(), threadID)
+	}
+	if gotThreadID != threadID {
+		t.Fatalf("deleted chat %s, want %s", gotThreadID, threadID)
+	}
+	if len(calls) != 2 || calls[0] != "ArchiveThread" || calls[1] != "DeleteChat" {
+		t.Fatalf("call order %v, want [ArchiveThread DeleteChat]", calls)
+	}
+}
+
+func TestDeleteChatKeepsChatWhenArchiveFails(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	threadID := uuid.New()
+
+	threads := &mockThreadsClient{
+		archiveThreadFunc: func(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error) {
+			return nil, status.Error(codes.PermissionDenied, "permission denied")
+		},
+	}
+
+	// The store mock errors on any unexpected call, so a delete here fails the test.
+	srv := New(threads, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{})
+	_, err := srv.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: threadID.String()})
+	requireStatusCode(t, err, codes.PermissionDenied)
+}
+
+func TestGetMessagesRejectsDeletedChat(t *testing.T) {
+	ctx := contextWithIdentity("user-1")
+	chatStore := &mockStore{
+		getChatFunc: func(ctx context.Context, chatID uuid.UUID) (store.Chat, error) {
+			return store.Chat{}, store.NotFound("chat")
+		},
+	}
+
+	// The threads mock errors on any unexpected call, so a transcript read here fails the test.
+	srv := New(&mockThreadsClient{}, &mockRunnersClient{}, &mockIdentityClient{}, chatStore)
+	_, err := srv.GetMessages(ctx, &chatv1.GetMessagesRequest{ChatId: uuid.NewString()})
+	requireStatusCode(t, err, codes.NotFound)
+}
+
 func TestGetMessagesAggregatesUnread(t *testing.T) {
 	ctx := contextWithIdentity("user-1")
-	chatID := "chat-1"
+	threadID := uuid.New()
+	chatID := threadID.String()
 	msgTime := time.Date(2024, 1, 2, 3, 4, 5, 0, time.UTC)
 	threadsMessages := []*threadsv1.Message{
 		{Id: "m1", ThreadId: chatID, SenderId: "user-2", Body: "hello", FileIds: []string{"f1"}, CreatedAt: timestamppb.New(msgTime)},
@@ -1513,7 +1604,13 @@ func TestGetMessagesAggregatesUnread(t *testing.T) {
 		},
 	}
 
-	srv := New(threads, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{})
+	chatStore := &mockStore{
+		getChatFunc: func(ctx context.Context, chatID uuid.UUID) (store.Chat, error) {
+			return store.Chat{ThreadID: threadID, OrganizationID: uuid.New(), Status: "open"}, nil
+		},
+	}
+
+	srv := New(threads, &mockRunnersClient{}, &mockIdentityClient{}, chatStore)
 	resp, err := srv.GetMessages(ctx, &chatv1.GetMessagesRequest{ChatId: chatID, PageSize: 2, PageToken: "page-1"})
 	if err != nil {
 		t.Fatalf("GetMessages returned error: %v", err)

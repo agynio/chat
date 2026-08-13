@@ -115,6 +115,13 @@ func (s *inMemoryStore) UpdateChat(ctx context.Context, threadID uuid.UUID, para
 	return chat, nil
 }
 
+func (s *inMemoryStore) DeleteChat(ctx context.Context, threadID uuid.UUID) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	delete(s.chats, threadID)
+	return nil
+}
+
 func (s *inMemoryStore) ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -275,7 +282,23 @@ func (t *inMemoryThreads) ArchiveThread(ctx context.Context, req *threadsv1.Arch
 	if _, err := outgoingIdentityID(ctx); err != nil {
 		return nil, err
 	}
-	return nil, status.Error(codes.Unimplemented, "ArchiveThread not implemented")
+
+	threadID := req.GetThreadId()
+	if threadID == "" {
+		return nil, status.Error(codes.InvalidArgument, "thread_id is required")
+	}
+
+	t.mu.Lock()
+	state, ok := t.threads[threadID]
+	if ok {
+		state.thread.Status = threadsv1.ThreadStatus_THREAD_STATUS_ARCHIVED
+	}
+	t.mu.Unlock()
+
+	if !ok {
+		return nil, status.Error(codes.NotFound, "thread not found")
+	}
+	return &threadsv1.ArchiveThreadResponse{Thread: state.thread}, nil
 }
 
 func (t *inMemoryThreads) DegradeThread(ctx context.Context, req *threadsv1.DegradeThreadRequest, opts ...grpc.CallOption) (*threadsv1.DegradeThreadResponse, error) {
@@ -322,6 +345,9 @@ func (t *inMemoryThreads) SendMessage(ctx context.Context, req *threadsv1.SendMe
 	state, ok := t.threads[req.GetThreadId()]
 	if !ok {
 		return nil, status.Error(codes.NotFound, "thread not found")
+	}
+	if state.thread.GetStatus() == threadsv1.ThreadStatus_THREAD_STATUS_ARCHIVED {
+		return nil, status.Error(codes.FailedPrecondition, "thread is archived")
 	}
 
 	now := time.Now().UTC()

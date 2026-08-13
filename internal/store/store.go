@@ -55,7 +55,7 @@ func (s *Store) CreateChat(ctx context.Context, threadID, organizationID uuid.UU
 
 func (s *Store) GetChat(ctx context.Context, threadID uuid.UUID) (Chat, error) {
 	row := s.pool.QueryRow(ctx,
-		fmt.Sprintf("SELECT %s FROM chats WHERE thread_id = $1", chatColumns),
+		fmt.Sprintf("SELECT %s FROM chats WHERE thread_id = $1 AND deleted_at IS NULL", chatColumns),
 		threadID,
 	)
 	chat, err := scanChat(row)
@@ -88,7 +88,7 @@ func (s *Store) UpdateChat(ctx context.Context, threadID uuid.UUID, params Updat
 	}
 
 	args = append(args, threadID)
-	query := fmt.Sprintf("UPDATE chats SET %s WHERE thread_id = $%d RETURNING %s", strings.Join(setClauses, ", "), len(args), chatColumns)
+	query := fmt.Sprintf("UPDATE chats SET %s WHERE thread_id = $%d AND deleted_at IS NULL RETURNING %s", strings.Join(setClauses, ", "), len(args), chatColumns)
 	row := s.pool.QueryRow(ctx, query, args...)
 	chat, err := scanChat(row)
 	if err != nil {
@@ -100,9 +100,15 @@ func (s *Store) UpdateChat(ctx context.Context, threadID uuid.UUID, params Updat
 	return chat, nil
 }
 
+// DeleteChat marks the chat deleted. Deleting an already-deleted or unknown chat is a no-op.
+func (s *Store) DeleteChat(ctx context.Context, threadID uuid.UUID) error {
+	_, err := s.pool.Exec(ctx, "UPDATE chats SET deleted_at = NOW() WHERE thread_id = $1 AND deleted_at IS NULL", threadID)
+	return err
+}
+
 func (s *Store) ListChats(ctx context.Context, organizationID uuid.UUID, filter ChatListFilter, pageSize int32, cursor *PageCursor) (ChatListResult, error) {
 	limit := NormalizePageSize(pageSize)
-	query := fmt.Sprintf("SELECT %s FROM chats WHERE organization_id = $1", chatColumns)
+	query := fmt.Sprintf("SELECT %s FROM chats WHERE organization_id = $1 AND deleted_at IS NULL", chatColumns)
 	args := []any{organizationID}
 	if filter.Status != nil {
 		args = append(args, *filter.Status)
@@ -111,7 +117,7 @@ func (s *Store) ListChats(ctx context.Context, organizationID uuid.UUID, filter 
 
 	var cursorCreatedAt time.Time
 	if cursor != nil {
-		cursorQuery := `SELECT created_at FROM chats WHERE thread_id = $1 AND organization_id = $2`
+		cursorQuery := `SELECT created_at FROM chats WHERE thread_id = $1 AND organization_id = $2 AND deleted_at IS NULL`
 		cursorArgs := []any{cursor.AfterID, organizationID}
 		if filter.Status != nil {
 			cursorArgs = append(cursorArgs, *filter.Status)

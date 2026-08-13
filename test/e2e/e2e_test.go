@@ -342,6 +342,69 @@ func TestMarkAsRead_Idempotent(t *testing.T) {
 	assert.Equal(t, int32(0), resp2.GetReadCount())
 }
 
+func TestDeleteChat(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+	orgID := uniqueID()
+
+	kept := createChat(t, env, ctx, orgID, uniqueID())
+	deleted := createChat(t, env, ctx, orgID, uniqueID())
+
+	_, err := env.client.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: deleted.GetId()})
+	require.NoError(t, err)
+
+	resp, err := env.client.GetChats(ctx, &chatv1.GetChatsRequest{OrganizationId: orgID})
+	require.NoError(t, err)
+	listed := make([]string, 0, len(resp.GetChats()))
+	for _, chat := range resp.GetChats() {
+		listed = append(listed, chat.GetId())
+	}
+	assert.Equal(t, []string{kept.GetId()}, listed)
+
+	_, err = env.client.SendMessage(ctx, &chatv1.SendMessageRequest{ChatId: deleted.GetId(), Body: "still there?"})
+	requireStatusCode(t, err, codes.FailedPrecondition)
+
+	_, err = env.client.GetMessages(ctx, &chatv1.GetMessagesRequest{ChatId: deleted.GetId()})
+	requireStatusCode(t, err, codes.NotFound)
+}
+
+func TestDeleteChat_Idempotent(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+	orgID := uniqueID()
+
+	chat := createChat(t, env, ctx, orgID, uniqueID())
+
+	_, err := env.client.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: chat.GetId()})
+	require.NoError(t, err)
+
+	_, err = env.client.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: chat.GetId()})
+	require.NoError(t, err)
+}
+
+func TestDeleteChat_MissingChatID(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+
+	_, err := env.client.DeleteChat(ctx, &chatv1.DeleteChatRequest{})
+	requireStatusCode(t, err, codes.InvalidArgument)
+}
+
+func TestDeleteChat_MissingIdentity(t *testing.T) {
+	env := setupEnv(t)
+
+	_, err := env.client.DeleteChat(context.Background(), &chatv1.DeleteChatRequest{ChatId: uniqueID()})
+	requireStatusCode(t, err, codes.Unauthenticated)
+}
+
+func TestDeleteChat_UnknownChat(t *testing.T) {
+	env := setupEnv(t)
+	_, ctx := testIdentity()
+
+	_, err := env.client.DeleteChat(ctx, &chatv1.DeleteChatRequest{ChatId: uniqueID()})
+	requireStatusCode(t, err, codes.NotFound)
+}
+
 func TestMarkAsRead_MissingChatID(t *testing.T) {
 	env := setupEnv(t)
 	_, ctx := testIdentity()

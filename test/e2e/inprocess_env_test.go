@@ -122,6 +122,17 @@ func (s *inMemoryStore) DeleteChat(ctx context.Context, threadID uuid.UUID) erro
 	return nil
 }
 
+func (s *inMemoryStore) DeleteChatsByOrganization(ctx context.Context, organizationID uuid.UUID) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for threadID, chat := range s.chats {
+		if chat.OrganizationID == organizationID {
+			delete(s.chats, threadID)
+		}
+	}
+	return nil
+}
+
 func (s *inMemoryStore) ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -222,6 +233,10 @@ func (i *inMemoryIdentity) BatchGetIdentityTypes(ctx context.Context, req *ident
 		entries = append(entries, &identityv1.IdentityTypeEntry{IdentityId: identityID, IdentityType: identityv1.IdentityType_IDENTITY_TYPE_USER})
 	}
 	return &identityv1.BatchGetIdentityTypesResponse{Entries: entries}, nil
+}
+
+func (t *inMemoryThreads) DeleteOrganizationResources(context.Context, *threadsv1.DeleteOrganizationResourcesRequest, ...grpc.CallOption) (*threadsv1.DeleteOrganizationResourcesResponse, error) {
+	return &threadsv1.DeleteOrganizationResourcesResponse{}, nil
 }
 
 func (t *inMemoryThreads) CreateThread(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {

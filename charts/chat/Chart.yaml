@@ -2,8 +2,8 @@ apiVersion: v2
 name: chat
 description: Helm chart for the agynio chat gRPC service
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.2.0
+appVersion: 0.2.0
 home: https://github.com/agynio/chat
 sources:
   - https://github.com/agynio/chat

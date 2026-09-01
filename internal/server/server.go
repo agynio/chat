@@ -43,6 +43,7 @@ type chatStore interface {
 	GetChat(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
 	UpdateChat(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
 	DeleteChat(ctx context.Context, threadID uuid.UUID) error
+	DeleteChatsByOrganization(ctx context.Context, organizationID uuid.UUID) error
 	ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
 }
 
@@ -882,4 +883,22 @@ func (s *Server) fetchIdentityTypes(ctx context.Context, ids []string) (map[stri
 		identityTypes[identityID] = entry.GetIdentityType()
 	}
 	return identityTypes, nil
+}
+
+// DeleteOrganizationResources removes the organization's chats. It is internal:
+// Istio settles who may call it, so there is no permission check and no caller
+// identity to check against. Step 4 of the organization teardown, ahead of the
+// threads the chats sat on, which Threads removes in the same step.
+//
+// Idempotent: the delete is unconditional, so a retried step finds nothing to
+// remove and still succeeds.
+func (s *Server) DeleteOrganizationResources(ctx context.Context, req *chatv1.DeleteOrganizationResourcesRequest) (*chatv1.DeleteOrganizationResourcesResponse, error) {
+	organizationID, err := parseUUID(req.GetOrganizationId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "organization_id: %v", err)
+	}
+	if err := s.store.DeleteChatsByOrganization(ctx, organizationID); err != nil {
+		return nil, toStatusError(err)
+	}
+	return &chatv1.DeleteOrganizationResourcesResponse{}, nil
 }

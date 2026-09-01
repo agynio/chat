@@ -106,6 +106,16 @@ func (s *Store) DeleteChat(ctx context.Context, threadID uuid.UUID) error {
 	return err
 }
 
+// DeleteChatsByOrganization removes the organization's chats outright, rather
+// than marking them deleted the way DeleteChat does. A soft delete exists so a
+// chat a user removed can still be read; an organization being torn down has
+// nothing left to read it, and a row holding an organization_id that resolves
+// to nothing is what the teardown is for.
+func (s *Store) DeleteChatsByOrganization(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := s.pool.Exec(ctx, "DELETE FROM chats WHERE organization_id = $1", organizationID)
+	return err
+}
+
 func (s *Store) ListChats(ctx context.Context, organizationID uuid.UUID, filter ChatListFilter, pageSize int32, cursor *PageCursor) (ChatListResult, error) {
 	limit := NormalizePageSize(pageSize)
 	query := fmt.Sprintf("SELECT %s FROM chats WHERE organization_id = $1 AND deleted_at IS NULL", chatColumns)

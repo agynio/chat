@@ -44,6 +44,10 @@ func (m *mockThreadsClient) CreateThread(ctx context.Context, req *threadsv1.Cre
 	return m.createThreadFunc(ctx, req, opts...)
 }
 
+func (m *mockThreadsClient) DeleteOrganizationResources(context.Context, *threadsv1.DeleteOrganizationResourcesRequest, ...grpc.CallOption) (*threadsv1.DeleteOrganizationResourcesResponse, error) {
+	return &threadsv1.DeleteOrganizationResourcesResponse{}, nil
+}
+
 func (m *mockThreadsClient) ArchiveThread(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error) {
 	if m.archiveThreadFunc == nil {
 		return nil, unexpectedCall("ArchiveThread")
@@ -156,11 +160,12 @@ func (m *mockIdentityClient) BatchGetIdentityTypes(ctx context.Context, req *ide
 }
 
 type mockStore struct {
-	createChatFunc func(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
-	getChatFunc    func(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
-	updateChatFunc func(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
-	deleteChatFunc func(ctx context.Context, threadID uuid.UUID) error
-	listChatsFunc  func(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+	createChatFunc                func(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error)
+	getChatFunc                   func(ctx context.Context, threadID uuid.UUID) (store.Chat, error)
+	updateChatFunc                func(ctx context.Context, threadID uuid.UUID, params store.UpdateChatParams) (store.Chat, error)
+	deleteChatFunc                func(ctx context.Context, threadID uuid.UUID) error
+	listChatsFunc                 func(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error)
+	deleteChatsByOrganizationFunc func(ctx context.Context, organizationID uuid.UUID) error
 }
 
 func (m *mockStore) CreateChat(ctx context.Context, threadID, organizationID uuid.UUID) (store.Chat, error) {
@@ -189,6 +194,13 @@ func (m *mockStore) DeleteChat(ctx context.Context, threadID uuid.UUID) error {
 		return unexpectedStoreCall("DeleteChat")
 	}
 	return m.deleteChatFunc(ctx, threadID)
+}
+
+func (m *mockStore) DeleteChatsByOrganization(ctx context.Context, organizationID uuid.UUID) error {
+	if m.deleteChatsByOrganizationFunc == nil {
+		return unexpectedStoreCall("DeleteChatsByOrganization")
+	}
+	return m.deleteChatsByOrganizationFunc(ctx, organizationID)
 }
 
 func (m *mockStore) ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
@@ -1902,4 +1914,37 @@ func TestGetChatsActivityAsksAboutAnInstanceByInstance(t *testing.T) {
 	if got := resp.GetChats()[0].GetActivityStatus(); got != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_RUNNING {
 		t.Fatalf("expected running, got %s", got)
 	}
+}
+
+func TestDeleteOrganizationResourcesDeletesChats(t *testing.T) {
+	organizationID := uuid.New()
+	var deletedFor []uuid.UUID
+	srv := New(&mockThreadsClient{}, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{
+		deleteChatsByOrganizationFunc: func(_ context.Context, id uuid.UUID) error {
+			deletedFor = append(deletedFor, id)
+			return nil
+		},
+	})
+
+	req := &chatv1.DeleteOrganizationResourcesRequest{OrganizationId: organizationID.String()}
+	// Internal RPC: no identity in the context, and none required.
+	if _, err := srv.DeleteOrganizationResources(context.Background(), req); err != nil {
+		t.Fatalf("first call: %v", err)
+	}
+	// The cascade retries a step it is unsure finished, so a second call has to
+	// succeed on the now-empty organization rather than fail.
+	if _, err := srv.DeleteOrganizationResources(context.Background(), req); err != nil {
+		t.Fatalf("second call: %v", err)
+	}
+	if want := []uuid.UUID{organizationID, organizationID}; !reflect.DeepEqual(deletedFor, want) {
+		t.Fatalf("deleted for %v, want %v", deletedFor, want)
+	}
+}
+
+func TestDeleteOrganizationResourcesRejectsInvalidOrganizationID(t *testing.T) {
+	srv := New(&mockThreadsClient{}, &mockRunnersClient{}, &mockIdentityClient{}, &mockStore{})
+	_, err := srv.DeleteOrganizationResources(context.Background(), &chatv1.DeleteOrganizationResourcesRequest{
+		OrganizationId: "not-a-uuid",
+	})
+	requireStatusCode(t, err, codes.InvalidArgument)
 }

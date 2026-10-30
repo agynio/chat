@@ -44,6 +44,10 @@ func (m *mockThreadsClient) CreateThread(ctx context.Context, req *threadsv1.Cre
 	return m.createThreadFunc(ctx, req, opts...)
 }
 
+func (m *mockThreadsClient) DeleteOrganizationResources(context.Context, *threadsv1.DeleteOrganizationResourcesRequest, ...grpc.CallOption) (*threadsv1.DeleteOrganizationResourcesResponse, error) {
+	return &threadsv1.DeleteOrganizationResourcesResponse{}, nil
+}
+
 func (m *mockThreadsClient) ArchiveThread(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error) {
 	if m.archiveThreadFunc == nil {
 		return nil, unexpectedCall("ArchiveThread")

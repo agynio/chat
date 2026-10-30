@@ -224,6 +224,10 @@ func (i *inMemoryIdentity) BatchGetIdentityTypes(ctx context.Context, req *ident
 	return &identityv1.BatchGetIdentityTypesResponse{Entries: entries}, nil
 }
 
+func (t *inMemoryThreads) DeleteOrganizationResources(context.Context, *threadsv1.DeleteOrganizationResourcesRequest, ...grpc.CallOption) (*threadsv1.DeleteOrganizationResourcesResponse, error) {
+	return &threadsv1.DeleteOrganizationResourcesResponse{}, nil
+}
+
 func (t *inMemoryThreads) CreateThread(ctx context.Context, req *threadsv1.CreateThreadRequest, opts ...grpc.CallOption) (*threadsv1.CreateThreadResponse, error) {
 	callerID, err := outgoingIdentityID(ctx)
 	if err != nil {

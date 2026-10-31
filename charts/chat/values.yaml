@@ -163,3 +163,9 @@ chat:
   threadsAddress: "threads:50051"
   runnersAddress: "runners:50051"
   identityAddress: "identity:50051"
+
+internalAuthorizationPolicy:
+  enabled: true
+  serviceAccounts:
+    - name: organizations
+      namespace: ""

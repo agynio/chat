@@ -122,6 +122,17 @@ func (s *inMemoryStore) DeleteChat(ctx context.Context, threadID uuid.UUID) erro
 	return nil
 }
 
+func (s *inMemoryStore) DeleteChatsByOrganization(ctx context.Context, organizationID uuid.UUID) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for threadID, chat := range s.chats {
+		if chat.OrganizationID == organizationID {
+			delete(s.chats, threadID)
+		}
+	}
+	return nil
+}
+
 func (s *inMemoryStore) ListChats(ctx context.Context, organizationID uuid.UUID, filter store.ChatListFilter, pageSize int32, cursor *store.PageCursor) (store.ChatListResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

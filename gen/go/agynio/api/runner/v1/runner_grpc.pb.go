@@ -23,6 +23,8 @@ const (
 	RunnerService_StartWorkload_FullMethodName         = "/agynio.api.runner.v1.RunnerService/StartWorkload"
 	RunnerService_StopWorkload_FullMethodName          = "/agynio.api.runner.v1.RunnerService/StopWorkload"
 	RunnerService_RemoveWorkload_FullMethodName        = "/agynio.api.runner.v1.RunnerService/RemoveWorkload"
+	RunnerService_HibernateWorkload_FullMethodName     = "/agynio.api.runner.v1.RunnerService/HibernateWorkload"
+	RunnerService_WakeWorkload_FullMethodName          = "/agynio.api.runner.v1.RunnerService/WakeWorkload"
 	RunnerService_InspectWorkload_FullMethodName       = "/agynio.api.runner.v1.RunnerService/InspectWorkload"
 	RunnerService_GetWorkloadLabels_FullMethodName     = "/agynio.api.runner.v1.RunnerService/GetWorkloadLabels"
 	RunnerService_ListWorkloads_FullMethodName         = "/agynio.api.runner.v1.RunnerService/ListWorkloads"
@@ -51,6 +53,9 @@ type RunnerServiceClient interface {
 	StartWorkload(ctx context.Context, in *StartWorkloadRequest, opts ...grpc.CallOption) (*StartWorkloadResponse, error)
 	StopWorkload(ctx context.Context, in *StopWorkloadRequest, opts ...grpc.CallOption) (*StopWorkloadResponse, error)
 	RemoveWorkload(ctx context.Context, in *RemoveWorkloadRequest, opts ...grpc.CallOption) (*RemoveWorkloadResponse, error)
+	// Unimplemented on a runner that does not advertise the hibernate capability.
+	HibernateWorkload(ctx context.Context, in *HibernateWorkloadRequest, opts ...grpc.CallOption) (*HibernateWorkloadResponse, error)
+	WakeWorkload(ctx context.Context, in *WakeWorkloadRequest, opts ...grpc.CallOption) (*WakeWorkloadResponse, error)
 	// Minimal inspect surface with EXACT fields required by platform today.
 	InspectWorkload(ctx context.Context, in *InspectWorkloadRequest, opts ...grpc.CallOption) (*InspectWorkloadResponse, error)
 	GetWorkloadLabels(ctx context.Context, in *GetWorkloadLabelsRequest, opts ...grpc.CallOption) (*GetWorkloadLabelsResponse, error)
@@ -117,6 +122,26 @@ func (c *runnerServiceClient) RemoveWorkload(ctx context.Context, in *RemoveWork
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveWorkloadResponse)
 	err := c.cc.Invoke(ctx, RunnerService_RemoveWorkload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *runnerServiceClient) HibernateWorkload(ctx context.Context, in *HibernateWorkloadRequest, opts ...grpc.CallOption) (*HibernateWorkloadResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HibernateWorkloadResponse)
+	err := c.cc.Invoke(ctx, RunnerService_HibernateWorkload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *runnerServiceClient) WakeWorkload(ctx context.Context, in *WakeWorkloadRequest, opts ...grpc.CallOption) (*WakeWorkloadResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WakeWorkloadResponse)
+	err := c.cc.Invoke(ctx, RunnerService_WakeWorkload_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -287,6 +312,9 @@ type RunnerServiceServer interface {
 	StartWorkload(context.Context, *StartWorkloadRequest) (*StartWorkloadResponse, error)
 	StopWorkload(context.Context, *StopWorkloadRequest) (*StopWorkloadResponse, error)
 	RemoveWorkload(context.Context, *RemoveWorkloadRequest) (*RemoveWorkloadResponse, error)
+	// Unimplemented on a runner that does not advertise the hibernate capability.
+	HibernateWorkload(context.Context, *HibernateWorkloadRequest) (*HibernateWorkloadResponse, error)
+	WakeWorkload(context.Context, *WakeWorkloadRequest) (*WakeWorkloadResponse, error)
 	// Minimal inspect surface with EXACT fields required by platform today.
 	InspectWorkload(context.Context, *InspectWorkloadRequest) (*InspectWorkloadResponse, error)
 	GetWorkloadLabels(context.Context, *GetWorkloadLabelsRequest) (*GetWorkloadLabelsResponse, error)
@@ -329,6 +357,12 @@ func (UnimplementedRunnerServiceServer) StopWorkload(context.Context, *StopWorkl
 }
 func (UnimplementedRunnerServiceServer) RemoveWorkload(context.Context, *RemoveWorkloadRequest) (*RemoveWorkloadResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveWorkload not implemented")
+}
+func (UnimplementedRunnerServiceServer) HibernateWorkload(context.Context, *HibernateWorkloadRequest) (*HibernateWorkloadResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method HibernateWorkload not implemented")
+}
+func (UnimplementedRunnerServiceServer) WakeWorkload(context.Context, *WakeWorkloadRequest) (*WakeWorkloadResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method WakeWorkload not implemented")
 }
 func (UnimplementedRunnerServiceServer) InspectWorkload(context.Context, *InspectWorkloadRequest) (*InspectWorkloadResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method InspectWorkload not implemented")
@@ -457,6 +491,42 @@ func _RunnerService_RemoveWorkload_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RunnerServiceServer).RemoveWorkload(ctx, req.(*RemoveWorkloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RunnerService_HibernateWorkload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HibernateWorkloadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RunnerServiceServer).HibernateWorkload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RunnerService_HibernateWorkload_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RunnerServiceServer).HibernateWorkload(ctx, req.(*HibernateWorkloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RunnerService_WakeWorkload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WakeWorkloadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RunnerServiceServer).WakeWorkload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RunnerService_WakeWorkload_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RunnerServiceServer).WakeWorkload(ctx, req.(*WakeWorkloadRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -692,6 +762,14 @@ var RunnerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveWorkload",
 			Handler:    _RunnerService_RemoveWorkload_Handler,
+		},
+		{
+			MethodName: "HibernateWorkload",
+			Handler:    _RunnerService_HibernateWorkload_Handler,
+		},
+		{
+			MethodName: "WakeWorkload",
+			Handler:    _RunnerService_WakeWorkload_Handler,
 		},
 		{
 			MethodName: "InspectWorkload",

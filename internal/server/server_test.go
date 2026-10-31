@@ -44,6 +44,10 @@ func (m *mockThreadsClient) CreateThread(ctx context.Context, req *threadsv1.Cre
 	return m.createThreadFunc(ctx, req, opts...)
 }
 
+func (m *mockThreadsClient) DeleteOrganizationResources(context.Context, *threadsv1.DeleteOrganizationResourcesRequest, ...grpc.CallOption) (*threadsv1.DeleteOrganizationResourcesResponse, error) {
+	return &threadsv1.DeleteOrganizationResourcesResponse{}, nil
+}
+
 func (m *mockThreadsClient) ArchiveThread(ctx context.Context, req *threadsv1.ArchiveThreadRequest, opts ...grpc.CallOption) (*threadsv1.ArchiveThreadResponse, error) {
 	if m.archiveThreadFunc == nil {
 		return nil, unexpectedCall("ArchiveThread")
@@ -910,6 +914,80 @@ func TestGetChatsStartingWorkloadReturnsPending(t *testing.T) {
 	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadID})
 }
 
+// The record keeps the agent_state it went to sleep with until waking ->
+// running, so a waking workload is pending however idle it still looks.
+func TestGetChatsWakingWorkloadReturnsPending(t *testing.T) {
+	orgID := uuid.New()
+	threadID := uuid.New()
+	agentID := "agent-1"
+	workloadID := uuid.NewString()
+	createdAt := time.Date(2024, 5, 18, 19, 20, 21, 0, time.UTC)
+
+	thread := newThread(threadID, createdAt, "user-1", agentID)
+	workload := newWorkload(
+		threadID,
+		agentID,
+		workloadID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_WAKING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	chat := fetchChatActivity(t, thread, orgID, createdAt, map[string][]*runnersv1.Workload{agentID: []*runnersv1.Workload{workload}})
+
+	if chat.GetActivityStatus() != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_PENDING {
+		t.Fatalf("expected activity status pending, got %s", chat.GetActivityStatus())
+	}
+	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadID})
+}
+
+func TestGetChatsHibernatingWorkloadReturnsFinished(t *testing.T) {
+	orgID := uuid.New()
+	threadID := uuid.New()
+	agentID := "agent-1"
+	workloadID := uuid.NewString()
+	createdAt := time.Date(2024, 5, 19, 20, 21, 22, 0, time.UTC)
+
+	thread := newThread(threadID, createdAt, "user-1", agentID)
+	workload := newWorkload(
+		threadID,
+		agentID,
+		workloadID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	chat := fetchChatActivity(t, thread, orgID, createdAt, map[string][]*runnersv1.Workload{agentID: []*runnersv1.Workload{workload}})
+
+	if chat.GetActivityStatus() != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED {
+		t.Fatalf("expected activity status finished, got %s", chat.GetActivityStatus())
+	}
+	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadID})
+}
+
+func TestGetChatsHibernatedWorkloadReturnsFinished(t *testing.T) {
+	orgID := uuid.New()
+	threadID := uuid.New()
+	agentID := "agent-1"
+	workloadID := uuid.NewString()
+	createdAt := time.Date(2024, 5, 20, 21, 22, 23, 0, time.UTC)
+
+	thread := newThread(threadID, createdAt, "user-1", agentID)
+	workload := newWorkload(
+		threadID,
+		agentID,
+		workloadID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATED,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	chat := fetchChatActivity(t, thread, orgID, createdAt, map[string][]*runnersv1.Workload{agentID: []*runnersv1.Workload{workload}})
+
+	if chat.GetActivityStatus() != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_FINISHED {
+		t.Fatalf("expected activity status finished, got %s", chat.GetActivityStatus())
+	}
+	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadID})
+}
+
 func TestGetChatsStoppingWorkloadReturnsPending(t *testing.T) {
 	orgID := uuid.New()
 	threadID := uuid.New()
@@ -1076,6 +1154,66 @@ func TestGetChatsActivityStatusPrefersPending(t *testing.T) {
 		t.Fatalf("expected activity status pending, got %s", chat.GetActivityStatus())
 	}
 	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadPendingID})
+}
+
+// A sleeping workload is the one the next message wakes, so its room is
+// followed while it sleeps, not only once it has started to move.
+func TestGetChatsActiveWorkloadIDsIncludeHibernationStatuses(t *testing.T) {
+	orgID := uuid.New()
+	threadID := uuid.New()
+	agentHibernating := "agent-1"
+	agentHibernated := "agent-2"
+	agentWaking := "agent-3"
+	agentStopped := "agent-4"
+	workloadHibernatingID := uuid.NewString()
+	workloadHibernatedID := uuid.NewString()
+	workloadWakingID := uuid.NewString()
+	createdAt := time.Date(2024, 5, 21, 22, 23, 24, 0, time.UTC)
+
+	thread := newThread(threadID, createdAt, "user-1", agentHibernating, agentHibernated, agentWaking, agentStopped)
+	workloadHibernating := newWorkload(
+		threadID,
+		agentHibernating,
+		workloadHibernatingID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	workloadHibernated := newWorkload(
+		threadID,
+		agentHibernated,
+		workloadHibernatedID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATED,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	workloadWaking := newWorkload(
+		threadID,
+		agentWaking,
+		workloadWakingID,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_WAKING,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_IDLE,
+		createdAt,
+	)
+	workloadStopped := newWorkload(
+		threadID,
+		agentStopped,
+		uuid.NewString(),
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPED,
+		runnersv1.WorkloadAgentState_WORKLOAD_AGENT_STATE_UNSPECIFIED,
+		createdAt,
+	)
+	chat := fetchChatActivity(t, thread, orgID, createdAt, map[string][]*runnersv1.Workload{
+		agentHibernating: []*runnersv1.Workload{workloadHibernating},
+		agentHibernated:  []*runnersv1.Workload{workloadHibernated},
+		agentWaking:      []*runnersv1.Workload{workloadWaking},
+		agentStopped:     []*runnersv1.Workload{workloadStopped},
+	})
+
+	if chat.GetActivityStatus() != chatv1.ChatActivityStatus_CHAT_ACTIVITY_STATUS_PENDING {
+		t.Fatalf("expected activity status pending, got %s", chat.GetActivityStatus())
+	}
+	requireWorkloadIDs(t, chat.GetActiveWorkloadIds(), []string{workloadHibernatingID, workloadHibernatedID, workloadWakingID})
 }
 
 func TestGetChatsAppliesStatusFilter(t *testing.T) {

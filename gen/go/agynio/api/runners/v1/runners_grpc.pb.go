@@ -37,7 +37,9 @@ const (
 	RunnersService_CreateWorkload_FullMethodName               = "/agynio.api.runners.v1.RunnersService/CreateWorkload"
 	RunnersService_UpdateWorkload_FullMethodName               = "/agynio.api.runners.v1.RunnersService/UpdateWorkload"
 	RunnersService_UpdateWorkloadStatus_FullMethodName         = "/agynio.api.runners.v1.RunnersService/UpdateWorkloadStatus"
+	RunnersService_ReportWorkloadState_FullMethodName          = "/agynio.api.runners.v1.RunnersService/ReportWorkloadState"
 	RunnersService_TouchWorkload_FullMethodName                = "/agynio.api.runners.v1.RunnersService/TouchWorkload"
+	RunnersService_ReportWorkloadIdle_FullMethodName           = "/agynio.api.runners.v1.RunnersService/ReportWorkloadIdle"
 	RunnersService_DeleteWorkload_FullMethodName               = "/agynio.api.runners.v1.RunnersService/DeleteWorkload"
 	RunnersService_GetWorkload_FullMethodName                  = "/agynio.api.runners.v1.RunnersService/GetWorkload"
 	RunnersService_ListWorkloadsByThread_FullMethodName        = "/agynio.api.runners.v1.RunnersService/ListWorkloadsByThread"
@@ -52,6 +54,7 @@ const (
 	RunnersService_ListVolumesByThread_FullMethodName          = "/agynio.api.runners.v1.RunnersService/ListVolumesByThread"
 	RunnersService_ListVolumesByAgentInstance_FullMethodName   = "/agynio.api.runners.v1.RunnersService/ListVolumesByAgentInstance"
 	RunnersService_BatchUpdateVolumeSampledAt_FullMethodName   = "/agynio.api.runners.v1.RunnersService/BatchUpdateVolumeSampledAt"
+	RunnersService_DeleteOrganizationResources_FullMethodName  = "/agynio.api.runners.v1.RunnersService/DeleteOrganizationResources"
 )
 
 // RunnersServiceClient is the client API for RunnersService service.
@@ -91,7 +94,9 @@ type RunnersServiceClient interface {
 	CreateWorkload(ctx context.Context, in *CreateWorkloadRequest, opts ...grpc.CallOption) (*CreateWorkloadResponse, error)
 	UpdateWorkload(ctx context.Context, in *UpdateWorkloadRequest, opts ...grpc.CallOption) (*UpdateWorkloadResponse, error)
 	UpdateWorkloadStatus(ctx context.Context, in *UpdateWorkloadStatusRequest, opts ...grpc.CallOption) (*UpdateWorkloadStatusResponse, error)
+	ReportWorkloadState(ctx context.Context, in *ReportWorkloadStateRequest, opts ...grpc.CallOption) (*ReportWorkloadStateResponse, error)
 	TouchWorkload(ctx context.Context, in *TouchWorkloadRequest, opts ...grpc.CallOption) (*TouchWorkloadResponse, error)
+	ReportWorkloadIdle(ctx context.Context, in *ReportWorkloadIdleRequest, opts ...grpc.CallOption) (*ReportWorkloadIdleResponse, error)
 	DeleteWorkload(ctx context.Context, in *DeleteWorkloadRequest, opts ...grpc.CallOption) (*DeleteWorkloadResponse, error)
 	GetWorkload(ctx context.Context, in *GetWorkloadRequest, opts ...grpc.CallOption) (*GetWorkloadResponse, error)
 	ListWorkloadsByThread(ctx context.Context, in *ListWorkloadsByThreadRequest, opts ...grpc.CallOption) (*ListWorkloadsByThreadResponse, error)
@@ -108,6 +113,7 @@ type RunnersServiceClient interface {
 	ListVolumesByThread(ctx context.Context, in *ListVolumesByThreadRequest, opts ...grpc.CallOption) (*ListVolumesByThreadResponse, error)
 	ListVolumesByAgentInstance(ctx context.Context, in *ListVolumesByAgentInstanceRequest, opts ...grpc.CallOption) (*ListVolumesByAgentInstanceResponse, error)
 	BatchUpdateVolumeSampledAt(ctx context.Context, in *BatchUpdateVolumeSampledAtRequest, opts ...grpc.CallOption) (*BatchUpdateVolumeSampledAtResponse, error)
+	DeleteOrganizationResources(ctx context.Context, in *DeleteOrganizationResourcesRequest, opts ...grpc.CallOption) (*DeleteOrganizationResourcesResponse, error)
 }
 
 type runnersServiceClient struct {
@@ -292,10 +298,30 @@ func (c *runnersServiceClient) UpdateWorkloadStatus(ctx context.Context, in *Upd
 	return out, nil
 }
 
+func (c *runnersServiceClient) ReportWorkloadState(ctx context.Context, in *ReportWorkloadStateRequest, opts ...grpc.CallOption) (*ReportWorkloadStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReportWorkloadStateResponse)
+	err := c.cc.Invoke(ctx, RunnersService_ReportWorkloadState_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *runnersServiceClient) TouchWorkload(ctx context.Context, in *TouchWorkloadRequest, opts ...grpc.CallOption) (*TouchWorkloadResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TouchWorkloadResponse)
 	err := c.cc.Invoke(ctx, RunnersService_TouchWorkload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *runnersServiceClient) ReportWorkloadIdle(ctx context.Context, in *ReportWorkloadIdleRequest, opts ...grpc.CallOption) (*ReportWorkloadIdleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReportWorkloadIdleResponse)
+	err := c.cc.Invoke(ctx, RunnersService_ReportWorkloadIdle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -451,6 +477,16 @@ func (c *runnersServiceClient) BatchUpdateVolumeSampledAt(ctx context.Context, i
 	return out, nil
 }
 
+func (c *runnersServiceClient) DeleteOrganizationResources(ctx context.Context, in *DeleteOrganizationResourcesRequest, opts ...grpc.CallOption) (*DeleteOrganizationResourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOrganizationResourcesResponse)
+	err := c.cc.Invoke(ctx, RunnersService_DeleteOrganizationResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RunnersServiceServer is the server API for RunnersService service.
 // All implementations should embed UnimplementedRunnersServiceServer
 // for forward compatibility.
@@ -488,7 +524,9 @@ type RunnersServiceServer interface {
 	CreateWorkload(context.Context, *CreateWorkloadRequest) (*CreateWorkloadResponse, error)
 	UpdateWorkload(context.Context, *UpdateWorkloadRequest) (*UpdateWorkloadResponse, error)
 	UpdateWorkloadStatus(context.Context, *UpdateWorkloadStatusRequest) (*UpdateWorkloadStatusResponse, error)
+	ReportWorkloadState(context.Context, *ReportWorkloadStateRequest) (*ReportWorkloadStateResponse, error)
 	TouchWorkload(context.Context, *TouchWorkloadRequest) (*TouchWorkloadResponse, error)
+	ReportWorkloadIdle(context.Context, *ReportWorkloadIdleRequest) (*ReportWorkloadIdleResponse, error)
 	DeleteWorkload(context.Context, *DeleteWorkloadRequest) (*DeleteWorkloadResponse, error)
 	GetWorkload(context.Context, *GetWorkloadRequest) (*GetWorkloadResponse, error)
 	ListWorkloadsByThread(context.Context, *ListWorkloadsByThreadRequest) (*ListWorkloadsByThreadResponse, error)
@@ -505,6 +543,7 @@ type RunnersServiceServer interface {
 	ListVolumesByThread(context.Context, *ListVolumesByThreadRequest) (*ListVolumesByThreadResponse, error)
 	ListVolumesByAgentInstance(context.Context, *ListVolumesByAgentInstanceRequest) (*ListVolumesByAgentInstanceResponse, error)
 	BatchUpdateVolumeSampledAt(context.Context, *BatchUpdateVolumeSampledAtRequest) (*BatchUpdateVolumeSampledAtResponse, error)
+	DeleteOrganizationResources(context.Context, *DeleteOrganizationResourcesRequest) (*DeleteOrganizationResourcesResponse, error)
 }
 
 // UnimplementedRunnersServiceServer should be embedded to have
@@ -565,8 +604,14 @@ func (UnimplementedRunnersServiceServer) UpdateWorkload(context.Context, *Update
 func (UnimplementedRunnersServiceServer) UpdateWorkloadStatus(context.Context, *UpdateWorkloadStatusRequest) (*UpdateWorkloadStatusResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateWorkloadStatus not implemented")
 }
+func (UnimplementedRunnersServiceServer) ReportWorkloadState(context.Context, *ReportWorkloadStateRequest) (*ReportWorkloadStateResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReportWorkloadState not implemented")
+}
 func (UnimplementedRunnersServiceServer) TouchWorkload(context.Context, *TouchWorkloadRequest) (*TouchWorkloadResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method TouchWorkload not implemented")
+}
+func (UnimplementedRunnersServiceServer) ReportWorkloadIdle(context.Context, *ReportWorkloadIdleRequest) (*ReportWorkloadIdleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReportWorkloadIdle not implemented")
 }
 func (UnimplementedRunnersServiceServer) DeleteWorkload(context.Context, *DeleteWorkloadRequest) (*DeleteWorkloadResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteWorkload not implemented")
@@ -609,6 +654,9 @@ func (UnimplementedRunnersServiceServer) ListVolumesByAgentInstance(context.Cont
 }
 func (UnimplementedRunnersServiceServer) BatchUpdateVolumeSampledAt(context.Context, *BatchUpdateVolumeSampledAtRequest) (*BatchUpdateVolumeSampledAtResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method BatchUpdateVolumeSampledAt not implemented")
+}
+func (UnimplementedRunnersServiceServer) DeleteOrganizationResources(context.Context, *DeleteOrganizationResourcesRequest) (*DeleteOrganizationResourcesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteOrganizationResources not implemented")
 }
 func (UnimplementedRunnersServiceServer) testEmbeddedByValue() {}
 
@@ -936,6 +984,24 @@ func _RunnersService_UpdateWorkloadStatus_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RunnersService_ReportWorkloadState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportWorkloadStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RunnersServiceServer).ReportWorkloadState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RunnersService_ReportWorkloadState_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RunnersServiceServer).ReportWorkloadState(ctx, req.(*ReportWorkloadStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RunnersService_TouchWorkload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TouchWorkloadRequest)
 	if err := dec(in); err != nil {
@@ -950,6 +1016,24 @@ func _RunnersService_TouchWorkload_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RunnersServiceServer).TouchWorkload(ctx, req.(*TouchWorkloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RunnersService_ReportWorkloadIdle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportWorkloadIdleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RunnersServiceServer).ReportWorkloadIdle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RunnersService_ReportWorkloadIdle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RunnersServiceServer).ReportWorkloadIdle(ctx, req.(*ReportWorkloadIdleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1199,6 +1283,24 @@ func _RunnersService_BatchUpdateVolumeSampledAt_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RunnersService_DeleteOrganizationResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrganizationResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RunnersServiceServer).DeleteOrganizationResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RunnersService_DeleteOrganizationResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RunnersServiceServer).DeleteOrganizationResources(ctx, req.(*DeleteOrganizationResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RunnersService_ServiceDesc is the grpc.ServiceDesc for RunnersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1275,8 +1377,16 @@ var RunnersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RunnersService_UpdateWorkloadStatus_Handler,
 		},
 		{
+			MethodName: "ReportWorkloadState",
+			Handler:    _RunnersService_ReportWorkloadState_Handler,
+		},
+		{
 			MethodName: "TouchWorkload",
 			Handler:    _RunnersService_TouchWorkload_Handler,
+		},
+		{
+			MethodName: "ReportWorkloadIdle",
+			Handler:    _RunnersService_ReportWorkloadIdle_Handler,
 		},
 		{
 			MethodName: "DeleteWorkload",
@@ -1329,6 +1439,10 @@ var RunnersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchUpdateVolumeSampledAt",
 			Handler:    _RunnersService_BatchUpdateVolumeSampledAt_Handler,
+		},
+		{
+			MethodName: "DeleteOrganizationResources",
+			Handler:    _RunnersService_DeleteOrganizationResources_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

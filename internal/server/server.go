@@ -700,9 +700,13 @@ func (s *Server) fetchChatActivities(ctx context.Context, threads []*threadsv1.T
 				// finished
 			}
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
+			runnersv1.WorkloadStatus_WORKLOAD_STATUS_WAKING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING,
 			runnersv1.WorkloadStatus_WORKLOAD_STATUS_FAILED:
 			agg.pending = true
+		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATING,
+			runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATED:
+			// finished -- asleep between turns; the next message wakes it
 		case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPED:
 			// finished
 		}
@@ -818,6 +822,9 @@ func validateWorkloadStatus(status runnersv1.WorkloadStatus) error {
 	switch status {
 	case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATING,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATED,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_WAKING,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPED,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_FAILED:
@@ -842,6 +849,11 @@ func isActiveWorkloadStatus(status runnersv1.WorkloadStatus) bool {
 	switch status {
 	case runnersv1.WorkloadStatus_WORKLOAD_STATUS_STARTING,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_RUNNING,
+		// A sleeping workload is the one the next message wakes, and its
+		// waking -> running is what the indicator follows.
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATING,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_HIBERNATED,
+		runnersv1.WorkloadStatus_WORKLOAD_STATUS_WAKING,
 		runnersv1.WorkloadStatus_WORKLOAD_STATUS_STOPPING:
 		return true
 	default:
